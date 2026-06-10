@@ -1,5 +1,6 @@
 以下の62シーンの画像をHiggsfield Unlimitedで16:9で生成して。
-生成完了したら画像URLをScene番号付きでリストアップして。
+生成した画像は C:\Users\kokek\OneDrive\Desktop\movie pictuer\test に
+scene_01.png, scene_02.png ... scene_62.png の形式で保存して。
 
 Scene 1: Vintage film photo, realistic, 1990s Japanese apartment room at night. A flip phone on a wooden table glows in the dark, illuminating a dark room, emotional atmosphere, cinematic lighting, widescreen 16:9 aspect ratio.
 
@@ -81,7 +82,7 @@ Scene 39: Vintage film photo, realistic, a dark room with the morning sun just b
 
 Scene 40: Vintage photo, realistic, a Japanese couple sitting at a dining table at dawn, drinking tea, quiet morning light, peaceful atmosphere, widescreen 16:9 aspect ratio.
 
-Scene 41: Vintage photo, realistic, a smartphone lying on a bedsheets with a incoming call screen at dawn, soft blue morning light, tense atmosphere, widescreen 16:9 aspect ratio.
+Scene 41: Vintage photo, realistic, a smartphone lying on bedsheets with an incoming call screen at dawn, soft blue morning light, tense atmosphere, widescreen 16:9 aspect ratio.
 
 Scene 42: Vintage film photo, realistic, an empty hospital room bed, neat and empty, soft morning sunlight through the curtain, peaceful, quiet, widescreen 16:9 aspect ratio.
 

@@ -1,0 +1,17 @@
+# 画像処理 / 顔解析
+opencv-python>=4.9
+mediapipe>=0.10
+rembg>=2.0
+pillow>=10.0
+
+# メッシュ処理（造形修復・印刷可能化）
+trimesh>=4.0
+numpy>=1.26
+# pymeshlab>=2023.12   # 高度な修復が必要なら
+
+# プリンタ連携（Bambu A1 mini, LANモード）
+bambulabs-api>=2.0
+
+# 生成バックエンドは選択制（必要なものだけ入れる）:
+# - higgsfield: このリポジトリでは MCP 経由のため追加依存なし
+# - triposr   : torch, transformers などが別途必要

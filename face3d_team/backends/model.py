@@ -41,12 +41,54 @@ class HiggsfieldBackend:
 
 
 class TripoSRBackend:
+    """ローカルの TripoSR を CPU/GPU で実行するバックエンド。
+
+    重みやリポジトリは同梱しない。環境変数で TripoSR の run.py を指す:
+        TRIPOSR_RUN   : TripoSR の run.py へのパス（必須）
+        TRIPOSR_PY    : 使う python（既定: sys.executable）
+        TRIPOSR_DEVICE: "cpu" or "cuda"（既定: cpu）
+
+    内蔵GPUのみのPCでは device=cpu で動く（1枚あたり数分かかる）。
+    セットアップは face3d_team/LOCAL_TRIPOSR.md を参照。
+    """
     name = "triposr"
 
     def image_to_3d(self, image_path: Path, out_path: Path) -> ModelResult:
-        # TODO: ローカル TripoSR 推論。GPU 推奨。
-        out_path.write_bytes(b"")
-        return ModelResult(path=out_path, meta={"engine": self.name})
+        import os
+        import subprocess
+        import sys
+
+        run_py = os.environ.get("TRIPOSR_RUN")
+        if not run_py or not Path(run_py).exists():
+            raise RuntimeError(
+                "TRIPOSR_RUN が未設定です。TripoSR の run.py を指してください "
+                "(face3d_team/LOCAL_TRIPOSR.md 参照)。"
+            )
+        python = os.environ.get("TRIPOSR_PY", sys.executable)
+        device = os.environ.get("TRIPOSR_DEVICE", "cpu")
+
+        out_dir = out_path.parent / "triposr"
+        out_dir.mkdir(parents=True, exist_ok=True)
+
+        cmd = [
+            python, run_py, str(image_path),
+            "--output-dir", str(out_dir),
+            "--device", device,
+            "--model-save-format", "obj",
+            "--no-remove-bg",   # 背景は FaceAnalyst で除去済み想定
+        ]
+        subprocess.run(cmd, check=True)
+
+        # TripoSR は <out_dir>/0/mesh.obj を生成する。GLB へ変換して out_path に。
+        produced = next(out_dir.glob("**/mesh.*"), None)
+        if produced is None:
+            raise RuntimeError(f"TripoSR の出力メッシュが見つかりません: {out_dir}")
+        try:
+            import trimesh
+            trimesh.load(produced).export(out_path)
+        except Exception:
+            out_path = produced  # 変換できなければ生成物をそのまま使う
+        return ModelResult(path=out_path, meta={"engine": self.name, "device": device})
 
 
 _BACKENDS: dict[str, type] = {

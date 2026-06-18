@@ -17,6 +17,13 @@ import json
 
 API_BASE = "https://api.pexels.com"
 
+# Cloudflare が Python標準のUser-Agentをブロック(error 1010)するため、
+# ブラウザ風のUser-Agentを付与する
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+)
+
 
 def get_api_key():
     key = os.environ.get("PEXELS_API_KEY")
@@ -31,7 +38,9 @@ def get_api_key():
 def api_get(path, params, api_key):
     """Pexels API に GET リクエストを送る"""
     url = f"{API_BASE}{path}?{urllib.parse.urlencode(params)}"
-    req = urllib.request.Request(url, headers={"Authorization": api_key})
+    req = urllib.request.Request(
+        url, headers={"Authorization": api_key, "User-Agent": USER_AGENT}
+    )
     try:
         with urllib.request.urlopen(req) as resp:
             return json.loads(resp.read().decode("utf-8"))
@@ -43,7 +52,9 @@ def api_get(path, params, api_key):
 def download_file(url, filepath):
     """URLからファイルをダウンロード"""
     print(f"  ダウンロード中: {filepath}")
-    urllib.request.urlretrieve(url, filepath)
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(req) as resp, open(filepath, "wb") as f:
+        f.write(resp.read())
 
 
 def search_photos(query, count, api_key, out_dir):

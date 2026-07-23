@@ -13,6 +13,7 @@ import argparse
 import datetime
 import os
 import sys
+from urllib.parse import urlparse, parse_qs
 
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -42,9 +43,24 @@ def get_credentials():
                     "Google Cloud Console で OAuth クライアント（デスクトップアプリ）を作成し、"
                     "ダウンロードしたJSONをこのファイル名で配置してください。"
                 )
-            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
-            # リダイレクト不要のコンソール認証フロー（サーバー環境向け）
-            creds = flow.run_console()
+            flow = InstalledAppFlow.from_client_secrets_file(
+                CLIENT_SECRET_FILE, SCOPES, redirect_uri="http://localhost"
+            )
+            auth_url, _ = flow.authorization_url(access_type="offline", prompt="consent")
+            print("\n以下のURLをブラウザで開いて認可してください:")
+            print(auth_url)
+            print(
+                "\n認可後、ブラウザは http://localhost/?code=... にリダイレクトされます"
+                "（ページ自体は読み込めなくてOKです）。"
+                "そのアドレスバーのURL全体、または code= の値をここに貼り付けてください:"
+            )
+            pasted = input("> ").strip()
+            if pasted.startswith("http"):
+                code = parse_qs(urlparse(pasted).query)["code"][0]
+            else:
+                code = pasted
+            flow.fetch_token(code=code)
+            creds = flow.credentials
         with open(TOKEN_FILE, "w") as f:
             f.write(creds.to_json())
 

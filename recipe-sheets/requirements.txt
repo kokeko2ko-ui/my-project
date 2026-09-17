@@ -1,0 +1,7 @@
+anthropic>=1.6.0
+pydantic>=2.0
+yt-dlp>=2026.1.1
+youtube-transcript-api>=1.2.0
+gspread>=6.0
+google-auth>=2.0
+openpyxl>=3.1

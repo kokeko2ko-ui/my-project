@@ -1,0 +1,5 @@
+# レシピ化したい料理動画の YouTube URL を 1行に1つ書いてください。
+# 「#」で始まる行と空行は無視されます。
+# このファイルを push すると GitHub Actions が自動で実行されます。
+
+https://www.youtube.com/watch?v=KD6uiB3LOYQ

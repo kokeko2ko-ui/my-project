@@ -45,6 +45,7 @@ jobs:
       - name: 1) YouTube からメタ情報と字幕を取得
         env:
           YT_COOKIES: ${{ secrets.YT_COOKIES }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: |
           FORCE=""
           if [ "${{ inputs.force }}" = "true" ]; then FORCE="--force"; fi
@@ -82,7 +83,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add recipe-sheets/data recipe-sheets/recipes
+          git add -A recipe-sheets
           if git diff --cached --quiet; then
             echo "変更なし"
           else

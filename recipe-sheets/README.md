@@ -49,10 +49,19 @@ GitHub リポジトリの **Settings → Secrets and variables → Actions → N
 Actions のアーティファクトとして出力されるので、それを Google ドライブにアップロードして
 スプレッドシートとして開くこともできます。
 
-### 3. （任意）YouTube に bot 判定されたとき
-GitHub Actions の IP からのアクセスが YouTube にブロックされることがあります。その場合は
-ブラウザ拡張（「Get cookies.txt LOCALLY」など）で YouTube の cookie を Netscape 形式で書き出し、
-中身を Secret `YT_COOKIES` に登録してください。
+### 3. YouTube 側の bot 判定への対策（**重要・どちらか必須**）
+
+GitHub Actions の IP からのアクセスは **YouTube にほぼ確実に bot 判定されます**
+（実際のログ: `Sign in to confirm you're not a bot` / `RequestBlocked`）。
+次のどちらか（両方ならより確実）を登録してください。
+
+| Secret 名 | 取れる情報 | 設定方法 |
+|---|---|---|
+| `YT_COOKIES` | タイトル・概要欄・チャプター・**字幕** すべて | ブラウザ拡張「Get cookies.txt LOCALLY」等で、YouTube にログインした状態の cookie を **Netscape 形式** で書き出し、ファイルの中身をそのまま登録。数週間〜数か月で失効するので、失敗し始めたら更新 |
+| `YOUTUBE_API_KEY` | タイトル・概要欄・長さ（字幕は不可） | Google Cloud Console → **APIとサービス → ライブラリ → YouTube Data API v3** を有効化 → **認証情報 → APIキーを作成**。無料枠で十分 |
+
+`YOUTUBE_API_KEY` だけの場合、字幕は取れませんが概要欄にレシピが書かれている動画なら
+そこからレシピ化できます。字幕まで使いたい場合は `YT_COOKIES` を登録してください。
 
 ## 使い方
 

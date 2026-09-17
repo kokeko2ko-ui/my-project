@@ -113,7 +113,10 @@ def main() -> int:
         print("data/ に動画データがありません。先に fetch_videos.py を実行してください。")
         return 0
 
-    client = anthropic.Anthropic()
+    try:
+        client = anthropic.Anthropic()
+    except anthropic.AnthropicError as e:
+        raise SystemExit(f"Anthropic クライアントを初期化できません（ANTHROPIC_API_KEY を確認）: {e}")
     errors = 0
     for path in data_files:
         out_path = RECIPES_DIR / path.name

@@ -51,6 +51,7 @@ jobs:
           python fetch_videos.py $FORCE "${{ inputs.urls }}"
 
       - name: 2) Claude でレシピに構造化
+        if: ${{ env.HAS_ANTHROPIC == 'true' }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
@@ -89,4 +90,5 @@ jobs:
             git push
           fi
     env:
+      HAS_ANTHROPIC: ${{ secrets.ANTHROPIC_API_KEY != '' }}
       HAS_GOOGLE: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON != '' }}

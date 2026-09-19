@@ -57,6 +57,48 @@ function scene(kind) {
       <line x1="300" y1="70" x2="300" y2="220" stroke="#2a3346" stroke-width="10"/>
       <line x1="200" y1="145" x2="400" y2="145" stroke="#2a3346" stroke-width="10"/></svg>`;
   }
+
+  if (kind === 'frost') {
+    // 霜のついたフロントガラスと、削って開けた視界
+    return `<svg viewBox="0 0 700 380" width="700" height="380"><defs>${glow}
+      <radialGradient id="clear" cx="50%" cy="52%" r="46%">
+        <stop offset="0" stop-color="#0a1322"/><stop offset="72%" stop-color="#0a1322"/>
+        <stop offset="100%" stop-color="#0a1322" stop-opacity="0"/></radialGradient>
+      <pattern id="fr" width="14" height="14" patternUnits="userSpaceOnUse">
+        <circle cx="3" cy="4" r="2.6" fill="#cfe4f5" opacity=".5"/>
+        <circle cx="10" cy="10" r="1.9" fill="#e8f3ff" opacity=".42"/>
+        <circle cx="12" cy="2" r="1.2" fill="#ffffff" opacity=".3"/></pattern></defs>
+      <rect x="20" y="20" width="660" height="340" rx="26" fill="#12202f"/>
+      <rect x="20" y="20" width="660" height="340" rx="26" fill="url(#fr)"/>
+      <ellipse cx="350" cy="198" rx="200" ry="124" fill="url(#clear)"/>
+      <g filter="url(#g)"><ellipse cx="350" cy="198" rx="200" ry="124" fill="none"
+         stroke="#9ec9ea" stroke-width="3" opacity=".55"/></g>
+      <g filter="url(#g)"><circle cx="452" cy="150" r="30" fill="#ffd79a" opacity=".85"/></g>
+      <rect x="20" y="20" width="660" height="340" rx="26" fill="none" stroke="#2b3a4d" stroke-width="7"/></svg>`;
+  }
+  if (kind === 'panel') {
+    // 給湯器のリモコン（日本語も実フォントで描ける）
+    return `<svg viewBox="0 0 620 340" width="620" height="340"><defs>${glow}</defs>
+      <rect x="110" y="40" width="400" height="260" rx="22" fill="#e9eef4" stroke="#aab6c4" stroke-width="6"/>
+      <rect x="140" y="72" width="340" height="112" rx="10" fill="#0e2a24"/>
+      <g filter="url(#g)">
+        <text x="310" y="132" text-anchor="middle" fill="#6effc4" font-size="44" font-weight="900"
+              font-family="'Noto Sans JP'">おふろ</text>
+        <text x="310" y="172" text-anchor="middle" fill="#6effc4" font-size="30" font-weight="900"
+              font-family="'Noto Sans JP'">41℃</text></g>
+      <g filter="url(#g)"><circle cx="196" cy="240" r="30" fill="#ff8a3c"/></g>
+      <circle cx="310" cy="240" r="26" fill="#c9d3de"/><circle cx="424" cy="240" r="26" fill="#c9d3de"/></svg>`;
+  }
+  if (kind === 'microwave') {
+    return `<svg viewBox="0 0 660 340" width="660" height="340"><defs>${glow}</defs>
+      <rect x="40" y="40" width="580" height="270" rx="16" fill="#151a22" stroke="#2c3644" stroke-width="7"/>
+      <rect x="70" y="72" width="380" height="206" rx="10" fill="#0c1016" stroke="#39465a" stroke-width="5"/>
+      <g filter="url(#g)"><rect x="82" y="84" width="356" height="182" rx="6" fill="#ffb347" opacity=".82"/></g>
+      <rect x="82" y="84" width="356" height="182" rx="6" fill="none" stroke="#5a6a80" stroke-width="3"/>
+      <circle cx="540" cy="120" r="30" fill="#222b38" stroke="#4a586c" stroke-width="5"/>
+      <rect x="500" y="190" width="80" height="16" rx="8" fill="#2a3442"/>
+      <rect x="500" y="222" width="80" height="16" rx="8" fill="#2a3442"/></svg>`;
+  }
   if (kind === 'tape') {
     return `<svg viewBox="0 0 600 340" width="600" height="340"><defs>${glow}</defs>
       <rect x="120" y="90" width="360" height="200" rx="10" fill="#1a2233" stroke="#39465e" stroke-width="6"/>

@@ -110,19 +110,25 @@ function scene(kind) {
 }
 
 function html(c) {
-  const bg = c.bg && fs.existsSync(c.bg)
-    ? `<div class="photo" style="background-image:url('file://${c.bg}')"></div>` : '';
+  // 背景画像は data URI で埋め込む（setContent では file:// が読めないため）
+  let bg = '';
+  if (c.bg && fs.existsSync(c.bg)) {
+    const ext = path.extname(c.bg).toLowerCase().replace('.', '') || 'png';
+    const mime = ext === 'jpg' ? 'jpeg' : ext;
+    const b64 = fs.readFileSync(c.bg).toString('base64');
+    bg = `<div class="photo" style="background-image:url('data:image/${mime};base64,${b64}')"></div>`;
+  }
   const top = (c.top || []).map(l => `<div class="tl">${esc(l)}</div>`).join('');
   const bot = c.bottom ? `<div class="bot"><span>${esc(c.bottom)}</span></div>` : '';
   const ts = c.topSize || 56, bs = c.bottomSize || 56;
   return `<!doctype html><html><head><meta charset="utf-8"><style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:1280px;height:720px;overflow:hidden}
-body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative}
+body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;--bgb:${c.bgBright||0.45}}
 .sky{position:absolute;inset:0;background:
   radial-gradient(140% 95% at 50% 62%, #243252 0%, #111a30 38%, #060a14 72%, #03050a 100%)}
 .photo{position:absolute;inset:0;background-size:cover;background-position:center;
-  filter:brightness(.45) saturate(.9)}
+  filter:brightness(var(--bgb,.45)) saturate(.9)}
 .hood{position:absolute;left:-8%;right:-8%;bottom:-150px;height:320px;border-radius:50% 50% 0 0;
   background:linear-gradient(#070c16,#03050a);box-shadow:0 -30px 70px rgba(0,0,0,.8)}
 .vig{position:absolute;inset:0;background:
@@ -139,7 +145,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative}
   -webkit-text-stroke:13px #000;paint-order:stroke fill;
   text-shadow:0 0 34px rgba(255,45,45,.55),0 5px 20px rgba(0,0,0,.95)}
 </style></head><body>
-<div class="sky"></div>${bg}<div class="hood"></div>
+${c.bg ? '' : '<div class="sky"></div>'}${bg}${c.bg ? '' : '<div class="hood"></div>'}
 <div class="mid">${scene(c.scene)}</div>
 <div class="vig"></div>
 <div class="top">${top}</div>${bot}

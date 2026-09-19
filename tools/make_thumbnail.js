@@ -108,6 +108,11 @@ html,body{width:1280px;height:720px;overflow:hidden}
 body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;--bgb:${c.bgBright||0.45}}
 .sky{position:absolute;inset:0;background:radial-gradient(140% 95% at 50% 62%,#243252 0%,#111a30 38%,#060a14 72%,#03050a 100%)}
 .photo{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(var(--bgb)) saturate(.95)}
+.spot{position:absolute;inset:0;background:radial-gradient(38% 52% at ${c.spotX||'26%'} ${c.spotY||'58%'},
+  rgba(255,190,90,.30) 0%, rgba(255,150,60,.10) 42%, rgba(0,0,0,0) 72%);
+  mix-blend-mode:screen;z-index:2}
+.dark{position:absolute;inset:0;background:radial-gradient(62% 72% at ${c.spotX||'26%'} ${c.spotY||'58%'},
+  rgba(0,0,0,0) 30%, rgba(0,0,0,.55) 72%, rgba(0,0,0,.88) 100%);z-index:3}
 .shade{position:absolute;inset:0;background:
   linear-gradient(180deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.35) 26%,rgba(0,0,0,0) 44%,
   rgba(0,0,0,.45) 74%,rgba(0,0,0,.9) 100%)}
@@ -138,14 +143,14 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
 .main{font-weight:900;font-size:${c.mainSize||132}px;line-height:1.02;color:${c.mainColor||'#ffe23d'};
   letter-spacing:-4px;-webkit-text-stroke:22px #000;paint-order:stroke fill;
   filter:drop-shadow(0 8px 22px rgba(0,0,0,1))}
-.foot{font-weight:900;font-size:${c.footSize||46}px;color:#fff;letter-spacing:-1.5px;
+.foot{font-weight:900;font-size:${c.footSize||46}px;color:${c.footColor||'#fff'};letter-spacing:-1.5px;
   -webkit-text-stroke:12px #000;paint-order:stroke fill;
   filter:drop-shadow(0 4px 12px rgba(0,0,0,.95))}
 .glowline{position:absolute;left:50%;transform:translateX(-50%);bottom:132px;width:560px;height:5px;
   background:linear-gradient(90deg,transparent,#ff3b3b,transparent);opacity:.75;z-index:8}
 </style></head><body>
 ${c.bg ? '' : '<div class="sky"></div>'}${bg}
-<div class="mid">${scene(c.scene)}</div>
+<div class="spot"></div><div class="dark"></div><div class="mid">${scene(c.scene)}</div>
 <div class="shade"></div>
 ${c.main ? heroBlock(c) : `<div class="band-t"></div>${bot ? '<div class="band-b"></div>' : ''}
 <div class="topwrap">${top}</div>

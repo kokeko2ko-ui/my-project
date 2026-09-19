@@ -26,8 +26,9 @@ if (!CHROME) { console.error('Chromium が見つかりません'); process.exit(
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
 /* [語] を黄色に。戻り値はHTML */
-const mark = (s, hi) => esc(s).replace(/\[([^\]]+)\]/g,
-  `<em style="color:${hi};font-style:normal">$1</em>`);
+const mark = (s, hi) => esc(s)
+  .replace(/\[([^\]]+)\]/g, `<em style="color:${hi};font-style:normal">$1</em>`)
+  .replace(/\\n|\n/g, '<br>');
 
 /* 黒→白→本体 の三層縁取り */
 function layered(text, cls, hi) {
@@ -82,6 +83,14 @@ function scene(kind) {
   return '';
 }
 
+function heroBlock(c) {
+  const hi = c.highlight || '#ffe23d';
+  const sub  = c.sub  ? `<div class="sub">${mark(c.sub, hi)}</div>` : '';
+  const main = c.main ? `<div class="main">${mark(c.main, hi)}</div>` : '';
+  const foot = c.foot ? `<div class="foot">${mark(c.foot, '#ffe23d')}</div>` : '';
+  return `<div class="hero ${c.align === 'right' ? 'hr' : ''}"><div class="col">${sub}${main}${foot}</div></div>`;
+}
+
 function html(c) {
   let bg = '';
   if (c.bg && fs.existsSync(c.bg)) {
@@ -118,15 +127,29 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
   background:linear-gradient(180deg,rgba(0,0,0,.78) 0%,rgba(0,0,0,.6) 62%,rgba(0,0,0,0) 100%);z-index:7}
 .band-b{position:absolute;left:0;right:0;bottom:0;height:${bs*1.22+72}px;
   background:linear-gradient(0deg,rgba(0,0,0,.86) 0%,rgba(0,0,0,.62) 58%,rgba(0,0,0,0) 100%);z-index:7}
+.hero{position:absolute;z-index:9;left:0;right:0;top:0;bottom:0;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  text-align:center;padding:0 40px;gap:10px}
+.hero.hr{align-items:flex-end;text-align:right;padding-right:48px}
+.hero .col{max-width:${c.textWidth||'100%'}}
+.sub{font-weight:900;font-size:${c.subSize||40}px;color:#fff;letter-spacing:-1px;
+  -webkit-text-stroke:10px #000;paint-order:stroke fill;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.95))}
+.main{font-weight:900;font-size:${c.mainSize||132}px;line-height:1.02;color:${c.mainColor||'#ffe23d'};
+  letter-spacing:-4px;-webkit-text-stroke:22px #000;paint-order:stroke fill;
+  filter:drop-shadow(0 8px 22px rgba(0,0,0,1))}
+.foot{font-weight:900;font-size:${c.footSize||46}px;color:#fff;letter-spacing:-1.5px;
+  -webkit-text-stroke:12px #000;paint-order:stroke fill;
+  filter:drop-shadow(0 4px 12px rgba(0,0,0,.95))}
 .glowline{position:absolute;left:50%;transform:translateX(-50%);bottom:132px;width:560px;height:5px;
   background:linear-gradient(90deg,transparent,#ff3b3b,transparent);opacity:.75;z-index:8}
 </style></head><body>
 ${c.bg ? '' : '<div class="sky"></div>'}${bg}
 <div class="mid">${scene(c.scene)}</div>
 <div class="shade"></div>
-<div class="band-t"></div>${bot ? '<div class="band-b"></div>' : ''}
+${c.main ? heroBlock(c) : `<div class="band-t"></div>${bot ? '<div class="band-b"></div>' : ''}
 <div class="topwrap">${top}</div>
-${bot ? `<div class="glowline"></div><div class="botwrap">${bot}</div>` : ''}
+${bot ? `<div class="glowline"></div><div class="botwrap">${bot}</div>` : ''}`}
 </body></html>`;
 }
 

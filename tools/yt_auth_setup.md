@@ -76,12 +76,16 @@ YT_ACCESS_TOKEN=ya29.xxxx python3 tools/yt_analyze.py
 2. 右上の **エクスポート（↓アイコン）** →「カンマ区切り値（.csv）」
 3. ダウンロードされたZIPを解凍して、中の CSV をチャットに添付
 
-実行：
+実行（**CSVだけで完結します。APIキーもトークンも不要**）：
 ```bash
-YT_STUDIO_CSV=/path/to/表.csv python3 tools/yt_analyze.py
+YT_STUDIO_CSV=/path/to/表データ.csv python3 tools/yt_analyze.py
 ```
 
-方法AまたはBと併用すると、1枚の表にCTRと維持率が並びます。
+CSV単体で出るもの：再生数・平均視聴時間・インプレッション数・**CTR**・高評価・型別サマリー
+CSV単体では出ないもの：維持率カーブ（5%/10%/25%地点）・流入元の内訳・コメント数
+
+→ 維持率と流入元まで見たい場合のみ、方法AまたはBを併用してください。
+  併用すると1枚の表にCTRと維持率が並びます。
 
 ---
 

@@ -53,7 +53,7 @@ OUT = os.environ.get("YT_OUT", "/mnt/user-data/outputs/yt_report.md")
 
 # バズ基準（離婚届×レンジ）に照らした簡易タグ付け
 TYPE_RULES = [
-    ("夫婦×危機", ["離婚", "別居", "夫が", "妻が", "夫婦"]),
+    ("夫婦×危機", ["離婚", "別居", "夫婦", "夫", "妻", "旦那", "嫁"]),
     ("親子", ["父", "母", "息子", "娘", "親"]),
     ("職業/他者", ["医", "看護", "介護", "保育", "教師", "先生", "職人", "師", "運転手", "店"]),
     ("死別/遺品", ["亡き", "遺", "最後", "葬", "死"]),
@@ -98,7 +98,9 @@ def _get(url, params, use_token=False):
     elif TOKEN:
         headers["Authorization"] = f"Bearer {TOKEN}"
     else:
-        raise RuntimeError("YT_API_KEY か YT_ACCESS_TOKEN を設定してください")
+        raise RuntimeError(
+            "YT_API_KEY / YT_ACCESS_TOKEN / (YT_CLIENT_ID+YT_CLIENT_SECRET+YT_REFRESH_TOKEN) "
+            "のいずれか、または YT_STUDIO_CSV を設定してください。詳細: tools/yt_auth_setup.md")
     full = url + "?" + urllib.parse.urlencode(q, doseq=True)
     req = urllib.request.Request(full, headers=headers)
     try:
@@ -175,6 +177,56 @@ def analytics_for(video):
     return out
 
 
+# Studio CSV の列名ゆらぎ吸収（日本語/英語・表記ゆれ・年度による変更に耐える）
+CSV_COLS = {
+    "id":       ["コンテンツ", "動画", "Content", "Video"],
+    "title":    ["動画のタイトル", "タイトル", "Video title", "Title"],
+    "published":["動画の公開時刻", "公開日", "Video publish time", "Publish time"],
+    "views":    ["視聴回数", "Views"],
+    "impressions": ["インプレッション数", "Impressions"],
+    "ctr":      ["インプレッションのクリック率 (%)", "インプレッションのクリック率（%）",
+                 "Impressions click-through rate (%)"],
+    "avg_dur":  ["平均視聴時間", "Average view duration"],
+    "watch_hours": ["総再生時間（時間）", "総再生時間 (時間)", "Watch time (hours)"],
+    "subs":     ["チャンネル登録者", "登録者", "Subscribers"],
+    "likes":    ["高評価数", "高評価", "Likes"],
+}
+
+
+def _pick(row, keys):
+    """列名のゆらぎを吸収して値を取り出す（完全一致→前方一致の順）"""
+    for k in keys:
+        if k in row and row[k] not in (None, ""):
+            return row[k].strip()
+    for k in keys:
+        for actual in row:
+            if actual and actual.strip().startswith(k):
+                v = row[actual]
+                if v not in (None, ""):
+                    return v.strip()
+    return ""
+
+
+def _to_int(v):
+    try:
+        return int(float(str(v).replace(",", "").strip()))
+    except (ValueError, AttributeError):
+        return 0
+
+
+def _dur_to_sec(v):
+    """'0:04:12' や '4:12' を秒に。空なら ''"""
+    v = (v or "").strip()
+    if not v or ":" not in v:
+        return ""
+    parts = [int(x) for x in v.split(":") if x.isdigit()]
+    if len(parts) == 3:
+        return parts[0] * 3600 + parts[1] * 60 + parts[2]
+    if len(parts) == 2:
+        return parts[0] * 60 + parts[1]
+    return ""
+
+
 def load_studio_csv(path):
     """Studio「コンテンツ」エクスポートCSV（列名は日本語/英語どちらでも）"""
     rows = {}
@@ -182,11 +234,40 @@ def load_studio_csv(path):
         return rows
     with open(path, encoding="utf-8-sig", newline="") as f:
         for r in csv.DictReader(f):
-            keyid = r.get("コンテンツ") or r.get("Content") or r.get("動画") or r.get("Video") or ""
-            imp = r.get("インプレッション数") or r.get("Impressions") or ""
-            ctr = r.get("インプレッションのクリック率 (%)") or r.get("Impressions click-through rate (%)") or ""
-            rows[keyid.strip()] = {"impressions": imp, "ctr": ctr}
+            keyid = _pick(r, CSV_COLS["id"])
+            if not keyid or keyid in ("合計", "Total"):
+                continue
+            rows[keyid] = {
+                "impressions": _pick(r, CSV_COLS["impressions"]),
+                "ctr": _pick(r, CSV_COLS["ctr"]),
+                "csv_title": _pick(r, CSV_COLS["title"]),
+                "csv_published": _pick(r, CSV_COLS["published"])[:10],
+                "csv_views": _to_int(_pick(r, CSV_COLS["views"])),
+                "csv_avg_dur": _dur_to_sec(_pick(r, CSV_COLS["avg_dur"])),
+                "csv_watch_hours": _pick(r, CSV_COLS["watch_hours"]),
+                "csv_subs": _pick(r, CSV_COLS["subs"]),
+                "csv_likes": _to_int(_pick(r, CSV_COLS["likes"])),
+            }
     return rows
+
+
+def videos_from_csv(studio):
+    """APIキーもトークンも無いとき、CSV だけで動画一覧を組み立てる（認証不要モード）"""
+    videos = []
+    for vid, d in studio.items():
+        videos.append({
+            "id": vid,
+            "title": d.get("csv_title") or vid,
+            "published": d.get("csv_published", ""),
+            "duration": "",
+            "views": d.get("csv_views", 0),
+            "likes": d.get("csv_likes", 0),
+            "comments": 0,
+            "averageViewDuration": d.get("csv_avg_dur", ""),
+            "impressions": d.get("impressions", ""),
+            "ctr": d.get("ctr", ""),
+        })
+    return videos
 
 
 def tag_type(title):
@@ -210,16 +291,27 @@ def main():
     global TOKEN
     if not TOKEN and CLIENT_ID and CLIENT_SECRET and REFRESH_TOKEN:
         TOKEN = refresh_access_token()
-    ch_stats, videos = list_videos()
     studio = load_studio_csv(STUDIO_CSV)
+    csv_only = not TOKEN and not API_KEY and bool(studio)
+    if csv_only:
+        print(f"[info] 認証なしモード: Studio CSV の {len(studio)} 本だけで集計します",
+              file=sys.stderr)
+        ch_stats, videos = {}, videos_from_csv(studio)
+    else:
+        ch_stats, videos = list_videos()
     has_token = bool(TOKEN)
-    if not has_token:
+    if not has_token and not csv_only:
         print("[info] トークン未設定のため公開データのみ取得します"
               "（平均視聴時間・維持率・流入元は出ません）", file=sys.stderr)
+    if csv_only:
+        print("[info] 維持率カーブと流入元は Studio CSV に含まれないため出ません",
+              file=sys.stderr)
     for v in videos:
         v["type"] = tag_type(v["title"])
-        v["min"] = iso_dur_to_min(v["duration"])
-        v.update(studio.get(v["id"], {}))
+        v["min"] = iso_dur_to_min(v["duration"]) if v.get("duration") else ""
+        for k, val in studio.get(v["id"], {}).items():
+            if not k.startswith("csv_"):
+                v[k] = val
         if has_token:
             try:
                 v.update(analytics_for(v))
@@ -236,6 +328,9 @@ def main():
     if has_token:
         head += " 平均視聴(秒) | 視聴率% | 維持5% | 維持10% | 維持25% | 登録増 | 流入元 |"
         sep += "---|---|---|---|---|---|---|"
+    if csv_only:
+        head += " 平均視聴(秒) |"
+        sep += "---|"
     if studio:
         head += " インプ | CTR% |"
         sep += "---|---|"
@@ -249,6 +344,8 @@ def main():
             row += [str(v.get("averageViewDuration", "")), str(v.get("averageViewPercentage", "")),
                     str(v.get("retain_5pct", "")), str(v.get("retain_10pct", "")), str(v.get("retain_25pct", "")),
                     str(v.get("subscribersGained", "")), v.get("traffic", v.get("analytics_error", ""))]
+        if csv_only:
+            row += [str(v.get("averageViewDuration", ""))]
         if studio:
             row += [str(v.get("impressions", "")), str(v.get("ctr", ""))]
         row.append(v["title"].replace("|", "｜"))

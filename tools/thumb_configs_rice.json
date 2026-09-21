@@ -1,0 +1,19 @@
+{
+  "out": "/mnt/user-data/outputs/thumb_45_rice_A.png",
+  "scene": "rice",
+  "scenePos": "right",
+  "sceneScale": 1.05,
+  "sceneY": 175,
+  "spotX": "76%",
+  "spotY": "58%",
+  "sub": "来るたび、[炊飯器]を見ていた",
+  "main": "14歳が\n[玄関で泣いた]",
+  "foot": "その理由に、言葉を失った",
+  "footColor": "#ff4b4b",
+  "align": "left",
+  "mainSize": 106,
+  "textWidth": "56%",
+  "scenePad": 20,
+  "subSize": 37,
+  "footSize": 44
+}

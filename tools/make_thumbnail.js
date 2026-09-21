@@ -9,8 +9,10 @@
  *   "bottom":"私は、[浮気]を疑っていた",
  *   "bg":"/path/photo.webp",   // 任意。写真背景（data URIで埋め込む）
  *   "bgBright":0.8,            // 背景の明るさ
- *   "scene":"gauge|panel|microwave|tape|window|frost|none",
- *   "topSize":68, "bottomSize":66 }
+ *   "scene":"gauge|panel|microwave|tape|rice|window|frost|none",
+ *   "topSize":68, "bottomSize":66,
+ *   "scenePos":"left|right|center", "sceneScale":1.0, "sceneY":210,
+ *   "align":"left|right|center", "textWidth":"58%" }
  *
  * [ ] で囲んだ語は黄色ハイライト。日本語は Noto Sans JP Black(900) 実描画。
  * 縁取りは 黒(外) → 白(中) → 本体 の三層で、日本のサムネ定番の見え方にする。
@@ -73,6 +75,36 @@ function scene(kind) {
       <rect x="500" y="190" width="80" height="16" rx="8" fill="#2a3442"/>
       <rect x="500" y="222" width="80" height="16" rx="8" fill="#2a3442"/></svg>`;
   }
+  if (kind === 'rice') {
+    // 炊飯器：金属質のグラデ＋反射＋「保温」のオレンジ点灯＋湯気
+    const steam = (x, o) => `<path d="M${x} 88 c-13 -20 13 -32 0 -52 c-13 -20 13 -28 0 -48"
+        fill="none" stroke="#e3ecf6" stroke-width="7" stroke-linecap="round" opacity="${o}"/>`;
+    return `<svg viewBox="0 0 620 340" width="620" height="340"><defs>${glow}
+      <linearGradient id="bodyG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#f4f8fc"/><stop offset=".42" stop-color="#cfd9e5"/>
+        <stop offset=".72" stop-color="#8f9dae"/><stop offset="1" stop-color="#5d6a7b"/></linearGradient>
+      <linearGradient id="lidG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#dde5ee"/>
+        <stop offset="1" stop-color="#9aa7b7"/></linearGradient>
+      <linearGradient id="shine" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+        <stop offset=".5" stop-color="#fff" stop-opacity=".55"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+      <g filter="url(#g)">${steam(252, '.62')}${steam(318, '.44')}${steam(384, '.56')}</g>
+      <ellipse cx="312" cy="298" rx="188" ry="17" fill="#000" opacity=".6"/>
+      <rect x="146" y="152" width="332" height="136" rx="24" fill="url(#bodyG)"/>
+      <rect x="146" y="152" width="332" height="136" rx="24" fill="none" stroke="#39445270" stroke-width="3"/>
+      <rect x="168" y="166" width="288" height="12" rx="6" fill="url(#shine)"/>
+      <rect x="132" y="114" width="360" height="50" rx="21" fill="url(#lidG)"/>
+      <rect x="132" y="114" width="360" height="50" rx="21" fill="none" stroke="#39445270" stroke-width="3"/>
+      <rect x="286" y="98" width="50" height="22" rx="10" fill="#b9c5d2" stroke="#7d8b9b" stroke-width="4"/>
+      <rect x="180" y="198" width="146" height="58" rx="9" fill="#0d131c"/>
+      <rect x="180" y="198" width="146" height="58" rx="9" fill="none" stroke="#4a5768" stroke-width="3"/>
+      <g filter="url(#g)"><circle cx="410" cy="210" r="17" fill="#ffa233"/>
+        <circle cx="410" cy="210" r="7" fill="#fff2d8"/></g>
+      <text x="410" y="262" text-anchor="middle" fill="#ffc271" font-size="28" font-weight="900"
+        font-family="'Noto Sans JP'">保温</text></svg>`;
+  }
   if (kind === 'tape') {
     return `<svg viewBox="0 0 600 340" width="600" height="340"><defs>${glow}</defs>
       <rect x="120" y="90" width="360" height="200" rx="10" fill="#1a2233" stroke="#39465e" stroke-width="6"/>
@@ -88,7 +120,8 @@ function heroBlock(c) {
   const sub  = c.sub  ? `<div class="sub">${mark(c.sub, hi)}</div>` : '';
   const main = c.main ? `<div class="main">${mark(c.main, hi)}</div>` : '';
   const foot = c.foot ? `<div class="foot">${mark(c.foot, '#ffe23d')}</div>` : '';
-  return `<div class="hero ${c.align === 'right' ? 'hr' : ''}"><div class="col">${sub}${main}${foot}</div></div>`;
+  const al = c.align === 'right' ? 'hr' : (c.align === 'left' ? 'hl' : '');
+  return `<div class="hero ${al}"><div class="col">${sub}${main}${foot}</div></div>`;
 }
 
 function html(c) {
@@ -116,7 +149,11 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
 .shade{position:absolute;inset:0;background:
   linear-gradient(180deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.35) 26%,rgba(0,0,0,0) 44%,
   rgba(0,0,0,.45) 74%,rgba(0,0,0,.9) 100%)}
-.mid{position:absolute;left:0;right:0;top:210px;height:300px;display:flex;align-items:center;justify-content:center}
+.mid{position:absolute;left:0;right:0;top:${c.sceneY||210}px;height:300px;z-index:4;
+  display:flex;align-items:center;justify-content:${c.scenePos==='right'?'flex-end':
+  (c.scenePos==='left'?'flex-start':'center')};padding:0 ${c.scenePad||40}px;
+  transform:scale(${c.sceneScale||1});transform-origin:${c.scenePos==='right'?'right':
+  (c.scenePos==='left'?'left':'center')} center}
 .topwrap{position:absolute;left:0;right:0;top:20px;padding:0 26px;text-align:center;z-index:9}
 .botwrap{position:absolute;left:0;right:0;bottom:22px;padding:0 26px;text-align:center;z-index:9}
 /* 単層の太縁取り（日本語は二重縁取りだと漢字が潰れるため） */
@@ -136,6 +173,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
   display:flex;flex-direction:column;justify-content:center;align-items:center;
   text-align:center;padding:0 40px;gap:10px}
 .hero.hr{align-items:flex-end;text-align:right;padding-right:48px}
+.hero.hl{align-items:flex-start;text-align:left;padding-left:52px}
 .hero .col{max-width:${c.textWidth||'100%'}}
 .sub{font-weight:900;font-size:${c.subSize||40}px;color:#fff;letter-spacing:-1px;
   -webkit-text-stroke:10px #000;paint-order:stroke fill;

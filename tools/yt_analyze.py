@@ -7,8 +7,16 @@ YouTube チャンネル分析ツール（感動系チャンネル用・標準ラ
   YT_API_KEY=xxxx python3 tools/yt_analyze.py
 
   # 2) 非公開の分析データ（平均視聴時間・視聴率・30秒維持率・流入元・登録者増）:
-  #    チャンネル所有者の OAuth アクセストークン（scope: yt-analytics.readonly, youtube.readonly）
+  #    【推奨】リフレッシュトークン方式。一度発行すれば期限切れなしで使い回せる。
+  YT_CLIENT_ID=xxx.apps.googleusercontent.com \
+  YT_CLIENT_SECRET=GOCSPX-xxxx \
+  YT_REFRESH_TOKEN=1//xxxx \
+  python3 tools/yt_analyze.py
+
+  #    【簡易】アクセストークン直指定。約1時間で失効するので毎回貼り直しが必要。
   YT_ACCESS_TOKEN=ya29.xxxx python3 tools/yt_analyze.py
+
+  #    リフレッシュトークンの取り方は tools/yt_auth_setup.md を参照。
 
   # 3) Studio からエクスポートした CSV（インプレッション・クリック率）を突き合わせる
   YT_ACCESS_TOKEN=... YT_STUDIO_CSV=/path/to/export.csv python3 tools/yt_analyze.py
@@ -36,6 +44,9 @@ ANALYTICS = "https://youtubeanalytics.googleapis.com/v2/reports"
 CHANNEL_ID = os.environ.get("YT_CHANNEL_ID", "UCTHT3Lm2X7bO-IphKqgvn3Q")
 API_KEY = os.environ.get("YT_API_KEY", "").strip()
 TOKEN = os.environ.get("YT_ACCESS_TOKEN", "").strip()
+CLIENT_ID = os.environ.get("YT_CLIENT_ID", "").strip()
+CLIENT_SECRET = os.environ.get("YT_CLIENT_SECRET", "").strip()
+REFRESH_TOKEN = os.environ.get("YT_REFRESH_TOKEN", "").strip()
 STUDIO_CSV = os.environ.get("YT_STUDIO_CSV", "").strip()
 MAX_VIDEOS = int(os.environ.get("YT_MAX", "50"))
 OUT = os.environ.get("YT_OUT", "/mnt/user-data/outputs/yt_report.md")
@@ -47,6 +58,32 @@ TYPE_RULES = [
     ("職業/他者", ["医", "看護", "介護", "保育", "教師", "先生", "職人", "師", "運転手", "店"]),
     ("死別/遺品", ["亡き", "遺", "最後", "葬", "死"]),
 ]
+
+
+def refresh_access_token():
+    """リフレッシュトークンから有効なアクセストークンを取り直す（期限切れの心配なし）"""
+    body = urllib.parse.urlencode({
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "refresh_token": REFRESH_TOKEN,
+        "grant_type": "refresh_token",
+    }).encode()
+    req = urllib.request.Request("https://oauth2.googleapis.com/token", data=body,
+                                 headers={"Content-Type": "application/x-www-form-urlencoded"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            tok = json.loads(r.read().decode("utf-8")).get("access_token", "")
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", "replace")[:300]
+        raise RuntimeError(
+            "リフレッシュトークンからアクセストークンを取得できませんでした。\n"
+            "YT_CLIENT_ID / YT_CLIENT_SECRET / YT_REFRESH_TOKEN を確認してください。\n"
+            f"Google の応答: {detail}"
+        ) from None
+    if not tok:
+        raise RuntimeError("アクセストークンが返りませんでした")
+    print("[auth] リフレッシュトークンからアクセストークンを再発行しました", file=sys.stderr)
+    return tok
 
 
 def _get(url, params, use_token=False):
@@ -170,9 +207,15 @@ def iso_dur_to_min(s):
 
 
 def main():
+    global TOKEN
+    if not TOKEN and CLIENT_ID and CLIENT_SECRET and REFRESH_TOKEN:
+        TOKEN = refresh_access_token()
     ch_stats, videos = list_videos()
     studio = load_studio_csv(STUDIO_CSV)
     has_token = bool(TOKEN)
+    if not has_token:
+        print("[info] トークン未設定のため公開データのみ取得します"
+              "（平均視聴時間・維持率・流入元は出ません）", file=sys.stderr)
     for v in videos:
         v["type"] = tag_type(v["title"])
         v["min"] = iso_dur_to_min(v["duration"])

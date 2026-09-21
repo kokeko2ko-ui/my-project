@@ -12,7 +12,10 @@
  *   "scene":"gauge|panel|microwave|tape|rice|window|frost|none",
  *   "topSize":68, "bottomSize":66,
  *   "scenePos":"left|right|center", "sceneScale":1.0, "sceneY":210,
- *   "align":"left|right|center", "textWidth":"58%" }
+ *   "align":"left|right|center", "textWidth":"58%",
+ *   "vignette":0-1, "shade":0-1, "spot":0-1,  // 既に暗い写真では下げる
+ *   "scrim":0-1, "scrimSide":"left|right",     // 文字側だけ落として可読性を上げる
+ *   "lamp":0-1, "lampX":"68%", "lampY":"71%", "lampSize":260 }
  *
  * [ ] で囲んだ語は黄色ハイライト。日本語は Noto Sans JP Black(900) 実描画。
  * 縁取りは 黒(外) → 白(中) → 本体 の三層で、日本のサムネ定番の見え方にする。
@@ -142,13 +145,23 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
 .sky{position:absolute;inset:0;background:radial-gradient(140% 95% at 50% 62%,#243252 0%,#111a30 38%,#060a14 72%,#03050a 100%)}
 .photo{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(var(--bgb)) saturate(.95)}
 .spot{position:absolute;inset:0;background:radial-gradient(38% 52% at ${c.spotX||'26%'} ${c.spotY||'58%'},
-  rgba(255,190,90,.30) 0%, rgba(255,150,60,.10) 42%, rgba(0,0,0,0) 72%);
+  rgba(255,190,90,${(c.spot??1)*0.30}) 0%, rgba(255,150,60,${(c.spot??1)*0.10}) 42%, rgba(0,0,0,0) 72%);
   mix-blend-mode:screen;z-index:2}
 .dark{position:absolute;inset:0;background:radial-gradient(62% 72% at ${c.spotX||'26%'} ${c.spotY||'58%'},
-  rgba(0,0,0,0) 30%, rgba(0,0,0,.55) 72%, rgba(0,0,0,.88) 100%);z-index:3}
-.shade{position:absolute;inset:0;background:
-  linear-gradient(180deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.35) 26%,rgba(0,0,0,0) 44%,
-  rgba(0,0,0,.45) 74%,rgba(0,0,0,.9) 100%)}
+  rgba(0,0,0,0) 30%, rgba(0,0,0,${(c.vignette??1)*0.55}) 72%, rgba(0,0,0,${(c.vignette??1)*0.88}) 100%);z-index:3}
+/* 文字側だけを落とす横スクリム（写真の上で文字を読ませる） */
+.scrim{position:absolute;inset:0;z-index:5;background:linear-gradient(
+  ${c.scrimSide==='right'?'270deg':'90deg'},
+  rgba(0,0,0,${c.scrim??0}) 0%, rgba(0,0,0,${(c.scrim??0)*0.82}) 34%,
+  rgba(0,0,0,${(c.scrim??0)*0.35}) 58%, rgba(0,0,0,0) 78%)}
+/* 光点の強調（保温ランプ等） */
+.lamp{position:absolute;z-index:4;left:${c.lampX||'50%'};top:${c.lampY||'50%'};
+  width:${c.lampSize||260}px;height:${c.lampSize||260}px;transform:translate(-50%,-50%);
+  border-radius:50%;mix-blend-mode:screen;background:radial-gradient(circle,
+  rgba(255,150,40,${c.lamp??0}) 0%, rgba(255,120,30,${(c.lamp??0)*0.45}) 26%, rgba(0,0,0,0) 62%)}
+.shade{position:absolute;inset:0;z-index:5;background:
+  linear-gradient(180deg,rgba(0,0,0,${(c.shade??1)*0.82}) 0%,rgba(0,0,0,${(c.shade??1)*0.35}) 26%,
+  rgba(0,0,0,0) 44%,rgba(0,0,0,${(c.shade??1)*0.45}) 74%,rgba(0,0,0,${(c.shade??1)*0.9}) 100%)}
 .mid{position:absolute;left:0;right:0;top:${c.sceneY||210}px;height:300px;z-index:4;
   display:flex;align-items:center;justify-content:${c.scenePos==='right'?'flex-end':
   (c.scenePos==='left'?'flex-start':'center')};padding:0 ${c.scenePad||40}px;
@@ -188,8 +201,9 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
   background:linear-gradient(90deg,transparent,#ff3b3b,transparent);opacity:.75;z-index:8}
 </style></head><body>
 ${c.bg ? '' : '<div class="sky"></div>'}${bg}
-<div class="spot"></div><div class="dark"></div><div class="mid">${scene(c.scene)}</div>
-<div class="shade"></div>
+<div class="spot"></div><div class="dark"></div>${c.lamp ? '<div class="lamp"></div>' : ''}
+<div class="mid">${scene(c.scene)}</div>
+${c.scrim ? '<div class="scrim"></div>' : ''}<div class="shade"></div>
 ${c.main ? heroBlock(c) : `<div class="band-t"></div>${bot ? '<div class="band-b"></div>' : ''}
 <div class="topwrap">${top}</div>
 ${bot ? `<div class="glowline"></div><div class="botwrap">${bot}</div>` : ''}`}

@@ -181,15 +181,19 @@ def analytics_for(video):
 CSV_COLS = {
     "id":       ["コンテンツ", "動画", "Content", "Video"],
     "title":    ["動画のタイトル", "タイトル", "Video title", "Title"],
-    "published":["動画の公開時刻", "公開日", "Video publish time", "Publish time"],
+    "published":["動画公開時刻", "動画の公開時刻", "公開日", "Video publish time", "Publish time"],
     "views":    ["視聴回数", "Views"],
-    "impressions": ["インプレッション数", "Impressions"],
-    "ctr":      ["インプレッションのクリック率 (%)", "インプレッションのクリック率（%）",
+    # Studio の実エクスポートは「サムネイルの〜」表記（2026年時点）
+    "impressions": ["サムネイルのインプレッション", "インプレッション数", "Impressions"],
+    "ctr":      ["サムネイルのクリック率 (%)", "サムネイルのクリック率（%）",
+                 "インプレッションのクリック率 (%)", "インプレッションのクリック率（%）",
                  "Impressions click-through rate (%)"],
     "avg_dur":  ["平均視聴時間", "Average view duration"],
-    "watch_hours": ["総再生時間（時間）", "総再生時間 (時間)", "Watch time (hours)"],
+    "watch_hours": ["総再生時間（単位: 時間）", "総再生時間（時間）", "総再生時間 (時間)",
+                    "Watch time (hours)"],
     "subs":     ["チャンネル登録者", "登録者", "Subscribers"],
     "likes":    ["高評価数", "高評価", "Likes"],
+    "length":   ["長さ", "Duration"],
 }
 
 
@@ -245,6 +249,7 @@ def load_studio_csv(path):
                 "csv_views": _to_int(_pick(r, CSV_COLS["views"])),
                 "csv_avg_dur": _dur_to_sec(_pick(r, CSV_COLS["avg_dur"])),
                 "csv_watch_hours": _pick(r, CSV_COLS["watch_hours"]),
+                "csv_length": _to_int(_pick(r, CSV_COLS["length"])),
                 "csv_subs": _pick(r, CSV_COLS["subs"]),
                 "csv_likes": _to_int(_pick(r, CSV_COLS["likes"])),
             }
@@ -260,9 +265,11 @@ def videos_from_csv(studio):
             "title": d.get("csv_title") or vid,
             "published": d.get("csv_published", ""),
             "duration": "",
+            "min": round(d.get("csv_length", 0) / 60, 1) if d.get("csv_length") else "",
             "views": d.get("csv_views", 0),
             "likes": d.get("csv_likes", 0),
             "comments": 0,
+            "subscribersGained": d.get("csv_subs", ""),
             "averageViewDuration": d.get("csv_avg_dur", ""),
             "impressions": d.get("impressions", ""),
             "ctr": d.get("ctr", ""),
@@ -308,7 +315,9 @@ def main():
               file=sys.stderr)
     for v in videos:
         v["type"] = tag_type(v["title"])
-        v["min"] = iso_dur_to_min(v["duration"]) if v.get("duration") else ""
+        if v.get("duration"):
+            v["min"] = iso_dur_to_min(v["duration"])
+        v.setdefault("min", "")
         for k, val in studio.get(v["id"], {}).items():
             if not k.startswith("csv_"):
                 v[k] = val
@@ -329,8 +338,8 @@ def main():
         head += " 平均視聴(秒) | 視聴率% | 維持5% | 維持10% | 維持25% | 登録増 | 流入元 |"
         sep += "---|---|---|---|---|---|---|"
     if csv_only:
-        head += " 平均視聴(秒) |"
-        sep += "---|"
+        head += " 登録増 | インプ/再生 |"
+        sep += "---|---|"
     if studio:
         head += " インプ | CTR% |"
         sep += "---|---|"
@@ -345,7 +354,9 @@ def main():
                     str(v.get("retain_5pct", "")), str(v.get("retain_10pct", "")), str(v.get("retain_25pct", "")),
                     str(v.get("subscribersGained", "")), v.get("traffic", v.get("analytics_error", ""))]
         if csv_only:
-            row += [str(v.get("averageViewDuration", ""))]
+            imp = _to_int(v.get("impressions", 0))
+            row += [str(v.get("subscribersGained", "")),
+                    f"{imp / v['views']:.1f}" if v.get("views") else "-"]
         if studio:
             row += [str(v.get("impressions", "")), str(v.get("ctr", ""))]
         row.append(v["title"].replace("|", "｜"))

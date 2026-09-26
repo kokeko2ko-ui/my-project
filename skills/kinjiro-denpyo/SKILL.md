@@ -20,7 +20,8 @@ IDで見つからないときは、Drive検索で名前から探す（検索は 
 ## 手順
 
 1. **未処理の写真を一覧する**
-   Drive検索 `parentId = '1LGizKvlIqqKOwzG4LalgjGsuOLd_61fO' and mimeType contains 'image/'`。
+   Drive検索 `parentId = '1LGizKvlIqqKOwzG4LalgjGsuOLd_61fO'` でフォルダの中身を一覧する。
+   **検索結果は途中で切れることがある。`nextPageToken` が返ってきたら、それを `pageToken` に渡して、トークンが返らなくなるまで全ページを取得する。** 画像の枚数を数えてから作業を始め、最後の報告で「フォルダ内の画像◯枚中◯枚を処理」と伝える。
    写真がユーザーのチャットに直接添付された場合は、その写真を対象にする。
    `.MOV` はiPhoneのLive Photoの動画部分なので読まない（同じ番号の画像を処理したら一緒に処理済みへ移動する）。
 

@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Google_Drive",
+      "mcp__Google_Sheets",
+      "Bash(python3:*)",
+      "Read",
+      "Write",
+      "Edit"
+    ]
+  }
+}

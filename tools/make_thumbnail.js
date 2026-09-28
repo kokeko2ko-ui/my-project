@@ -15,7 +15,8 @@
  *   "align":"left|right|center", "textWidth":"58%",
  *   "vignette":0-1, "shade":0-1, "spot":0-1,  // 既に暗い写真では下げる
  *   "scrim":0-1, "scrimSide":"left|right",     // 文字側だけ落として可読性を上げる
- *   "lamp":0-1, "lampX":"68%", "lampY":"71%", "lampSize":260 }
+ *   "lamp":0-1, "lampX":"68%", "lampY":"71%", "lampSize":260,
+ *   "rings":[{"x":655,"y":572,"r":46,"w":8,"color":"#ff2b2b"}]  // 注目点を赤丸で囲む（px） }
  *
  * [ ] で囲んだ語は黄色ハイライト。日本語は Noto Sans JP Black(900) 実描画。
  * 縁取りは 黒(外) → 白(中) → 本体 の三層で、日本のサムネ定番の見え方にする。
@@ -188,6 +189,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
 .hero.hr{align-items:flex-end;text-align:right;padding-right:48px}
 .hero.hl{align-items:flex-start;text-align:left;padding-left:52px}
 .hero .col{max-width:${c.textWidth||'100%'}}
+/* 自動折り返しは単語の途中で切れて致命的なので禁止。改行は \n で明示した所だけ */
+.sub,.main,.foot{white-space:nowrap}
+/* 「で始まる主文は、かぎかっこを左に出して他の行と頭をそろえる（ぶら下げ） */
+.main{text-indent:${c.mainIndent||0}}
 .sub{font-weight:900;font-size:${c.subSize||40}px;color:#fff;letter-spacing:-1px;
   -webkit-text-stroke:10px #000;paint-order:stroke fill;
   filter:drop-shadow(0 4px 12px rgba(0,0,0,.95))}
@@ -197,6 +202,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:#04060b;position:relative;
 .foot{font-weight:900;font-size:${c.footSize||46}px;color:${c.footColor||'#fff'};letter-spacing:-1.5px;
   -webkit-text-stroke:12px #000;paint-order:stroke fill;
   filter:drop-shadow(0 4px 12px rgba(0,0,0,.95))}
+/* 注目させたい所を囲む丸（日本のサムネ定番の「赤丸」） */
+.ring{position:absolute;z-index:8;border-radius:50%;transform:translate(-50%,-50%);
+  box-shadow:0 0 0 3px rgba(0,0,0,.55),0 0 18px rgba(0,0,0,.6)}
+.ringarrow{position:absolute;z-index:8;height:0;transform-origin:0 50%}
 .glowline{position:absolute;left:50%;transform:translateX(-50%);bottom:132px;width:560px;height:5px;
   background:linear-gradient(90deg,transparent,#ff3b3b,transparent);opacity:.75;z-index:8}
 </style></head><body>
@@ -204,6 +213,8 @@ ${c.bg ? '' : '<div class="sky"></div>'}${bg}
 <div class="spot"></div><div class="dark"></div>${c.lamp ? '<div class="lamp"></div>' : ''}
 <div class="mid">${scene(c.scene)}</div>
 ${c.scrim ? '<div class="scrim"></div>' : ''}<div class="shade"></div>
+${(c.rings||[]).map(r => `<div class="ring" style="left:${r.x}px;top:${r.y}px;width:${r.r*2}px;height:${r.r*2}px;
+  border:${r.w||8}px solid ${r.color||'#ff2b2b'}"></div>`).join('')}
 ${c.main ? heroBlock(c) : `<div class="band-t"></div>${bot ? '<div class="band-b"></div>' : ''}
 <div class="topwrap">${top}</div>
 ${bot ? `<div class="glowline"></div><div class="botwrap">${bot}</div>` : ''}`}

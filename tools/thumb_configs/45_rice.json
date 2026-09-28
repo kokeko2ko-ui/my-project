@@ -1,6 +1,6 @@
 {
-  "out": "/mnt/user-data/outputs/thumb_45_炊飯器を見る子.png",
-  "bg": "/tmp/claude-0/-home-user-my-project/af6a3a88-8bc2-5a83-be4f-2a1dd136378a/images/3.webp",
+  "out": "/mnt/user-data/outputs/サムネ完成_第45作_炊飯器を見る子.png",
+  "bg": "assets/thumb_bg/45_炊飯器を見る子.webp",
   "bgBright": 1.26,
   "scene": "none",
   "vignette": 0.32,

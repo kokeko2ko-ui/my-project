@@ -37,6 +37,7 @@ IDで見つからないときは、Drive検索で名前から探す（検索は 
 | PHK | PHK INC. | なし | 手書き伝票。商品名は `Mizuna（水菜）` のように英語＋日本語。PHK タブの既存の名前に合わせる |
 | 4TH ST BEVERAGE | 4TH ST BEVERAGE, INC. | `120 12 43561` の形 | |
 | USA WINE WEST | USA WINE WEST (JS) | `JS1022FW` の形 | CA RECYCLE FEE は別行 |
+| THE RICE FACTORY | Wakka USA, Inc. DBA the rice factory | なし | お米（Nanatsuboshi 白米 25LB など）。宛名は Nomiya Kinjiro（Chef Taro Corporation）。単価は1袋あたり |
 
 - Santa Monica Seafood は旧社名 LA FISH（Los Angeles Fish）。`LOS ANGELES FISH` タブは旧伝票用。
 

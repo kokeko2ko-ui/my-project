@@ -1,0 +1,33 @@
+{
+  "title": "第50作_返せなかった一冊",
+  "bg": "assets/thumb_bg/50_返せなかった一冊.png",
+  "bgUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_33CGnfk7ei8NnGsGcL9M8ENiI4l/hf_20261004_163454_bcc06bba-5115-4a9d-8228-cd5e91d5bec1.png",
+  "prompt": "古い図書館のカウンター。日付印で埋まった返却期限票と、鉛筆の名前が並ぶ貸し出しカードを持つ老いた手。右半分に被写体、左半分は暗く空ける",
+  "bgBright": 1.0,
+  "scene": "none",
+  "vignette": 0.3,
+  "shade": 0.35,
+  "spot": 0.3,
+  "spotX": "75%",
+  "spotY": "55%",
+  "sub": "35年、返せなかった[図書館の本]",
+  "main": "「ゆうたくん、\nでしょう」",
+  "foot": "名乗る前に、名前を呼ばれた",
+  "footColor": "#ff4b4b",
+  "align": "left",
+  "subSize": 42,
+  "footSize": 46,
+  "mainSize": 96,
+  "textWidth": "none",
+  "scrim": 0.3,
+  "scrimSide": "left",
+  "rings": [
+    {
+      "x": 1030,
+      "y": 338,
+      "r": 132,
+      "w": 9,
+      "color": "#ff2b2b"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "title": "第46作_指の下のごめんなさい",
+  "bg": "assets/thumb_bg/46_指の下のごめんなさい.webp",
+  "bgBright": 1.1,
+  "scene": "none",
+  "vignette": 0.3,
+  "shade": 0.35,
+  "spot": 0.3,
+  "spotX": "52%",
+  "spotY": "80%",
+  "sub": "教科書の余白に、[ないはずの点]",
+  "main": "「[ごめんなさい]」",
+  "foot": "打った人を、私は知らない",
+  "footColor": "#ff4b4b",
+  "align": "left",
+  "mainSize": 98,
+  "subSize": 40,
+  "footSize": 46,
+  "textWidth": "none",
+  "rings": [
+    {
+      "x": 656,
+      "y": 572,
+      "r": 44,
+      "w": 8,
+      "color": "#ff2b2b"
+    }
+  ],
+  "mainIndent": "-0.42em"
+}

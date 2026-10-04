@@ -1,0 +1,22 @@
+{
+  "title": "第45作_炊飯器を見る子",
+  "bg": "assets/thumb_bg/45_炊飯器を見る子.webp",
+  "bgBright": 1.26,
+  "scene": "none",
+  "vignette": 0.32,
+  "shade": 0.38,
+  "spot": 0.3,
+  "spotX": "70%",
+  "spotY": "66%",
+  "sub": "来るたび、[炊飯器]を見ていた",
+  "main": "14歳が\n[玄関で泣いた]",
+  "foot": "その理由に、言葉を失った",
+  "footColor": "#ff4b4b",
+  "align": "left",
+  "mainSize": 102,
+  "subSize": 36,
+  "footSize": 43,
+  "textWidth": "58%",
+  "scrim": 0.28,
+  "scrimSide": "left"
+}

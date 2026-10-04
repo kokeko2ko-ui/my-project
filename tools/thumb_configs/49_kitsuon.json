@@ -15,10 +15,20 @@
   "foot": "娘が言った、ひとこと",
   "footColor": "#ff4b4b",
   "align": "left",
-  "subSize": 40,
-  "footSize": 44,
-  "mainSize": 100,
+  "subSize": 46,
+  "footSize": 54,
+  "mainSize": 120,
   "textWidth": "none",
   "scrim": 0.35,
-  "scrimSide": "left"
+  "scrimSide": "left",
+  "mainIndent": "-0.5em",
+  "rings": [
+    {
+      "x": 1022,
+      "y": 234,
+      "r": 54,
+      "w": 8,
+      "color": "#ff2b2b"
+    }
+  ]
 }

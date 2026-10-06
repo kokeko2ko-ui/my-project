@@ -1,0 +1,28 @@
+{
+  "title": "第50作_辞めた部下の留守電",
+  "bg": "assets/thumb_bg/50_辞めた部下の留守電.png",
+  "bgUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_33CGnfk7ei8NnGsGcL9M8ENiI4l/hf_20261006_150718_8ffb8f5d-acc9-4688-8ffc-8d2d72752a69.png",
+  "prompt": "夕暮れの会社の駐車場と桜。右に、留守電の再生画面のスマホを差し出す若い男の手、それに手をのばす年上の男の手。左半分は暗く空ける",
+  "bgBright": 1.0,
+  "scene": "none",
+  "vignette": 0.3,
+  "shade": 0.35,
+  "spot": 0.2,
+  "spotX": "78%",
+  "spotY": "48%",
+  "sub": "10年前、辞めた部下に残した[留守電]",
+  "main": "「お前は、\n[大丈夫]だ」",
+  "foot": "彼は10年、消さなかった",
+  "footColor": "#ff4b4b",
+  "align": "left",
+  "subSize": 46,
+  "footSize": 54,
+  "mainSize": 120,
+  "textWidth": "none",
+  "scrim": 0.35,
+  "scrimSide": "left",
+  "mainIndent": "-0.5em",
+  "rings": [
+    { "x": 1010, "y": 338, "r": 108, "w": 8, "color": "#ff2b2b" }
+  ]
+}

@@ -117,33 +117,60 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 MOVES = ['in', 'right', 'out', 'left', 'in', 'up', 'out', 'right', 'in', 'left', 'out', 'down']
 
 
-def zoompan(move, frames, w, h):
-    n = max(frames - 1, 1)
-    p = f'(on/{n})'
+def motion_box(move, t, iw, ih, w, h):
+    """t=0〜1 の位置での切り出し枠（小数のまま）。画面比に合わせ、最大8%寄る。"""
+    e = t * t * (3 - 2 * t) * 0.35 + t * 0.65  # 始まりと終わりだけ、ほんの少しなめらかに
+    base_w = min(iw, ih * w / h)
+    base_h = base_w * h / w
+    Z = 1.08
     if move == 'in':
-        z, x, y = f'1.0+0.08*{p}', 'iw/2-(iw/zoom/2)', 'ih/2-(ih/zoom/2)'
+        z, fx, fy = 1 + (Z - 1) * e, 0.5, 0.5
     elif move == 'out':
-        z, x, y = f'1.08-0.08*{p}', 'iw/2-(iw/zoom/2)', 'ih/2-(ih/zoom/2)'
+        z, fx, fy = Z - (Z - 1) * e, 0.5, 0.5
     elif move == 'right':
-        z, x, y = '1.08', f'(iw-iw/zoom)*{p}', 'ih/2-(ih/zoom/2)'
+        z, fx, fy = Z, e, 0.5
     elif move == 'left':
-        z, x, y = '1.08', f'(iw-iw/zoom)*(1-{p})', 'ih/2-(ih/zoom/2)'
+        z, fx, fy = Z, 1 - e, 0.5
     elif move == 'up':
-        z, x, y = '1.08', 'iw/2-(iw/zoom/2)', f'(ih-ih/zoom)*(1-{p})'
+        z, fx, fy = Z, 0.5, 1 - e
     else:  # down
-        z, x, y = '1.08', 'iw/2-(iw/zoom/2)', f'(ih-ih/zoom)*{p}'
-    return (f"scale={w*2}:{h*2}:force_original_aspect_ratio=increase,crop={w*2}:{h*2},"
-            f"zoompan=z='{z}':x='{x}':y='{y}':d={frames}:s={w}x{h}:fps={FPS},setsar=1,format=yuv420p")
+        z, fx, fy = Z, 0.5, e
+    cw, ch = base_w / z, base_h / z
+    x0 = (iw - cw) * fx
+    y0 = (ih - ch) * fy
+    return (x0, y0, x0 + cw, y0 + ch)
+
+
+def render_clip(job):
+    """1場面ぶんを、1コマずつ小数位置で切り出して描く（カクつき防止）。"""
+    img_path, out, move, frames, w, h = job
+    from PIL import Image
+    src = Image.open(img_path).convert('RGB')
+    src = src.resize((src.width * 2, src.height * 2), Image.LANCZOS)
+    iw, ih = src.size
+    enc = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24',
+                            '-s', f'{w}x{h}', '-r', str(FPS), '-i', '-', '-c:v', 'libx264',
+                            '-preset', 'veryfast', '-crf', '14', '-pix_fmt', 'yuv420p', out],
+                           stdin=subprocess.PIPE)
+    n = max(frames - 1, 1)
+    for k in range(frames):
+        box = motion_box(move, k / n, iw, ih, w, h)
+        enc.stdin.write(src.transform((w, h), Image.EXTENT, box, Image.BICUBIC).tobytes())
+    enc.stdin.close()
+    if enc.wait() != 0:
+        raise RuntimeError('encode failed: ' + out)
+    return out
 
 
 def render(mode):
     w, h, crf, preset = (960, 540, 30, 'veryfast') if mode == 'preview' else (1920, 1080, 18, 'medium')
     tl, _, total = timeline()
     build = os.path.join(UNIT, 'build')
-    clips = os.path.join(build, f'clips_{mode}')
+    clips = os.path.join(build, f'clips2_{mode}')
     os.makedirs(clips, exist_ok=True)
     # 1) 場面ごとのクリップ（最後以外はクロスフェード分だけ長く）
-    paths = []
+    from multiprocessing import Pool
+    paths, jobs = [], []
     for i, (sid, s, e) in enumerate(tl):
         length = (e - s) + (XF if i < len(tl) - 1 else 0)
         frames = int(round(length * FPS))
@@ -151,11 +178,10 @@ def render(mode):
         paths.append((out, frames / FPS))
         if os.path.exists(out) and abs(duration(out) - frames / FPS) < 0.05:
             continue
-        img = os.path.join(UNIT, 'images', f'{sid}.png')
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-loop', '1', '-framerate', str(FPS), '-i', img,
-                        '-vf', zoompan(MOVES[i % len(MOVES)], frames, w, h), '-frames:v', str(frames),
-                        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '16', out], check=True)
-        print('clip', sid, round(length, 2))
+        jobs.append((os.path.join(UNIT, 'images', f'{sid}.png'), out, MOVES[i % len(MOVES)], frames, w, h))
+    with Pool(os.cpu_count()) as pool:
+        for out in pool.imap_unordered(render_clip, jobs):
+            print('clip', os.path.basename(out), flush=True)
     # 2) クロスフェードでつなぐ → 字幕 → 音声
     ass = os.path.join(build, f'subs_{mode}.ass')
     write_ass(ass, w, h)

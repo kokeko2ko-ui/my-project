@@ -77,7 +77,9 @@ STEP 8: タイトル/説明文/タグ/サムネイルプロンプト/固定コ�
 ### ナレーション音声（2026-10-09 ユーザー要望）
 - Vrewの読み上げは感情が乗りにくいので、**今後はElevenLabsで感情を込めた音声を作る**（第51作まではVrew）
 - 声：大谷ボイス（Voice ID `O2ZUxxI6g8D1wlLKcxu1`、`kokeko2ko-ui/kenkou` の nanahiro-auto と同じ）
-- 必要な環境設定：環境変数 `ELEVENLABS_API_KEY`、ネットワークで `api.elevenlabs.io` を許可
+- 環境設定（2026-10-09 設定済み）：環境「Default」の許可ドメインに `api.elevenlabs.io`、ネットワークシークレットでヘッダー `xi-api-key` を自動付与
+  - コードでキーを扱う必要はない。`curl https://api.elevenlabs.io/...` をそのまま呼べば認証される
+  - キーの権限に `user_read` がないため、残り文字数（/v1/user/subscription）は見られない
 - キーはチャットに貼ってもらわない（環境の設定に入れてもらう）
 
 ### タイトルの型（ユーザー指定）

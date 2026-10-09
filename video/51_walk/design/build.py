@@ -66,20 +66,18 @@ def timeline():
 BREAKS = ['——', '。', '、', '」', '「', '…']
 
 
-def wrap(text, width=24):
+def wrap(text, width=27):
+    """自然な区切り（読点・ダッシュ・かぎ括弧）でだけ折り返す。最大二行。"""
     if len(text) <= width:
         return [text]
-    best, score = None, 1e9
+    natural, other = [], []
     for i in range(4, len(text) - 3):
         left, right = text[:i], text[i:]
-        if len(left) > width or len(right) > width:
+        if len(left) > width or len(right) > width or left.endswith('「') or right[0] in '、。」…' or right.startswith('——'):
             continue
-        natural = any(left.endswith(b) for b in BREAKS) or right.startswith('——')
-        sc = abs(len(left) - len(right)) - (30 if natural else 0)
-        if sc < score:
-            best, score = i, sc
-    if best is None:
-        best = len(text) // 2
+        nat = any(left.endswith(b) for b in BREAKS if b != '「') or right.startswith('「')
+        (natural if nat else other).append((abs(len(left) - len(right)), i))
+    best = min(natural or other or [(0, len(text) // 2)])[1]
     return [text[:best], text[best:]]
 
 
@@ -196,7 +194,7 @@ def check():
     print('画像の過不足', sorted(set(ids) - set(imgs)) or 'なし', sorted(set(imgs) - set(ids)) or '')
     print('重複画像', [v for v in digests.values() if len(v) > 1] or 'なし')
     print('字幕の最後', round(cues[-1][2], 2), '秒（音声との差', round(total - cues[-1][2], 2), '秒）')
-    long_ = [(n, t) for n, _, _, t in cues if any(len(x) > 24 for x in wrap(t)) or len(wrap(t)) > 2]
+    long_ = [(n, t) for n, _, _, t in cues if any(len(x) > 27 for x in wrap(t)) or len(wrap(t)) > 2]
     print('二行に収まらない字幕', long_ or 'なし')
     print('最短の場面', min(round(e - s, 1) for _, s, e in tl), '秒／最長', max(round(e - s, 1) for _, s, e in tl), '秒')
 

@@ -3,3 +3,7 @@ __pycache__/
 node_modules/
 package-lock.json
 .claude/settings.local.json
+video/*/source/
+video/*/build/
+video/*/images/
+video/fonts/*.ttf

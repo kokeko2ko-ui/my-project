@@ -8,3 +8,5 @@ video/*/build/
 video/*/images/
 video/fonts/*.ttf
 /*.mp4
+video/*/tts_cache/
+video/_test/

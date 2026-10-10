@@ -1,0 +1,28 @@
+{
+  "title": "第51作_32キロの初出勤",
+  "bg": "assets/thumb_bg/51_32キロの初出勤.png",
+  "bgUrl": "https://d8j0ntlcm91z4.cloudfront.net/user_33CGnfk7ei8NnGsGcL9M8ENiI4l/hf_20261008_210147_24f3525f-55d9-4d0b-9310-706567362efb.png",
+  "prompt": "明け方、引っ越し前の家の玄関先。右に警察官（胸から下）と、汗で汚れた服・すり切れたスニーカーの青年の足。左半分は暗く空ける",
+  "bgBright": 1.0,
+  "scene": "none",
+  "vignette": 0.3,
+  "shade": 0.35,
+  "spot": 0.2,
+  "spotX": "85%",
+  "spotY": "70%",
+  "sub": "引っ越しの朝、玄関に[警察官]が",
+  "main": "夜通し\n[32キロ]",
+  "foot": "歩いてきた、20歳の青年",
+  "footColor": "#ff4b4b",
+  "align": "left",
+  "subSize": 48,
+  "footSize": 54,
+  "mainSize": 130,
+  "textWidth": "none",
+  "scrim": 0.3,
+  "scrimSide": "left",
+  "mainIndent": "0",
+  "rings": [
+    { "x": 1132, "y": 512, "r": 95, "w": 8, "color": "#ff2b2b" }
+  ]
+}

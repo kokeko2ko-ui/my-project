@@ -196,13 +196,15 @@ def render(mode):
         lab = f'[v{i}]'
         fc.append(f'{prev}[{i}:v]xfade=transition=fade:duration={XF}:offset={offset:.3f}{lab}')
         prev = lab
-    esc = ass.replace(':', r'\:')
-    fc.append(f"{prev}subtitles='{esc}':fontsdir='{FONTS}'[vout]")
+    # Windows のドライブ名（C:）や \ で字幕フィルタが壊れないよう、制作ユニットからの相対パスで渡す
+    rel_ass = os.path.relpath(ass, UNIT).replace(os.sep, '/')
+    rel_fonts = os.path.relpath(FONTS, UNIT).replace(os.sep, '/')
+    fc.append(f"{prev}subtitles='{rel_ass}':fontsdir='{rel_fonts}'[vout]")
     out = os.path.join(build, f'第51作_32キロの初出勤_{mode}.mp4')
     args += ['-filter_complex', ';'.join(fc), '-map', '[vout]', '-map', f'{len(paths)}:a',
              '-c:v', 'libx264', '-preset', preset, '-crf', str(crf), '-pix_fmt', 'yuv420p',
              '-c:a', 'aac', '-b:a', '192k', '-t', f'{total:.3f}', '-movflags', '+faststart', out]
-    subprocess.run(args, check=True)
+    subprocess.run(args, check=True, cwd=UNIT)
     print('written', out, round(duration(out), 2), 'audio', round(total, 2))
 
 

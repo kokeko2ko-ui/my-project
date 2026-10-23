@@ -20,7 +20,7 @@ IDで見つからないときは、Drive検索で名前から探す（検索は 
 ## 宛先のルール（金次郎の伝票かどうか）
 
 - **金次郎の伝票として記録する宛先**：KINJIRO、NOMIYA KINJIRO、KINJIRO (LAFCO)、GYUTARO（GYUTARO-FTX、GYUTARO (KINJIRO) を含む）。住所はすべて **424 E. 2nd St, Los Angeles**。
-- **記録しない宛先（金次郎以外の店）**：ROSSOBLU、Suehiro（Suehiro D.T. L.A. / Suehiro DTLA）、TEN SHO（418 E 2nd St）、POP POT（Diamond Bar）など。
+- **記録しない宛先（金次郎以外の店）**：ROSSOBLU、Suehiro（Suehiro D.T. L.A. / Suehiro DTLA）、TEN SHO（418 E 2nd St）、POP POT（Diamond Bar）など。請求先（Sold To / Bill To）が TOKYO SOUL の伝票は、納品先（Ship To）が KINJIRO でも記録しない。
 - 宛名が読めない場合は推測で決めず、ユーザーに確認する。
 - 宛名がなくても金次郎分と確認済みの取引先：**SUPERIOR CARBONIC**（金次郎のケグビール用 CO2 ガス）。
 
@@ -110,7 +110,7 @@ IDで見つからないときは、Drive検索で名前から探す（検索は 
      - SANTA MONICA SEAFOOD と LOS ANGELES FISH は同じ会社として扱い、商品番号の `-` より前の7桁で照合する。
      - MUTUAL TRADING は商品番号の末尾5桁で照合する（`140 45 10160` と `10160` は同じ商品）。
      - USA WINE WEST は `JS1022` の部分で照合し、さらに BT（1本）と CS（ケース）を別の商品として扱う。
-     - PHK など商品番号がない会社は、商品名全体で照合する。ただし PHK の次の商品は書き方が違っても同じ商品として1行にまとめる：白しめじ（White Shimeji / Wh. Shimeji / Wh Shimeji）、玉ねぎ（J.D. Onion / J D Onion / Y. Onion / Onion。赤玉ねぎ R. Onion と青ねぎ G. Onion は別）、うずら卵（Uzura）、みょうが（Myoga）、ベビースピナッチ（Org B. Spinach / Org B Spinach）、ししとう（Shishito / Shishitou）、エリンギ（Eryngii / Eringi）、まいたけ（Maitake／まいたけ・舞茸）、ミニトマト（Grape Tomato）、しょうが（Ginger／しょうが・生姜）、スプリングミックス（S/Mix / SI MIX）、Legs（Legs / Legs?）。PHK の野菜は日によって値段がよく変わるので、いつもと違う単価でも行の合計と伝票合計が合っていればそのまま記録する（疑いとして報告しない）。PHK の卵（Egg / K Egg / K-Egg / XL Egg など）は名前ではなく単位で2行に分ける：単位が case / box / cs →「XL Egg（卵 XL・ケース）」（日本語名 卵（ケース））、単位が pk →「Egg（地卵・パック）」（日本語名 地卵。安い方のパックの卵は地卵）。単位が書かれていない卵は単価で判断する（$15 以上ならケース、それ未満ならパック）。
+     - PHK など商品番号がない会社は、商品名全体で照合する。ただし PHK の次の商品は書き方が違っても同じ商品として1行にまとめる：白しめじ（White Shimeji / Wh. Shimeji / Wh Shimeji）、玉ねぎ（J.D. Onion / J D Onion / Y. Onion / Onion。赤玉ねぎ R. Onion と青ねぎ G. Onion は別）、うずら卵（Uzura）、みょうが（Myoga）、ベビースピナッチ（Org B. Spinach / Org B Spinach）、ししとう（Shishito / Shishitou）、エリンギ（Eryngii / Eringi）、まいたけ（Maitake／まいたけ・舞茸）、ミニトマト（Grape Tomato）、しょうが（Ginger／しょうが・生姜）、スプリングミックス（S/Mix / SI MIX）、Legs（Legs / Legs?）、レモン（Lemon sl. / Lemon 75'。サイズ違いでも同じ商品として「Lemon sl.（レモン）」の行にまとめる）。PHK の野菜は日によって値段がよく変わるので、いつもと違う単価でも行の合計と伝票合計が合っていればそのまま記録する（疑いとして報告しない）。PHK の卵（Egg / K Egg / K-Egg / XL Egg など）は名前ではなく単位で2行に分ける：単位が case / box / cs →「XL Egg（卵 XL・ケース）」（日本語名 卵（ケース））、単位が pk →「Egg（地卵・パック）」（日本語名 地卵。安い方のパックの卵は地卵）。単位が書かれていない卵は単価で判断する（$15 以上ならケース、それ未満ならパック）。
    - 行があれば、伝票の日付が `最新購入日` より新しい場合だけ、今の最新を `前回購入日`・`前回単価` に移し、新しい日付・単価を `最新購入日`・`最新単価` に書く。行がなければ会社のまとまりの中に追加し、`価格の変化` を `購入1回のみ` にする。
    - `価格の変化` は、上がったら `▲ 値上がり`、下がったら `▼ 値下がり`、同じなら `＝ 変化なし` にする。行の色はこの列の先頭の記号で自動的に付く（赤＝値上がり、青＝値下がり、緑＝変化なし）。単価が前回の2.5倍以上、または0.4倍以下なら単位違いの可能性があるため `？ 要確認（単位違いの可能性）` にする。
    - `差額（変化率）` は `+$1.00（+6.6%）` の形。`+` で始まるとシートが数式と読んでエラーになるため、先頭に `'` を付けて書く（例 `'+$1.00（+6.6%）`）。`前回購入日`・`最新購入日` の列は日付の書式（`yyyy/mm/dd`）で、`$` の書式を付けない。値段が変わったら `最後に値段が変わった時` と `値段の履歴` も更新する。

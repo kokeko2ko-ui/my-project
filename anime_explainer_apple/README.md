@@ -11,3 +11,7 @@
 6. `node tools/render.js final` → `out/video.mp4`
 
 キャラの見た目は `src/characters.ts`、シーン部品は `src/Scenes.tsx`。
+
+## Google Drive への自動アップロード
+`node tools/upload_drive.js out/video.mp4`（保存先：マイドライブの「解説アニメ」フォルダ）。
+環境変数 `GDRIVE_CLIENT_ID` / `GDRIVE_CLIENT_SECRET` / `GDRIVE_REFRESH_TOKEN` が必要。

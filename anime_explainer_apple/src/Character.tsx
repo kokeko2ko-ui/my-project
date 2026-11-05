@@ -5,11 +5,15 @@ import {CHARS, CANDIDATES, CharCfg} from './characters';
 const INK = '#1b1b1b';
 const SW = 7;
 let uid = 0;
+const SimpleCtx = React.createContext(false);
 
 // 平塗り＋右側だけにはっきりした影＋太い黒線
 const Shaded: React.FC<{fill: string; shade: string; dx?: number; children: React.ReactElement}> = ({fill, shade, dx = 22, children}) => {
   const id = React.useMemo(() => `m${uid++}`, []);
   const c = (p: any) => React.cloneElement(children, p);
+  if (React.useContext(SimpleCtx)) {
+    return <g>{c({fill, stroke: INK, strokeWidth: SW, strokeLinejoin: 'round'})}</g>;
+  }
   return (
     <g>
       {c({fill, stroke: 'none'})}
@@ -28,8 +32,8 @@ export type Pose = 'idle' | 'point' | 'up' | 'hips' | 'wave';
 
 export const Character: React.FC<{
   who: string; x: number; y: number; scale?: number; flip?: boolean;
-  expr?: Expr; pose?: Pose; talking?: boolean; seed?: number; cfg?: CharCfg;
-}> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0, cfg}) => {
+  expr?: Expr; pose?: Pose; talking?: boolean; seed?: number; cfg?: CharCfg; simple?: boolean;
+}> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0, cfg, simple = false}) => {
   const f = useCurrentFrame() + seed;
   const c: CharCfg = cfg || CHARS[who];
   const bob = Math.sin(f / 11) * 4;
@@ -63,6 +67,9 @@ export const Character: React.FC<{
   } else {
     mouth = <path d={`M -18 ${mouthY} Q 6 ${mouthY - 8} 26 ${mouthY - 2}`} fill="none" stroke={INK} strokeWidth={SW - 1} strokeLinecap="round" />;
   }
+  if (simple && !talking && expr === 'smile') {
+    mouth = <path d={`M -26 ${mouthY - 4} Q 0 ${mouthY + 24} 26 ${mouthY - 4}`} fill="none" stroke={INK} strokeWidth={SW - 1} strokeLinecap="round" />;
+  }
   // 腕
   const wob = Math.sin(f / 9) * 6;
   const sh = {l: [-56, -170], r: [56, -170]};
@@ -82,16 +89,19 @@ export const Character: React.FC<{
   );
   const tilt = expr === 'think' ? -4 : 0;
   return (
+    <SimpleCtx.Provider value={simple}>
     <g transform={`translate(${x} ${y - 50 + bob}) scale(${flip ? -scale : scale} ${scale}) rotate(${sway})`}>
       {/* 影 */}
       <ellipse cx={0} cy={4} rx={110} ry={14} fill="rgba(0,0,0,0.13)" />
-      {/* 足 */}
+      {simple && <path d="M -30 -52 L -30 -8 M 30 -52 L 30 -8" stroke={INK} strokeWidth={14} strokeLinecap="round" />}
+      {!simple && (
       <g>
         <Shaded fill={c.pants} shade={c.outfitShade} dx={8}><rect x={-46} y={-70} width={34} height={64} rx={14} /></Shaded>
         <Shaded fill={c.pants} shade={c.outfitShade} dx={8}><rect x={12} y={-70} width={34} height={64} rx={14} /></Shaded>
         <Shaded fill="#c54a3a" shade="#8f2f24" dx={10}><ellipse cx={-34} cy={-4} rx={30} ry={14} /></Shaded>
         <Shaded fill="#c54a3a" shade="#8f2f24" dx={10}><ellipse cx={34} cy={-4} rx={30} ry={14} /></Shaded>
       </g>
+      )}
       {/* 腕（体の後ろ） */}
       <Arm s={sh.l} h={hd.l} />
       {/* 体 */}
@@ -194,11 +204,12 @@ export const Character: React.FC<{
           </g>
         )}
         {/* 眉（太い線） */}
-        {brows.map((b, i) => (
+        {!simple && brows.map((b, i) => (
           <path key={i} d={`M ${b[0]} ${b[1]} L ${b[2]} ${b[3]}`} stroke={INK} strokeWidth={10} strokeLinecap="round" />
         ))}
         {mouth}
       </g>
     </g>
+    </SimpleCtx.Provider>
   );
 };

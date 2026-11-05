@@ -43,3 +43,18 @@ export const CANDIDATES: {id: number; name: string; desc: string; cfg: CharCfg}[
   {id: 10, name: 'モモ先生', desc: 'おだんご＋メガネ', cfg: {skin: '#ffd9b8', skinShade: '#eab68a', hair: '#7a4a2a', hairShade: '#4d2c14', style: 'bun',
     outfit: '#7bc67b', outfitShade: '#4f9a4f', pants: '#5a5a66', glasses: true}},
 ];
+
+// ---- シンプル版10案（影・靴・眉・歯・飾りなし。特徴は1つだけ）----
+const base = {skin: '#ffd9b8', skinShade: '#eab68a', pants: '#5a5a66'};
+export const SIMPLE_CANDIDATES: {id: number; name: string; desc: string; cfg: CharCfg}[] = [
+  {id: 1, name: 'ミナ先生', desc: 'おかっぱ＋赤い帽子', cfg: {...CHARS.mina, scarf: undefined}},
+  {id: 2, name: 'ネコ', desc: '猫耳', cfg: {...base, hair: '#ffc470', hairShade: '#e09a3a', skin: '#ffc470', style: 'none', outfit: '#8a5bd6', outfitShade: '#6338a8', ears: '#ffc470'}},
+  {id: 3, name: 'ロボ', desc: '四角い頭＋アンテナ', cfg: {...base, skin: '#bfe3f5', hair: '#444', hairShade: '#222', style: 'none', outfit: '#4aa3df', outfitShade: '#2f78aa', antenna: true, squareHead: true}},
+  {id: 4, name: 'ポニー', desc: 'ポニーテール', cfg: {...base, hair: '#6b3b1e', hairShade: '#44230f', style: 'pony', outfit: '#ffd23f', outfitShade: '#d9a90f'}},
+  {id: 5, name: 'ツイン', desc: 'ツインテール', cfg: {...base, hair: '#2a2a2a', hairShade: '#0e0e0e', style: 'twin', outfit: '#ff7aa8', outfitShade: '#d4507f'}},
+  {id: 6, name: 'ボウシ', desc: '青い帽子', cfg: {...base, hair: '#3b2a1c', hairShade: '#21160c', style: 'short', outfit: '#ffd23f', outfitShade: '#d9a90f', cap: '#2e6fd8'}},
+  {id: 7, name: 'おだんご', desc: 'おだんご頭', cfg: {...base, hair: '#7a4a2a', hairShade: '#4d2c14', style: 'bun', outfit: '#7bc67b', outfitShade: '#4f9a4f'}},
+  {id: 8, name: 'ツンツン', desc: 'オレンジの髪', cfg: {...CHARS.taro}},
+  {id: 9, name: 'ふつう', desc: '黒い短髪', cfg: {...base, hair: '#1f1f1f', hairShade: '#000', style: 'short', outfit: '#2b3a55', outfitShade: '#1b2538'}},
+  {id: 10, name: 'じいさん', desc: 'つるっと＋白い毛', cfg: {...base, skin: '#f3cba5', hair: '#f2f2f2', hairShade: '#cfcfcf', style: 'bald', outfit: '#37506b', outfitShade: '#223548'}},
+];

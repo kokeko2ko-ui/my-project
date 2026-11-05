@@ -1,0 +1,571 @@
+{
+ "cuts": [
+  {
+   "s": 0,
+   "type": "title",
+   "line1": "5歳でもわかる",
+   "line2": "アップル復活の話",
+   "sub": "つぶれそうな会社を救った男"
+  },
+  {
+   "s": 1,
+   "type": "news",
+   "trend": "up",
+   "headline": "世界トップ級の会社に!",
+   "caption": "いまのアップル",
+   "who": "mina"
+  },
+  {
+   "s": 2,
+   "type": "talk",
+   "who": "mina",
+   "side": "left",
+   "bubble": "つぶれそうだった\nアップルのお話",
+   "pose": "point"
+  },
+  {
+   "s": 4,
+   "type": "talk",
+   "who": "mina",
+   "side": "right",
+   "bubble": "戻ってきた\nひとりの男",
+   "expr": "think"
+  },
+  {
+   "s": 5,
+   "type": "keyword",
+   "kana": "すてぃーぶ・じょぶず",
+   "term": "スティーブ・ジョブズ",
+   "meaning": "アップルを作った人",
+   "tag": "この人!"
+  },
+  {
+   "s": 6,
+   "type": "talk",
+   "who": "jobs",
+   "side": "left",
+   "bubble": "ガレージで\nパソコンづくり",
+   "pose": "hips"
+  },
+  {
+   "s": 8,
+   "type": "duo",
+   "speaker": "left",
+   "left": {
+    "who": "mina",
+    "bubble": "ガレージ\nなんです!",
+    "expr": "surprised",
+    "pose": "point"
+   },
+   "right": {
+    "who": "jobs",
+    "bubble": "せまいけど\n楽しい",
+    "expr": "smile",
+    "pose": "hips"
+   }
+  },
+  {
+   "s": 10,
+   "type": "talk",
+   "who": "jobs",
+   "side": "right",
+   "bubble": "車は外で\nねてたかも",
+   "expr": "sad"
+  },
+  {
+   "s": 11,
+   "type": "bars",
+   "values": [
+    1,
+    2,
+    4,
+    7
+   ],
+   "labels": [
+    "1年め",
+    "2年め",
+    "3年め",
+    "4年め"
+   ],
+   "caption": "会社がぐんぐん大きく",
+   "who": "jobs",
+   "expr": "smile"
+  },
+  {
+   "s": 12,
+   "type": "talk",
+   "who": "jobs",
+   "side": "left",
+   "bubble": "えっ、\n追い出された!",
+   "expr": "cry",
+   "mark": "!"
+  },
+  {
+   "s": 14,
+   "type": "duo",
+   "speaker": "left",
+   "left": {
+    "who": "mina",
+    "bubble": "自分のお店に\n入れない…",
+    "expr": "sad",
+    "pose": "idle"
+   },
+   "right": {
+    "who": "taro",
+    "bubble": "えーっ!",
+    "expr": "surprised",
+    "pose": "up"
+   }
+  },
+  {
+   "s": 16,
+   "type": "talk",
+   "who": "jobs",
+   "side": "right",
+   "bubble": "でも、\nおわらない!",
+   "expr": "angry",
+   "pose": "up"
+  },
+  {
+   "s": 18,
+   "type": "list",
+   "title": "ジョブズの次の一手",
+   "items": [
+    "新しい会社をつくる",
+    "アニメ映画の会社にも",
+    "時間がながれる…"
+   ],
+   "who": "jobs"
+  },
+  {
+   "s": 20,
+   "type": "news",
+   "trend": "down",
+   "headline": "元気をなくしたアップル",
+   "caption": "それから十年ほど",
+   "who": "mina"
+  },
+  {
+   "s": 22,
+   "type": "talk",
+   "who": "mina",
+   "side": "left",
+   "bubble": "問題は\nなんだったの?",
+   "expr": "think",
+   "mark": "?",
+   "markColor": "#2d7be5"
+  },
+  {
+   "s": 24,
+   "type": "duo",
+   "speaker": "left",
+   "left": {
+    "who": "mina",
+    "bubble": "アイス屋さんへ\nようこそ!",
+    "expr": "smile",
+    "pose": "wave"
+   },
+   "right": {
+    "who": "taro",
+    "bubble": "どれが\nいいかな?",
+    "expr": "think",
+    "pose": "idle"
+   }
+  },
+  {
+   "s": 26,
+   "type": "compare",
+   "left": {
+    "label": "味の数",
+    "value": "100"
+   },
+   "right": {
+    "label": "見た目",
+    "value": "ほぼ同じ",
+    "red": true
+   },
+   "vs": "でも",
+   "who": "taro",
+   "expr": "think"
+  },
+  {
+   "s": 28,
+   "type": "talk",
+   "who": "taro",
+   "side": "left",
+   "bubble": "えらべない\nよぉ…",
+   "expr": "sad",
+   "mark": "?",
+   "markColor": "#2d7be5"
+  },
+  {
+   "s": 30,
+   "type": "list",
+   "title": "当時のアップル",
+   "items": [
+    "似たパソコンが",
+    "何十種類も",
+    "ならんでいた"
+   ],
+   "who": "mina",
+   "expr": "think"
+  },
+  {
+   "s": 32,
+   "type": "talk",
+   "who": "taro",
+   "side": "right",
+   "bubble": "迷って\n店を出ちゃう",
+   "expr": "sad"
+  },
+  {
+   "s": 33,
+   "type": "duo",
+   "speaker": "left",
+   "left": {
+    "who": "mina",
+    "bubble": "新しい会社を\n買い取ったよ",
+    "expr": "smile",
+    "pose": "point"
+   },
+   "right": {
+    "who": "jobs",
+    "bubble": "ただいま!",
+    "expr": "smile",
+    "pose": "wave"
+   }
+  },
+  {
+   "s": 35,
+   "type": "compare",
+   "left": {
+    "label": "会社のお金",
+    "value": "わずか",
+    "red": true
+   },
+   "right": {
+    "label": "もつ時間",
+    "value": "数か月"
+   },
+   "vs": "…",
+   "who": "jobs",
+   "expr": "sad"
+  },
+  {
+   "s": 37,
+   "type": "talk",
+   "who": "jobs",
+   "side": "left",
+   "bubble": "ライバルに\n助けを求める",
+   "expr": "think"
+  },
+  {
+   "s": 39,
+   "type": "coins",
+   "to": "アップル",
+   "note": "ライバルが お金を出した",
+   "expr": "sad",
+   "src": "マイクロソフト"
+  },
+  {
+   "s": 41,
+   "type": "talk",
+   "who": "jobs",
+   "side": "right",
+   "bubble": "プライドより\n会社が大事!",
+   "expr": "smile",
+   "pose": "up"
+  },
+  {
+   "s": 42,
+   "type": "duo",
+   "speaker": "left",
+   "left": {
+    "who": "mina",
+    "bubble": "どうして\n助けたの?",
+    "expr": "think",
+    "pose": "point"
+   },
+   "right": {
+    "who": "taro",
+    "bubble": "ふしぎ…",
+    "expr": "think",
+    "pose": "idle"
+   }
+  },
+  {
+   "s": 44,
+   "type": "keyword",
+   "tag": "ことば",
+   "kana": "らいばる",
+   "term": "ライバル",
+   "meaning": "同じ分野で競いあう相手"
+  },
+  {
+   "s": 45,
+   "type": "talk",
+   "who": "taro",
+   "side": "right",
+   "bubble": "ケンカ相手が\nいないと さびしい",
+   "expr": "smile"
+  },
+  {
+   "s": 47,
+   "type": "talk",
+   "who": "jobs",
+   "side": "left",
+   "bubble": "種類を\n思い切って減らす",
+   "expr": "angry",
+   "pose": "up"
+  },
+  {
+   "s": 49,
+   "type": "grid",
+   "cells": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ],
+   "show": 0,
+   "axisY": [
+    "仕事用",
+    "ふつうの人用"
+   ]
+  },
+  {
+   "s": 51,
+   "type": "grid",
+   "cells": [
+    "1つめ",
+    "2つめ",
+    "3つめ",
+    "4つめ"
+   ],
+   "show": 4,
+   "axisX": [
+    "机の上",
+    "持ち歩き"
+   ],
+   "axisY": [
+    "仕事用",
+    "ふつうの人用"
+   ],
+   "badge": "この4つだけ!"
+  },
+  {
+   "s": 54,
+   "type": "duo",
+   "speaker": "left",
+   "left": {
+    "who": "taro",
+    "bubble": "反対です!",
+    "expr": "angry",
+    "pose": "up"
+   },
+   "right": {
+    "who": "jobs",
+    "bubble": "変えないよ",
+    "expr": "smile",
+    "pose": "hips"
+   }
+  },
+  {
+   "s": 56,
+   "type": "compare",
+   "left": {
+    "label": "味の数",
+    "value": "100"
+   },
+   "right": {
+    "label": "これから",
+    "value": "4",
+    "red": true
+   },
+   "vs": "→",
+   "who": "taro",
+   "expr": "smile"
+  },
+  {
+   "s": 58,
+   "type": "imac",
+   "mode": "after",
+   "caption": "そのつぎの年…"
+  },
+  {
+   "s": 60,
+   "type": "imac",
+   "mode": "both",
+   "beforeLabel": "それまで",
+   "afterLabel": "ぽんと登場"
+  },
+  {
+   "s": 62,
+   "type": "bars",
+   "values": [
+    1,
+    2.5,
+    4.5,
+    8
+   ],
+   "labels": [
+    "1か月",
+    "2か月",
+    "3か月",
+    "4か月"
+   ],
+   "caption": "大きな話題に!",
+   "who": "taro",
+   "expr": "surprised"
+  },
+  {
+   "s": 64,
+   "type": "talk",
+   "who": "mina",
+   "side": "left",
+   "bubble": "息を\nふきかえした!",
+   "pose": "up"
+  },
+  {
+   "s": 65,
+   "type": "list",
+   "title": "そのあとも…",
+   "items": [
+    "音楽プレーヤー",
+    "電話もできる携帯端末",
+    "世の中を変えた"
+   ],
+   "who": "jobs",
+   "expr": "smile"
+  },
+  {
+   "s": 66,
+   "type": "talk",
+   "who": "jobs",
+   "side": "right",
+   "bubble": "病気でも\n仕事はやめない",
+   "expr": "sad"
+  },
+  {
+   "s": 68,
+   "type": "news",
+   "trend": "updown",
+   "headline": "2011年 ジョブズ、旅立つ",
+   "caption": "五十代の半ばでした",
+   "who": "mina",
+   "expr": "sad",
+   "pose": "idle"
+  },
+  {
+   "s": 71,
+   "type": "talk",
+   "who": "mina",
+   "side": "left",
+   "bubble": "そのあとの\nアップルは?",
+   "expr": "think",
+   "mark": "?",
+   "markColor": "#2d7be5"
+  },
+  {
+   "s": 72,
+   "type": "bars",
+   "values": [
+    3,
+    4,
+    5,
+    6.5
+   ],
+   "labels": [
+    "",
+    "",
+    "",
+    ""
+   ],
+   "caption": "大きくなり続けた、という人",
+   "who": "mina",
+   "expr": "smile"
+  },
+  {
+   "s": 74,
+   "type": "news",
+   "trend": "flat",
+   "headline": "おどろきは減った、という人",
+   "caption": "どちらにも理由がある",
+   "who": "mina",
+   "expr": "think",
+   "pose": "idle"
+  },
+  {
+   "s": 76,
+   "type": "talk",
+   "who": "mina",
+   "side": "right",
+   "bubble": "どちらにも\n理由があるよね",
+   "expr": "think"
+  },
+  {
+   "s": 77,
+   "type": "keyword",
+   "tag": "おことわり",
+   "kana": "とうしの すすめではありません",
+   "term": "おことわり",
+   "meaning": "特定の銘柄の売買を\nすすめる動画ではありません"
+  },
+  {
+   "s": 78,
+   "type": "talk",
+   "who": "mina",
+   "side": "left",
+   "bubble": "ひとつだけ\nはっきりしてる",
+   "pose": "point"
+  },
+  {
+   "s": 80,
+   "type": "compare",
+   "left": {
+    "label": "百種類から選ぶ",
+    "value": "むずかしい"
+   },
+   "right": {
+    "label": "四つから選ぶ",
+    "value": "選べる!",
+    "red": true
+   },
+   "vs": "VS",
+   "who": "jobs",
+   "expr": "smile"
+  },
+  {
+   "s": 82,
+   "type": "keyword",
+   "tag": "まとめ",
+   "kana": "たくさんやる力 より",
+   "term": "やらない決断",
+   "meaning": "会社を救ったのは、これかも?"
+  },
+  {
+   "s": 83,
+   "type": "talk",
+   "who": "taro",
+   "side": "right",
+   "bubble": "いつでも通用?\nまだ誰も知らない",
+   "expr": "think",
+   "mark": "?",
+   "markColor": "#2d7be5"
+  },
+  {
+   "s": 84,
+   "type": "keyword",
+   "tag": "ある賢者の言葉",
+   "kana": "足すより、引くほうが",
+   "term": "引く勇気",
+   "meaning": "ずっと勇気がいる。"
+  },
+  {
+   "s": 86,
+   "type": "outro",
+   "text": "最後まで\nありがとう!",
+   "next": "次のお話をおたのしみに"
+  }
+ ]
+}

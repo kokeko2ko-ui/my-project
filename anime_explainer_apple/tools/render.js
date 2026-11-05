@@ -26,7 +26,11 @@ const common = {browserExecutable: chrome, chromiumOptions: {disableWebSecurity:
   const serveUrl = await bundle({entryPoint: path.join(root, 'src/index.ts'), onProgress: () => {}});
   const comp = await selectComposition({serveUrl, id: 'Main', ...common});
   fs.mkdirSync(path.join(root, 'out/stills'), {recursive: true});
-  if (mode === 'stills') {
+  if (mode === 'sheet') {
+    const sc = await selectComposition({serveUrl, id: 'Sheet', ...common});
+    await renderStill({composition: sc, serveUrl, frame: 10, output: path.join(root, 'out/characters.png'), ...common});
+    console.log('sheet done');
+  } else if (mode === 'stills') {
     const timings = require(path.join(root, 'timings.json')).sentences;
     const sb = require(path.join(root, 'storyboard.json')).cuts;
     for (let i = 0; i < sb.length; i++) {

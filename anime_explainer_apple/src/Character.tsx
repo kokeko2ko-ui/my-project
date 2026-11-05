@@ -1,6 +1,6 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
-import {CHARS, CharCfg} from './characters';
+import {CHARS, CANDIDATES, CharCfg} from './characters';
 
 const INK = '#1b1b1b';
 const SW = 7;
@@ -28,10 +28,10 @@ export type Pose = 'idle' | 'point' | 'up' | 'hips' | 'wave';
 
 export const Character: React.FC<{
   who: string; x: number; y: number; scale?: number; flip?: boolean;
-  expr?: Expr; pose?: Pose; talking?: boolean; seed?: number;
-}> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0}) => {
+  expr?: Expr; pose?: Pose; talking?: boolean; seed?: number; cfg?: CharCfg;
+}> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0, cfg}) => {
   const f = useCurrentFrame() + seed;
-  const c: CharCfg = CHARS[who];
+  const c: CharCfg = cfg || CHARS[who];
   const bob = Math.sin(f / 11) * 4;
   const sway = Math.sin(f / 23) * 1.2;
   const blink = f % 96 < 5;
@@ -96,6 +96,8 @@ export const Character: React.FC<{
       <Arm s={sh.l} h={hd.l} />
       {/* 体 */}
       <Shaded fill={c.outfit} shade={c.outfitShade} dx={26}><rect x={-66} y={-200} width={132} height={150} rx={46} /></Shaded>
+      {c.tie && <path d="M -16 -192 L 16 -192 L 24 -142 L 0 -98 L -24 -142 Z" fill={c.tie} stroke={INK} strokeWidth={SW - 1} strokeLinejoin="round" />}
+      {c.outfit === '#ffffff' && <path d="M 0 -196 L 0 -50" stroke={INK} strokeWidth={5} />}
       {c.style === 'spiky' && <path d="M -30 -130 L 30 -130" stroke="none" />}
       <Arm s={sh.r} h={hd.r} />
       {/* マフラー */}
@@ -107,10 +109,33 @@ export const Character: React.FC<{
       )}
       {/* 頭 */}
       <g transform={`rotate(${tilt} 0 ${HY + 60})`}>
+        {c.ears && (
+          <g>
+            <Shaded fill={c.ears} shade={c.skinShade} dx={10}><path d={`M -122 ${HY - 50} L -104 ${HY - 175} L -26 ${HY - 100} Z`} /></Shaded>
+            <Shaded fill={c.ears} shade={c.skinShade} dx={10}><path d={`M 122 ${HY - 50} L 104 ${HY - 175} L 26 ${HY - 100} Z`} /></Shaded>
+          </g>
+        )}
+        {c.antenna && (
+          <g>
+            <path d={`M 0 ${HY - 112} L 0 ${HY - 176}`} stroke={INK} strokeWidth={SW + 1} strokeLinecap="round" />
+            <circle cx={0} cy={HY - 190} r={17} fill="#ff5a5a" stroke={INK} strokeWidth={SW - 1} />
+          </g>
+        )}
+        {c.style === 'long' && <Shaded fill={c.hair} shade={c.hairShade} dx={26}><path d={`M -145 ${HY + 10} C -170 ${HY + 120} -160 ${HY + 200} -110 ${HY + 200} L 110 ${HY + 200} C 160 ${HY + 200} 170 ${HY + 120} 145 ${HY + 10} Z`} /></Shaded>}
+        {c.style === 'pony' && <Shaded fill={c.hair} shade={c.hairShade} dx={26}><path d={`M 100 ${HY - 70} C 230 ${HY - 90} 240 ${HY + 40} 190 ${HY + 160} C 160 ${HY + 70} 140 ${HY + 20} 100 ${HY - 10} Z`} /></Shaded>}
+        {c.style === 'twin' && (
+          <g>
+            <Shaded fill={c.hair} shade={c.hairShade} dx={20}><ellipse cx={-172} cy={HY + 60} rx={42} ry={92} /></Shaded>
+            <Shaded fill={c.hair} shade={c.hairShade} dx={20}><ellipse cx={172} cy={HY + 60} rx={42} ry={92} /></Shaded>
+          </g>
+        )}
         {c.style === 'bob' && (
           <Shaded fill={c.hair} shade={c.hairShade} dx={26}><path d={`M -150 ${HY + 40} C -160 ${HY - 150} 160 ${HY - 150} 150 ${HY + 40} L 150 ${HY + 90} L -150 ${HY + 90} Z`} /></Shaded>
         )}
-        <Shaded fill={c.skin} shade={c.skinShade} dx={34}><ellipse cx={0} cy={HY} rx={138} ry={122} /></Shaded>
+        {c.squareHead
+          ? <Shaded fill={c.skin} shade={c.skinShade} dx={34}><rect x={-132} y={HY - 112} width={264} height={228} rx={58} /></Shaded>
+          : <Shaded fill={c.skin} shade={c.skinShade} dx={34}><ellipse cx={0} cy={HY} rx={138} ry={122} /></Shaded>}
+
         {/* 前髪・髪型 */}
         {c.style === 'bob' && (
           <Shaded fill={c.hair} shade={c.hairShade} dx={26}><path d={`M -132 ${HY - 34} C -110 ${HY - 130} 110 ${HY - 130} 132 ${HY - 34} C 90 ${HY - 78} -20 ${HY - 56} -132 ${HY - 34} Z`} /></Shaded>
@@ -125,6 +150,31 @@ export const Character: React.FC<{
           <g>
             <Shaded fill={c.hat} shade="#a82424" dx={30}><ellipse cx={-6} cy={HY - 108} rx={120} ry={46} /></Shaded>
             <Shaded fill={c.hat} shade="#a82424" dx={6}><rect x={-12} y={HY - 168} width={26} height={30} rx={10} /></Shaded>
+          </g>
+        )}
+        {['long', 'pony', 'twin', 'bun'].includes(c.style) && (
+          <Shaded fill={c.hair} shade={c.hairShade} dx={26}><path d={`M -132 ${HY - 34} C -110 ${HY - 130} 110 ${HY - 130} 132 ${HY - 34} C 90 ${HY - 78} -20 ${HY - 56} -132 ${HY - 34} Z`} /></Shaded>
+        )}
+        {c.style === 'bun' && <Shaded fill={c.hair} shade={c.hairShade} dx={14}><circle cx={0} cy={HY - 140} r={46} /></Shaded>}
+        {c.style === 'bald' && (
+          <g>
+            <Shaded fill={c.hair} shade={c.hairShade} dx={8}><ellipse cx={-130} cy={HY - 14} rx={14} ry={36} /></Shaded>
+            <Shaded fill={c.hair} shade={c.hairShade} dx={8}><ellipse cx={130} cy={HY - 14} rx={14} ry={36} /></Shaded>
+          </g>
+        )}
+        {c.cap && (
+          <g>
+            <Shaded fill={c.cap} shade="#1f4f9a" dx={30}><path d={`M -132 ${HY - 44} C -126 ${HY - 175} 126 ${HY - 175} 132 ${HY - 44} Z`} /></Shaded>
+            <Shaded fill={c.cap} shade="#1f4f9a" dx={30}><path d={`M -30 ${HY - 52} L 196 ${HY - 56} C 200 ${HY - 30} 160 ${HY - 24} 130 ${HY - 30} L -30 ${HY - 36} Z`} /></Shaded>
+          </g>
+        )}
+        {c.headband && <path d={`M -136 ${HY - 40} C -60 ${HY - 78} 60 ${HY - 78} 136 ${HY - 40}`} stroke={c.headband} strokeWidth={20} fill="none" strokeLinecap="round" />}
+        {c.beardFull && c.beard && <Shaded fill={c.beard} shade="#cfcfcf" dx={14}><path d={`M -110 ${HY + 40} Q -100 ${HY + 190} 0 ${HY + 200} Q 100 ${HY + 190} 110 ${HY + 40} Q 60 ${HY + 100} 0 ${HY + 96} Q -60 ${HY + 100} -110 ${HY + 40} Z`} /></Shaded>}
+        {!c.beardFull && c.beard && <Shaded fill={c.beard} shade="#cfcfcf" dx={8}><path d={`M -52 ${HY + 42} Q -26 ${HY + 24} 0 ${HY + 40} Q 26 ${HY + 24} 52 ${HY + 42} Q 26 ${HY + 62} 0 ${HY + 50} Q -26 ${HY + 62} -52 ${HY + 42} Z`} /></Shaded>}
+        {c.whiskers && (
+          <g stroke={INK} strokeWidth={5} strokeLinecap="round">
+            <path d={`M -70 ${HY + 40} L -150 ${HY + 26}`} /><path d={`M -70 ${HY + 56} L -150 ${HY + 62}`} />
+            <path d={`M 70 ${HY + 40} L 150 ${HY + 26}`} /><path d={`M 70 ${HY + 56} L 150 ${HY + 62}`} />
           </g>
         )}
         {/* 目（小さな黒い縦長の丸・離れている） */}

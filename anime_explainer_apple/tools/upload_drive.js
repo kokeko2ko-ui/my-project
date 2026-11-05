@@ -1,29 +1,29 @@
 // 完成した動画を Google Drive に自動アップロードする。
 // 使い方: node tools/upload_drive.js <ファイル> [<ファイル>...]
 // 必要な環境変数（環境の設定で登録する）:
-//   GDRIVE_CLIENT_ID / GDRIVE_CLIENT_SECRET / GDRIVE_REFRESH_TOKEN
 // 保存先: マイドライブ直下の「解説アニメ」フォルダ（なければ作る）
 const {execFileSync} = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const need = ['GDRIVE_CLIENT_ID', 'GDRIVE_CLIENT_SECRET', 'GDRIVE_REFRESH_TOKEN'];
-const miss = need.filter((k) => !process.env[k]);
-if (miss.length) {
-  console.error('未設定の環境変数があります:', miss.join(', '));
-  console.error('環境の設定（Network secrets か環境変数）に登録して、新しいセッションで実行してください。');
-  process.exit(2);
-}
+// 認証は2通り:
+//  A) 環境の「Network secrets」に www.googleapis.com のトークンを登録済み → プロキシが自動で付ける（GDRIVE_* は不要）
+//  B) GDRIVE_CLIENT_ID / GDRIVE_CLIENT_SECRET / GDRIVE_REFRESH_TOKEN を環境変数に登録
+const useRefresh = ['GDRIVE_CLIENT_ID', 'GDRIVE_CLIENT_SECRET', 'GDRIVE_REFRESH_TOKEN'].every((k) => process.env[k]);
 const files = process.argv.slice(2);
 if (!files.length) { console.error('使い方: node tools/upload_drive.js <ファイル>...'); process.exit(1); }
 
 const curl = (args) => execFileSync('curl', ['-sS', '-m', '1800', ...args], {maxBuffer: 1 << 26}).toString();
 const json = (s) => { try { return JSON.parse(s); } catch { throw new Error('想定外の応答: ' + s.slice(0, 300)); } };
 
-const tok = json(curl(['https://oauth2.googleapis.com/token', '-d', `client_id=${process.env.GDRIVE_CLIENT_ID}`,
-  '-d', `client_secret=${process.env.GDRIVE_CLIENT_SECRET}`, '-d', `refresh_token=${process.env.GDRIVE_REFRESH_TOKEN}`, '-d', 'grant_type=refresh_token']));
-if (!tok.access_token) { console.error('トークン取得に失敗:', tok.error_description || tok.error); process.exit(3); }
-const auth = ['-H', `Authorization: Bearer ${tok.access_token}`];
+let bearer = 'proxy-injected'; // A) の場合はプロキシが本物に差し替える
+if (useRefresh) {
+  const tok = json(curl(['https://oauth2.googleapis.com/token', '-d', `client_id=${process.env.GDRIVE_CLIENT_ID}`,
+    '-d', `client_secret=${process.env.GDRIVE_CLIENT_SECRET}`, '-d', `refresh_token=${process.env.GDRIVE_REFRESH_TOKEN}`, '-d', 'grant_type=refresh_token']));
+  if (!tok.access_token) { console.error('トークン取得に失敗:', tok.error_description || tok.error); process.exit(3); }
+  bearer = tok.access_token;
+}
+const auth = ['-H', `Authorization: Bearer ${bearer}`];
 
 const FOLDER = '解説アニメ';
 const q = encodeURIComponent(`name='${FOLDER}' and mimeType='application/vnd.google-apps.folder' and trashed=false`);

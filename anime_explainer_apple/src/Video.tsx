@@ -4,6 +4,7 @@ import timings from '../timings.json';
 import storyboard from '../storyboard.json';
 import {SCENES, TalkCtx} from './Scenes';
 import {SUB, fontsReady} from './fonts';
+import {SimpleCtx} from './Character';
 
 const FPS = 30;
 const sents: {i: number; text: string; start: number; end: number}[] = timings.sentences;
@@ -80,7 +81,7 @@ const Subtitle: React.FC<{t: number}> = ({t}) => {
   );
 };
 
-export const Video: React.FC = () => {
+export const Video: React.FC<{simple?: boolean}> = ({simple = false}) => {
   const frame = useCurrentFrame();
   const [handle] = useState(() => delayRender('fonts'));
   useEffect(() => { fontsReady.then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
@@ -89,6 +90,7 @@ export const Video: React.FC = () => {
   return (
     <AbsoluteFill style={{background: '#fff', overflow: 'hidden'}}>
       <Audio src={staticFile('narration.mp3')} />
+      <SimpleCtx.Provider value={simple}>
       <TalkCtx.Provider value={talking}>
         {cuts.map((c) => {
           const Scene = SCENES[c.type];
@@ -104,6 +106,7 @@ export const Video: React.FC = () => {
           );
         })}
       </TalkCtx.Provider>
+      </SimpleCtx.Provider>
       <Subtitle t={t} />
     </AbsoluteFill>
   );

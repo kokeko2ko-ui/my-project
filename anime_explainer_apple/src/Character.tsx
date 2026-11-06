@@ -1,11 +1,11 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
-import {CHARS, CANDIDATES, CharCfg} from './characters';
+import {CHARS, SIMPLE_CHARS, CharCfg} from './characters';
 
 const INK = '#1b1b1b';
 const SW = 7;
 let uid = 0;
-const SimpleCtx = React.createContext(false);
+export const SimpleCtx = React.createContext(false);
 
 // 平塗り＋右側だけにはっきりした影＋太い黒線
 const Shaded: React.FC<{fill: string; shade: string; dx?: number; children: React.ReactElement}> = ({fill, shade, dx = 22, children}) => {
@@ -33,9 +33,11 @@ export type Pose = 'idle' | 'point' | 'up' | 'hips' | 'wave';
 export const Character: React.FC<{
   who: string; x: number; y: number; scale?: number; flip?: boolean;
   expr?: Expr; pose?: Pose; talking?: boolean; seed?: number; cfg?: CharCfg; simple?: boolean;
-}> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0, cfg, simple = false}) => {
+}> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0, cfg, simple: simpleProp}) => {
+  const outerSimple = React.useContext(SimpleCtx);
+  const simple = simpleProp ?? outerSimple;
   const f = useCurrentFrame() + seed;
-  const c: CharCfg = cfg || CHARS[who];
+  const c: CharCfg = cfg || (simple ? SIMPLE_CHARS[who] : CHARS[who]);
   const bob = Math.sin(f / 11) * 4;
   const sway = Math.sin(f / 23) * 1.2;
   const blink = f % 96 < 5;

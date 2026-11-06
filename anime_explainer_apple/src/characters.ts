@@ -58,3 +58,10 @@ export const SIMPLE_CANDIDATES: {id: number; name: string; desc: string; cfg: Ch
   {id: 9, name: 'ふつう', desc: '黒い短髪', cfg: {...base, hair: '#1f1f1f', hairShade: '#000', style: 'short', outfit: '#2b3a55', outfitShade: '#1b2538'}},
   {id: 10, name: 'じいさん', desc: 'つるっと＋白い毛', cfg: {...base, skin: '#f3cba5', hair: '#f2f2f2', hairShade: '#cfcfcf', style: 'bald', outfit: '#37506b', outfitShade: '#223548'}},
 ];
+
+// シンプル版で動画を作るときのキャラ（案内役=ミナ先生、たとえ話=ツンツン、物語の主人公=メガネのふつう）
+export const SIMPLE_CHARS: Record<string, CharCfg> = {
+  mina: SIMPLE_CANDIDATES[0].cfg,
+  taro: SIMPLE_CANDIDATES[7].cfg,
+  jobs: {...SIMPLE_CANDIDATES[8].cfg, hair: '#4a3626', hairShade: '#2c1f15', outfit: '#2a2a2e', outfitShade: '#161618', glasses: true},
+};

@@ -6,6 +6,7 @@ const INK = '#1b1b1b';
 const SW = 7;
 let uid = 0;
 export const SimpleCtx = React.createContext(false);
+export const AmpCtx = React.createContext(0);
 
 // 平塗り＋右側だけにはっきりした影＋太い黒線
 const Shaded: React.FC<{fill: string; shade: string; dx?: number; children: React.ReactElement}> = ({fill, shade, dx = 22, children}) => {
@@ -42,7 +43,8 @@ export const Character: React.FC<{
   const sway = Math.sin(f / 23) * 1.2;
   const blink = f % 96 < 5;
   const eyeRy = blink ? 2 : 13;
-  const mouthOpen = talking ? 6 + Math.abs(Math.sin(f * 0.85)) * 17 : 0;
+  const amp = React.useContext(AmpCtx);
+  const mouthOpen = talking ? 3 + amp * 22 : 0; // 音の大きさに合わせて開く
   const HY = -300; // 頭の中心
   // 眉
   const browY = HY - 52;

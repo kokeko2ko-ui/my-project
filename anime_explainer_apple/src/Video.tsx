@@ -4,7 +4,8 @@ import timings from '../timings.json';
 import storyboard from '../storyboard.json';
 import {SCENES, TalkCtx} from './Scenes';
 import {SUB, fontsReady} from './fonts';
-import {SimpleCtx} from './Character';
+import {SimpleCtx, AmpCtx} from './Character';
+import envelope from '../public/envelope.json';
 
 const FPS = 30;
 const sents: {i: number; text: string; start: number; end: number}[] = timings.sentences;
@@ -86,11 +87,13 @@ export const Video: React.FC<{simple?: boolean}> = ({simple = false}) => {
   const [handle] = useState(() => delayRender('fonts'));
   useEffect(() => { fontsReady.then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
   const t = frame / FPS;
+  const amp = (envelope as number[])[Math.min(frame, envelope.length - 1)] ?? 0;
   const talking = sents.some((s) => t >= s.start - 0.03 && t <= s.end - 0.08);
   return (
     <AbsoluteFill style={{background: '#fff', overflow: 'hidden'}}>
       <Audio src={staticFile('narration.mp3')} />
       <SimpleCtx.Provider value={simple}>
+      <AmpCtx.Provider value={amp}>
       <TalkCtx.Provider value={talking}>
         {cuts.map((c) => {
           const Scene = SCENES[c.type];
@@ -106,6 +109,7 @@ export const Video: React.FC<{simple?: boolean}> = ({simple = false}) => {
           );
         })}
       </TalkCtx.Provider>
+      </AmpCtx.Provider>
       </SimpleCtx.Provider>
       <Subtitle t={t} />
     </AbsoluteFill>

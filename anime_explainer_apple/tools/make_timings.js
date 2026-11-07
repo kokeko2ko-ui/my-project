@@ -2,7 +2,10 @@
 const fs = require('fs');
 const raw = JSON.parse(fs.readFileSync('input/tts_raw.json', 'utf8'));
 fs.writeFileSync('public/narration.mp3', Buffer.from(raw.audio_base64, 'base64'));
-const script = fs.readFileSync('input/script.txt', 'utf8').trim();
+// 声は読み用の台本(script_reading.txt)で作り、字幕は元の台本(script.txt)の文を使う（文の数は同じ）
+const reading = fs.existsSync('input/script_reading.txt') ? fs.readFileSync('input/script_reading.txt', 'utf8').trim() : fs.readFileSync('input/script.txt', 'utf8').trim();
+const display = fs.readFileSync('input/script.txt', 'utf8').trim();
+const script = reading;
 const al = raw.alignment || raw.normalized_alignment;
 const chars = al.characters, st = al.character_start_times_seconds, en = al.character_end_times_seconds;
 if (chars.join('') !== script) console.warn('警告: 文字列が台本と完全一致しません', chars.length, script.length);
@@ -16,9 +19,12 @@ for (let i = 0; i < chars.length; i++) {
   if ('。！？'.includes(c) && !(next && '」』）'.includes(next))) { sents.push({ text: cur.trim(), a: startIdx, b: i }); cur = ''; startIdx = i + 1; }
 }
 if (cur.trim()) sents.push({ text: cur.trim(), a: startIdx, b: chars.length - 1 });
+const splitText = (str) => { const r = []; let c = ''; for (let i = 0; i < str.length; i++) { const ch = str[i]; if (ch === '\n') { if (c.trim()) r.push(c.trim()); c = ''; continue; } c += ch; const nx = str[i + 1]; if ('。！？'.includes(ch) && !(nx && '」』）'.includes(nx))) { r.push(c.trim()); c = ''; } } if (c.trim()) r.push(c.trim()); return r; };
+const dispSents = splitText(display);
+if (dispSents.length !== sents.length) throw new Error(`文の数が合いません: 字幕${dispSents.length} / 音声${sents.length}`);
 const out = sents.map((s, idx) => {
   let a = s.a; while (a < s.b && /\s/.test(chars[a])) a++;
-  return { i: idx, text: s.text, start: st[a], end: en[s.b] };
+  return { i: idx, text: dispSents[idx], start: st[a], end: en[s.b] };
 });
 const total = en[en.length - 1];
 fs.writeFileSync('timings.json', JSON.stringify({ duration: total, sentences: out }, null, 1));

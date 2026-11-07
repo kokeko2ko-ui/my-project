@@ -1,4 +1,4 @@
 node_modules/
 out/
-input/tts_raw.json
+**/input/tts_raw.json
 public/narration.mp3

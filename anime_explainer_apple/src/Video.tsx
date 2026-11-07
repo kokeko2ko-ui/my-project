@@ -1,17 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, interpolate, delayRender, continueRender} from 'remotion';
-import timings from '../timings.json';
-import storyboard from '../storyboard.json';
 import {SCENES, TalkCtx} from './Scenes';
-import {SUB, fontsReady} from './fonts';
-import {SimpleCtx, AmpCtx} from './Character';
-import envelope from '../public/envelope.json';
+import {SUB, loadFonts} from './fonts';
+import {SimpleCtx, AmpCtx, CastCtx} from './Character';
 
 const FPS = 30;
-const sents: {i: number; text: string; start: number; end: number}[] = timings.sentences;
-const lastEnd = sents[sents.length - 1].end;
-const TOTAL = Math.ceil((lastEnd + 2) * FPS);
 
+type Sent = {i: number; text: string; start: number; end: number};
 const PALETTES = [
   ['#fff4c9', '#ffe39a', '#fffbe6'],
   ['#d9f0ff', '#b5defa', '#f0faff'],
@@ -20,12 +15,6 @@ const PALETTES = [
   ['#efe3ff', '#d9c4fa', '#f8f1ff'],
   ['#ffead2', '#ffd2a0', '#fff5e8'],
 ];
-
-const cuts: any[] = (storyboard as any).cuts.map((c: any, idx: number, arr: any[]) => {
-  const from = idx === 0 ? 0 : Math.round(sents[c.s].start * FPS);
-  const to = idx === arr.length - 1 ? TOTAL : Math.round(sents[arr[idx + 1].s].start * FPS);
-  return {...c, idx, from, dur: to - from};
-});
 
 const Background: React.FC<{cut: any}> = ({cut}) => {
   if (cut.type === 'news') {
@@ -64,7 +53,7 @@ const splitLines = (s: string) => {
   if (best < 0) best = Math.floor(mid);
   return [chars.slice(0, best + 1).join(''), chars.slice(best + 1).join('')];
 };
-const Subtitle: React.FC<{t: number}> = ({t}) => {
+const Subtitle: React.FC<{t: number; sents: Sent[]; lastEnd: number}> = ({t, sents, lastEnd}) => {
   let cur = sents[0];
   for (const s of sents) if (s.start <= t + 0.02) cur = s;
   if (t > lastEnd + 0.3) return null;
@@ -82,23 +71,35 @@ const Subtitle: React.FC<{t: number}> = ({t}) => {
   );
 };
 
-export const Video: React.FC<{simple?: boolean}> = ({simple = false}) => {
+export type VideoProps = {simple?: boolean; timings: {sentences: Sent[]}; storyboard: {cuts: any[]; cast?: Record<string, string>}; envelope: number[]};
+
+export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard, envelope}) => {
   const frame = useCurrentFrame();
+  const sents = timings.sentences;
+  const lastEnd = sents[sents.length - 1].end;
+  const TOTAL = Math.ceil((lastEnd + 2) * FPS);
+  const cuts: any[] = React.useMemo(() => storyboard.cuts.map((c: any, idx: number, arr: any[]) => {
+    const from = idx === 0 ? 0 : Math.round(sents[c.s].start * FPS);
+    const to = idx === arr.length - 1 ? TOTAL : Math.round(sents[arr[idx + 1].s].start * FPS);
+    return {...c, idx, from, dur: to - from};
+  }), [storyboard, timings]);
   const [handle] = useState(() => delayRender('fonts'));
-  useEffect(() => { fontsReady.then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
+  useEffect(() => { loadFonts(JSON.stringify({storyboard, timings})).then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
   const t = frame / FPS;
-  const amp = (envelope as number[])[Math.min(frame, envelope.length - 1)] ?? 0;
+  const amp = envelope[Math.min(frame, envelope.length - 1)] ?? 0;
   const talking = sents.some((s) => t >= s.start - 0.03 && t <= s.end - 0.08);
   return (
     <AbsoluteFill style={{background: '#fff', overflow: 'hidden'}}>
       <Audio src={staticFile('narration.mp3')} />
       <SimpleCtx.Provider value={simple}>
+      <CastCtx.Provider value={storyboard.cast || {}}>
       <AmpCtx.Provider value={amp}>
       <TalkCtx.Provider value={talking}>
         {cuts.map((c) => {
           const Scene = SCENES[c.type];
+          if (!Scene) throw new Error(`知らないシーンの型: ${c.type}（カット${c.idx}）`);
           return (
-            <Sequence key={c.idx} from={c.from} durationInFrames={c.dur} layout="none">
+            <Sequence key={c.idx} from={c.from} durationInFrames={Math.max(1, c.dur)} layout="none">
               <AbsoluteFill style={{overflow: 'hidden'}}>
                 <Camera idx={c.idx} dur={c.dur}>
                   <Background cut={c} />
@@ -110,9 +111,9 @@ export const Video: React.FC<{simple?: boolean}> = ({simple = false}) => {
         })}
       </TalkCtx.Provider>
       </AmpCtx.Provider>
+      </CastCtx.Provider>
       </SimpleCtx.Provider>
-      <Subtitle t={t} />
+      <Subtitle t={t} sents={sents} lastEnd={lastEnd} />
     </AbsoluteFill>
   );
 };
-export {cuts};

@@ -13,6 +13,7 @@
 - **スキルファイル**：`.claude/skills/kandou-master.md`（必ずこれを参照する）
 - **docx/txt出力先**：`/mnt/user-data/outputs/`
 - **サムネイル**：NanoBanana2で作る（プロンプトをSTEP8で出力する）
+- **解説アニメ動画（別チャンネル用）**：`.claude/skills/anime-explainer-video.md` を参照。作業場所は `anime_explainer_apple/`（プロンプトは `prompts/`、回ごとのデータは `episodes/`）
 
 ---
 

@@ -5,7 +5,8 @@
    "type": "title",
    "line1": "5歳でもわかる",
    "line2": "アップル復活の話",
-   "sub": "つぶれそうな会社を救った男"
+   "sub": "つぶれそうな会社を救った男",
+   "coins": true
   },
   {
    "s": 1,
@@ -567,5 +568,11 @@
    "text": "最後まで\nありがとう!",
    "next": "次のお話をおたのしみに"
   }
- ]
+ ],
+ "style": "simple",
+ "cast": {
+  "mina": "mina",
+  "taro": "spiky",
+  "jobs": "jobs"
+ }
 }

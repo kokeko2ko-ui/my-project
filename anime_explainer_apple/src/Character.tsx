@@ -1,12 +1,13 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
-import {CHARS, SIMPLE_CHARS, CharCfg} from './characters';
+import {CHARS, SIMPLE_CHARS, CAST_LIB, CharCfg} from './characters';
 
 const INK = '#1b1b1b';
 const SW = 7;
 let uid = 0;
 export const SimpleCtx = React.createContext(false);
 export const AmpCtx = React.createContext(0);
+export const CastCtx = React.createContext<Record<string, string>>({});
 
 // 平塗り＋右側だけにはっきりした影＋太い黒線
 const Shaded: React.FC<{fill: string; shade: string; dx?: number; children: React.ReactElement}> = ({fill, shade, dx = 22, children}) => {
@@ -37,8 +38,10 @@ export const Character: React.FC<{
 }> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0, cfg, simple: simpleProp}) => {
   const outerSimple = React.useContext(SimpleCtx);
   const simple = simpleProp ?? outerSimple;
+  const cast = React.useContext(CastCtx);
+  const key = cast[who] ?? who;
   const f = useCurrentFrame() + seed;
-  const c: CharCfg = cfg || (simple ? SIMPLE_CHARS[who] : CHARS[who]);
+  const c: CharCfg = cfg || (simple ? CAST_LIB[key] || SIMPLE_CHARS[who] : CHARS[key] || CAST_LIB[key] || CHARS[who]);
   const bob = Math.sin(f / 11) * 4;
   const sway = Math.sin(f / 23) * 1.2;
   const blink = f % 96 < 5;
@@ -180,6 +183,12 @@ export const Character: React.FC<{
           <g>
             <Shaded fill={c.cap} shade="#1f4f9a" dx={30}><path d={`M -132 ${HY - 44} C -126 ${HY - 175} 126 ${HY - 175} 132 ${HY - 44} Z`} /></Shaded>
             <Shaded fill={c.cap} shade="#1f4f9a" dx={30}><path d={`M -30 ${HY - 52} L 196 ${HY - 56} C 200 ${HY - 30} 160 ${HY - 24} 130 ${HY - 30} L -30 ${HY - 36} Z`} /></Shaded>
+          </g>
+        )}
+        {c.toque && (
+          <g>
+            <Shaded fill="#ffffff" shade="#d6dce6" dx={26}><path d={`M -104 ${HY - 66} C -160 ${HY - 110} -130 ${HY - 215} -56 ${HY - 195} C -26 ${HY - 262} 62 ${HY - 262} 82 ${HY - 195} C 156 ${HY - 215} 168 ${HY - 110} 108 ${HY - 66} Z`} /></Shaded>
+            <Shaded fill="#ffffff" shade="#d6dce6" dx={26}><rect x={-112} y={HY - 78} width={224} height={40} rx={14} /></Shaded>
           </g>
         )}
         {c.headband && <path d={`M -136 ${HY - 40} C -60 ${HY - 78} 60 ${HY - 78} 136 ${HY - 40}`} stroke={c.headband} strokeWidth={20} fill="none" strokeLinecap="round" />}

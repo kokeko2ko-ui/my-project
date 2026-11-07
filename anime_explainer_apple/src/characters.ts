@@ -7,7 +7,7 @@ export type CharCfg = {
   pants: string;
   hat?: string; scarf?: string; glasses?: boolean;
   cap?: string; headband?: string; ears?: string; whiskers?: boolean; antenna?: boolean;
-  squareHead?: boolean; beard?: string; beardFull?: boolean; tie?: string;
+  squareHead?: boolean; beard?: string; beardFull?: boolean; tie?: string; toque?: boolean;
 };
 export const CHARS: Record<string, CharCfg> = {
   // 案内役：ミナ先生（黒髪おかっぱ・赤いベレー帽・黄色いマフラー・紺のセーター）
@@ -64,4 +64,16 @@ export const SIMPLE_CHARS: Record<string, CharCfg> = {
   mina: SIMPLE_CANDIDATES[0].cfg,
   taro: SIMPLE_CANDIDATES[7].cfg,
   jobs: {...SIMPLE_CANDIDATES[8].cfg, hair: '#4a3626', hairShade: '#2c1f15', outfit: '#2a2a2e', outfitShade: '#161618', glasses: true},
+};
+
+// ---- 配役ライブラリ：絵コンテの cast で「役名 → このキーの人」に差し替える ----
+// 役名は mina（案内役）/ taro（たとえ話の主人公）/ jobs（物語の主人公）の3つで固定。見た目だけ入れ替わる。
+const sc = (i: number) => SIMPLE_CANDIDATES[i].cfg;
+export const CAST_LIB: Record<string, CharCfg> = {
+  mina: SIMPLE_CHARS.mina, taro: SIMPLE_CHARS.taro, jobs: SIMPLE_CHARS.jobs,
+  neko: sc(1), robo: sc(2), pony: sc(3), twin: sc(4), cap: sc(5), bun: sc(6), spiky: sc(7), futsu: sc(8), jiisan: sc(9),
+  // 料理チャンネル向け
+  chef_ko: {...base, hair: '#5a3a22', hairShade: '#3a2414', style: 'short', outfit: '#ffffff', outfitShade: '#d6dce6', toque: true, scarf: '#e23d3d'},
+  chef_mina: {...base, hair: '#26231f', hairShade: '#0e0d0b', style: 'bob', outfit: '#ffffff', outfitShade: '#d6dce6', toque: true, scarf: '#ffcf2e'},
+  obaa: {...base, skin: '#f3cba5', hair: '#e6e6e6', hairShade: '#bdbdbd', style: 'bun', outfit: '#f29aa8', outfitShade: '#c9707f', glasses: true},
 };

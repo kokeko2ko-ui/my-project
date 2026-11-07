@@ -2,14 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, delayRender, continueRender} from 'remotion';
 import {Character} from './Character';
 import {CANDIDATES, SIMPLE_CANDIDATES} from './characters';
-import {HAND, fontsReady} from './fonts';
+import {HAND, loadFonts} from './fonts';
 
 // キャラ候補の見本（選ぶための1枚）
 export const CharacterSheetSimple: React.FC = () => <CharacterSheet simple />;
 export const CharacterSheet: React.FC<{simple?: boolean}> = ({simple = false}) => {
   const list = simple ? SIMPLE_CANDIDATES : CANDIDATES;
   const [handle] = useState(() => delayRender('fonts'));
-  useEffect(() => { fontsReady.then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
+  useEffect(() => { loadFonts(JSON.stringify([...CANDIDATES, ...SIMPLE_CANDIDATES].map((x) => x.name + x.desc))).then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
   return (
     <AbsoluteFill style={{background: 'linear-gradient(160deg,#fff8e0,#ffe9b8)'}}>
       <svg width={1920} height={1080}>

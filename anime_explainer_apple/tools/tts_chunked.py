@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """読み用の台本を段落ごとに分けて ElevenLabs で音声にし、1本につなぐ。
-出力: public/narration.mp3 と input/tts_raw.json（audio_base64 + 文字ごとの時刻）。
+出力: <回のフォルダ>/narration.mp3 と input/tts_raw.json（audio_base64 + 文字ごとの時刻）。
 長い文を1回で頼むと失敗することがあるため、約450字ずつに分ける。前後の文を渡して声のつながりを保つ。"""
 import base64, json, os, subprocess, sys, tempfile, time, urllib.request
 
 VOICE = os.environ.get('VOICE_ID', '80H5qqdq3bIO8OjFE6ue')   # Yukari
 MODEL = os.environ.get('TTS_MODEL', 'eleven_v4')
+EP = os.environ.get('EP', 'episodes/apple_jobs')
+os.chdir(EP)   # 回のフォルダの中で動かす
 SRC = 'input/script_reading.txt'
 MAXC = 450
 
@@ -55,9 +57,8 @@ for i, t in enumerate(ctexts):
 
 lst = os.path.join(tmp, 'list.txt')
 open(lst, 'w').write(''.join(f"file '{w}'\n" for w in wavs))
-os.makedirs('public', exist_ok=True)
-subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-c:a', 'libmp3lame', '-b:a', '128k', 'public/narration.mp3'], check=True)
-json.dump({'audio_base64': base64.b64encode(open('public/narration.mp3', 'rb').read()).decode(),
+subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', lst, '-c:a', 'libmp3lame', '-b:a', '128k', 'narration.mp3'], check=True)
+json.dump({'audio_base64': base64.b64encode(open('narration.mp3', 'rb').read()).decode(),
            'alignment': {'characters': chars, 'character_start_times_seconds': starts, 'character_end_times_seconds': ends}},
           open('input/tts_raw.json', 'w'))
 print('合計', round(offset, 1), '秒')

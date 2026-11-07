@@ -1,10 +1,13 @@
 // ElevenLabs の with-timestamps 応答 → narration.mp3 と timings.json
 const fs = require('fs');
-const raw = JSON.parse(fs.readFileSync('input/tts_raw.json', 'utf8'));
-fs.writeFileSync('public/narration.mp3', Buffer.from(raw.audio_base64, 'base64'));
+const path = require('path');
+const EP = path.resolve(process.env.EP || 'episodes/apple_jobs'); // 回のフォルダ
+const P = (...a) => path.join(EP, ...a);
+const raw = JSON.parse(fs.readFileSync(P('input/tts_raw.json'), 'utf8'));
+fs.writeFileSync(P('narration.mp3'), Buffer.from(raw.audio_base64, 'base64'));
 // 声は読み用の台本(script_reading.txt)で作り、字幕は元の台本(script.txt)の文を使う（文の数は同じ）
-const reading = fs.existsSync('input/script_reading.txt') ? fs.readFileSync('input/script_reading.txt', 'utf8').trim() : fs.readFileSync('input/script.txt', 'utf8').trim();
-const display = fs.readFileSync('input/script.txt', 'utf8').trim();
+const reading = fs.existsSync(P('input/script_reading.txt')) ? fs.readFileSync(P('input/script_reading.txt'), 'utf8').trim() : fs.readFileSync(P('input/script.txt'), 'utf8').trim();
+const display = fs.readFileSync(P('input/script.txt'), 'utf8').trim();
 const script = reading;
 const al = raw.alignment || raw.normalized_alignment;
 const chars = al.characters, st = al.character_start_times_seconds, en = al.character_end_times_seconds;
@@ -27,5 +30,5 @@ const out = sents.map((s, idx) => {
   return { i: idx, text: dispSents[idx], start: st[a], end: en[s.b] };
 });
 const total = en[en.length - 1];
-fs.writeFileSync('timings.json', JSON.stringify({ duration: total, sentences: out }, null, 1));
+fs.writeFileSync(P('timings.json'), JSON.stringify({ duration: total, sentences: out }, null, 1));
 console.log('文の数', out.length, '音声の長さ', total.toFixed(1), '秒');

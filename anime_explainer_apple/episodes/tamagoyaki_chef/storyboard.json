@@ -160,20 +160,66 @@
    "type": "step",
    "n": 2,
    "text": "砂糖としょうゆを\n入れる",
-   "tip": "軽くまぜるだけ",
+   "tip": "三つ目のコツ",
    "who": "mina",
    "section": "手順②",
    "hl": 2
   },
   {
-   "s": 31,
+   "s": 32,
    "type": "chat",
    "prop": "eggbowl",
-   "kohaiExpr": "smile",
-   "chefPose": "point"
+   "chefPose": "point",
+   "kohaiExpr": "think",
+   "reaction": {
+    "text": "水を!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
   },
   {
    "s": 34,
+   "type": "keyword",
+   "tag": "砂糖のはたらき",
+   "kana": "さとうは みずを つかまえる",
+   "term": "水をつかまえる",
+   "meaning": "固まりにくく、ふわふわに",
+   "who": "mina"
+  },
+  {
+   "s": 35,
+   "type": "chat",
+   "prop": "eggbowl",
+   "kohaiExpr": "smile",
+   "chefExpr": "smile"
+  },
+  {
+   "s": 37,
+   "type": "pan",
+   "label": "焦げやすいかも だから弱火",
+   "fire": "low",
+   "food": "#ffd54a",
+   "steam": false,
+   "who": "mina",
+   "hl": 1
+  },
+  {
+   "s": 39,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile"
+  },
+  {
+   "s": 42,
+   "type": "step",
+   "n": 2,
+   "text": "砂糖が溶けるまで\n軽くまぜる",
+   "tip": "まぜすぎない",
+   "who": "mina"
+  },
+  {
+   "s": 44,
    "type": "pan",
    "label": "油をなじませて 弱火",
    "fire": "low",
@@ -184,7 +230,7 @@
    "hl": 1
   },
   {
-   "s": 36,
+   "s": 46,
    "type": "chat",
    "chefExpr": "angry",
    "kohaiExpr": "think",
@@ -196,7 +242,7 @@
    }
   },
   {
-   "s": 39,
+   "s": 50,
    "type": "step",
    "n": 3,
    "text": "卵液の1/3を\n流し入れる",
@@ -205,7 +251,7 @@
    "pose": "up"
   },
   {
-   "s": 40,
+   "s": 51,
    "type": "chat",
    "chefExpr": "smile",
    "kohaiExpr": "sad",
@@ -217,7 +263,7 @@
    }
   },
   {
-   "s": 42,
+   "s": 53,
    "type": "step",
    "n": 4,
    "text": "奥から手前に\n巻く",
@@ -226,7 +272,7 @@
    "section": "手順④"
   },
   {
-   "s": 44,
+   "s": 55,
    "type": "pan",
    "label": "あと2回くり返す",
    "fire": "low",
@@ -234,7 +280,7 @@
    "who": "mina"
   },
   {
-   "s": 46,
+   "s": 57,
    "type": "quiz",
    "q": "卵の白身が\n固まり始める温度は?",
    "choices": [
@@ -248,7 +294,7 @@
    "section": "雑学クイズ"
   },
   {
-   "s": 53,
+   "s": 64,
    "type": "chat",
    "chefExpr": "smile",
    "kohaiExpr": "surprised",
@@ -261,7 +307,7 @@
    }
   },
   {
-   "s": 56,
+   "s": 67,
    "type": "food",
    "dish": "tamagoyaki",
    "label": "できあがり!",
@@ -270,7 +316,7 @@
    "kohaiExpr": "surprised"
   },
   {
-   "s": 58,
+   "s": 69,
    "type": "chat",
    "prop": "tamagoyaki",
    "kohaiExpr": "surprised",
@@ -283,7 +329,7 @@
    }
   },
   {
-   "s": 60,
+   "s": 71,
    "type": "keyword",
    "tag": "安全",
    "kana": "",
@@ -292,7 +338,7 @@
    "who": "mina"
   },
   {
-   "s": 61,
+   "s": 72,
    "type": "chat",
    "prop": "tamagoyaki",
    "kohaiExpr": "smile",
@@ -305,7 +351,7 @@
    }
   },
   {
-   "s": 63,
+   "s": 74,
    "type": "list",
    "title": "ふわふわのコツ",
    "items": [
@@ -318,7 +364,7 @@
    "section": "まとめ"
   },
   {
-   "s": 66,
+   "s": 77,
    "type": "chat",
    "chefExpr": "smile",
    "chefPose": "wave",

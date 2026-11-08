@@ -1,15 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, interpolate, delayRender, continueRender} from 'remotion';
-import timings from '../timings.json';
-import storyboard from '../storyboard.json';
 import {SCENES, TalkCtx} from './Scenes';
-import {SUB, fontsReady} from './fonts';
+import {SUB, loadFonts} from './fonts';
+import {SimpleCtx, AmpCtx, CastCtx, SpeakerCtx} from './Character';
+import {Kitchen, Banner, SectionTag, PointsPanel, Telop, Reaction, Cta} from './Hud';
 
 const FPS = 30;
-const sents: {i: number; text: string; start: number; end: number}[] = timings.sentences;
-const lastEnd = sents[sents.length - 1].end;
-const TOTAL = Math.ceil((lastEnd + 2) * FPS);
 
+type Sent = {i: number; text: string; start: number; end: number; speaker?: string};
 const PALETTES = [
   ['#fff4c9', '#ffe39a', '#fffbe6'],
   ['#d9f0ff', '#b5defa', '#f0faff'],
@@ -18,12 +16,6 @@ const PALETTES = [
   ['#efe3ff', '#d9c4fa', '#f8f1ff'],
   ['#ffead2', '#ffd2a0', '#fff5e8'],
 ];
-
-const cuts: any[] = (storyboard as any).cuts.map((c: any, idx: number, arr: any[]) => {
-  const from = idx === 0 ? 0 : Math.round(sents[c.s].start * FPS);
-  const to = idx === arr.length - 1 ? TOTAL : Math.round(sents[arr[idx + 1].s].start * FPS);
-  return {...c, idx, from, dur: to - from};
-});
 
 const Background: React.FC<{cut: any}> = ({cut}) => {
   if (cut.type === 'news') {
@@ -62,7 +54,7 @@ const splitLines = (s: string) => {
   if (best < 0) best = Math.floor(mid);
   return [chars.slice(0, best + 1).join(''), chars.slice(best + 1).join('')];
 };
-const Subtitle: React.FC<{t: number}> = ({t}) => {
+const Subtitle: React.FC<{t: number; sents: Sent[]; lastEnd: number}> = ({t, sents, lastEnd}) => {
   let cur = sents[0];
   for (const s of sents) if (s.start <= t + 0.02) cur = s;
   if (t > lastEnd + 0.3) return null;
@@ -80,32 +72,79 @@ const Subtitle: React.FC<{t: number}> = ({t}) => {
   );
 };
 
-export const Video: React.FC = () => {
+export type VideoProps = {simple?: boolean; timings: {sentences: Sent[]}; storyboard: any; envelope: number[]};
+
+export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard, envelope}) => {
   const frame = useCurrentFrame();
+  const sents = timings.sentences;
+  const lastEnd = sents[sents.length - 1].end;
+  const TOTAL = Math.ceil((lastEnd + 2) * FPS);
+  const cuts: any[] = React.useMemo(() => storyboard.cuts.map((c: any, idx: number, arr: any[]) => {
+    const from = idx === 0 ? 0 : Math.round(sents[c.s].start * FPS);
+    const to = idx === arr.length - 1 ? TOTAL : Math.round(sents[arr[idx + 1].s].start * FPS);
+    return {...c, idx, from, dur: to - from};
+  }), [storyboard, timings]);
   const [handle] = useState(() => delayRender('fonts'));
-  useEffect(() => { fontsReady.then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
+  useEffect(() => { loadFonts(JSON.stringify({storyboard, timings})).then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
   const t = frame / FPS;
+  const amp = envelope[Math.min(frame, envelope.length - 1)] ?? 0;
   const talking = sents.some((s) => t >= s.start - 0.03 && t <= s.end - 0.08);
+  const show = storyboard.layout === 'show'; // 台所番組ふうの画面（題名の帯・工程名・コツのパネル・大きなテロップ）
+  let curS = sents[0];
+  for (const x of sents) if (x.start <= t + 0.02) curS = x;
+  const speakers: Record<string, string> = storyboard.speakers || {};
+  const speakerRole = curS.speaker && speakers[curS.speaker] ? speakers[curS.speaker] : null;
+  const colors: Record<string, string> = storyboard.speakerColors || {};
+  const spkNames = Object.keys(speakers);
+  const telopColor = (curS.speaker && colors[curS.speaker]) || (curS.speaker && spkNames.indexOf(curS.speaker) === 1 ? '#ffe14d' : '#ffffff');
+  // 工程名とコツの数は、前のカットから引き継ぐ
+  const carried = React.useMemo(() => {
+    let sec = '', shown = 0, hl = -1;
+    return cuts.map((c) => { if (c.section !== undefined) sec = c.section; if (c.showPoints !== undefined) shown = c.showPoints; hl = c.hl !== undefined ? c.hl : hl; return {sec, shown, hl}; });
+  }, [cuts]);
+  const curCut = cuts.reduce((acc, c) => (frame >= c.from ? c : acc), cuts[0]);
+  const cr = carried[curCut.idx];
   return (
     <AbsoluteFill style={{background: '#fff', overflow: 'hidden'}}>
       <Audio src={staticFile('narration.mp3')} />
+      <SimpleCtx.Provider value={simple}>
+      <CastCtx.Provider value={storyboard.cast || {}}>
+      <AmpCtx.Provider value={amp}>
+      <SpeakerCtx.Provider value={speakerRole}>
       <TalkCtx.Provider value={talking}>
         {cuts.map((c) => {
           const Scene = SCENES[c.type];
+          if (!Scene) throw new Error(`知らないシーンの型: ${c.type}（カット${c.idx}）`);
           return (
-            <Sequence key={c.idx} from={c.from} durationInFrames={c.dur} layout="none">
+            <Sequence key={c.idx} from={c.from} durationInFrames={Math.max(1, c.dur)} layout="none">
               <AbsoluteFill style={{overflow: 'hidden'}}>
                 <Camera idx={c.idx} dur={c.dur}>
-                  <Background cut={c} />
-                  <Scene cut={c} dur={c.dur} />
+                  {show ? <Kitchen /> : <Background cut={c} />}
+                  {show
+                    ? <div style={{position: 'absolute', left: 0, top: 0, width: 1920, height: 1080, transform: 'translate(20px, 136px) scale(0.82)', transformOrigin: '0 0'}}><Scene cut={c} dur={c.dur} /></div>
+                    : <Scene cut={c} dur={c.dur} />}
                 </Camera>
+                {show && c.reaction && <Reaction {...c.reaction} />}
+                {show && c.cta && <Cta text={c.cta} />}
               </AbsoluteFill>
             </Sequence>
           );
         })}
       </TalkCtx.Provider>
-      <Subtitle t={t} />
+      </SpeakerCtx.Provider>
+      </AmpCtx.Provider>
+      </CastCtx.Provider>
+      </SimpleCtx.Provider>
+      {show ? (
+        <>
+          {storyboard.banner && <Banner lines={storyboard.banner} />}
+          {cr.sec && <SectionTag text={cr.sec} />}
+          {storyboard.points && <PointsPanel points={storyboard.points} shown={cr.shown} hl={cr.hl} />}
+          {t <= lastEnd + 0.3 && <Telop text={curS.text} color={telopColor} sinceFrames={frame - Math.round(curS.start * FPS)} />}
+        </>
+      ) : (
+        <Subtitle t={t} sents={sents} lastEnd={lastEnd} />
+      )}
     </AbsoluteFill>
   );
 };
-export {cuts};

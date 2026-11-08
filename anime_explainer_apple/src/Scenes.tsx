@@ -1,6 +1,6 @@
 import React, {createContext, useContext} from 'react';
 import {useCurrentFrame, spring, interpolate, Easing} from 'remotion';
-import {Character, Expr, Pose} from './Character';
+import {Character, Expr, Pose, SpeakerCtx} from './Character';
 import {HAND} from './fonts';
 
 export const TalkCtx = createContext(false);
@@ -89,8 +89,8 @@ export const Title: React.FC<SceneProps> = ({cut}) => {
         <T text={cut.line2} x={660} y={585} size={fit(cut.line2, 1040, 150)} fill="#e23030" stroke={INK} sw={4} />
       </g>
       {cut.sub && <T text={cut.sub} x={660} y={730} size={fit(cut.sub, 1000, 62)} fill="#3a3a3a" reveal={26} />}
-      <Coin x={190} y={790} r={44} rot={f / 6} />
-      <Coin x={290} y={830} r={34} rot={f / 7 + 2} />
+      {cut.coins && <Coin x={190} y={790} r={44} rot={f / 6} />}
+      {cut.coins && <Coin x={290} y={830} r={34} rot={f / 7 + 2} />}
       <Character who="mina" x={1480} y={850} scale={1.4} pose="point" expr="smile" talking={talk} />
     </svg>
   );
@@ -414,7 +414,234 @@ export const Outro: React.FC<SceneProps> = ({cut}) => {
   );
 };
 
+
+// ---- 材料（料理）----
+export const Ingredients: React.FC<SceneProps> = ({cut, dur}) => {
+  const f = useCurrentFrame();
+  const talk = talking();
+  const items: string[][] = cut.items; // [[名前, 分量], ...]
+  const step = Math.min(18, Math.max(8, Math.floor((dur * 0.55) / (items.length + 1))));
+  return (
+    <svg width={W} height={1080} style={{position: 'absolute'}}>
+      <g transform={`rotate(-1 700 440) translate(0 ${(1 - pop(f, 0)) * 80})`}>
+        <rect x={226} y={96} width={1000} height={720} rx={22} fill="rgba(0,0,0,0.13)" />
+        <rect x={210} y={80} width={1000} height={720} rx={22} fill="#fffdf5" stroke={INK} strokeWidth={7} />
+        <rect x={210} y={80} width={1000} height={110} rx={22} fill="#ffe14d" stroke={INK} strokeWidth={7} />
+        <T text={cut.title || '材料'} x={710} y={160} size={fit(cut.title || '材料', 880, 78)} />
+        {items.map((it, i) => {
+          const d = 8 + i * step;
+          const row = Math.min(100, Math.floor(500 / items.length));
+          const y = 280 + i * row;
+          const sz = Math.min(fit(it[0], 430, 70), row * 0.72);
+          return (
+            <g key={i} opacity={interpolate(f, [d, d + 4], [0, 1], clamp)}>
+              <T text={it[0]} x={280} y={y} size={sz} anchor="start" reveal={d} />
+              <line x1={290 + textW(it[0], sz)} x2={880} y1={y - 8} y2={y - 8} stroke="#cfc6a8" strokeWidth={4} strokeDasharray="3 12" strokeLinecap="round" />
+              <T text={it[1]} x={1150} y={y} size={Math.min(fit(it[1], 280, 70), row * 0.72)} anchor="end" fill="#e23030" />
+            </g>
+          );
+        })}
+      </g>
+      <Character who={cut.who || 'mina'} x={1560} y={900} scale={1.25} flip expr={cut.expr || 'smile'} pose={cut.pose || 'hips'} talking={talk} />
+    </svg>
+  );
+};
+
+// ---- 手順（番号つき）----
+export const Step: React.FC<SceneProps> = ({cut, dur}) => {
+  const f = useCurrentFrame();
+  const talk = talking();
+  const s = pop(f, 2);
+  return (
+    <svg width={W} height={1080} style={{position: 'absolute'}}>
+      <g transform={`translate(660 420) scale(${s}) translate(-660 -420)`}>
+        <rect x={140} y={150} width={1040} height={560} rx={36} fill="rgba(0,0,0,0.13)" transform="translate(12 12)" />
+        <rect x={140} y={150} width={1040} height={560} rx={36} fill="#fffdf5" stroke={INK} strokeWidth={7} />
+        <T text={cut.text} x={660} y={cut.tip ? (cut.text.includes('\n') ? 340 : 400) : (cut.text.includes('\n') ? 400 : 460)} size={fit(cut.text, 820, 100)} reveal={8} lh={1.2} />
+        {cut.tip && <T text={cut.tip} x={660} y={620} size={fit(cut.tip, 880, 52)} fill="#2d7be5" reveal={26} />}
+      </g>
+      <g transform={`translate(180 190) scale(${pop(f, 6)})`}>
+        <circle r={86} fill="#e23030" stroke={INK} strokeWidth={8} />
+        <T text={String(cut.n)} x={0} y={36} size={104} fill="#fff" />
+      </g>
+      {cut.time && (
+        <g transform={`translate(1010 660) scale(${pop(f, 20)})`}>
+          <rect x={-190} y={-52} width={380} height={104} rx={52} fill="#ffe14d" stroke={INK} strokeWidth={7} />
+          <circle cx={-130} cy={0} r={30} fill="#fff" stroke={INK} strokeWidth={5} />
+          <path d="M -130 -18 L -130 0 L -114 8" stroke={INK} strokeWidth={5} fill="none" strokeLinecap="round" />
+          <T text={cut.time} x={30} y={20} size={fit(cut.time, 250, 58)} />
+        </g>
+      )}
+      <Character who={cut.who || 'mina'} x={1610} y={900} scale={1.3} flip expr={cut.expr || 'smile'} pose={cut.pose || 'point'} talking={talk} />
+    </svg>
+  );
+};
+
+// ---- フライパン（火加減・湯気）----
+export const Pan: React.FC<SceneProps> = ({cut}) => {
+  const f = useCurrentFrame();
+  const talk = talking();
+  const fire = cut.fire || 'mid';
+  const fh = {low: 38, mid: 62, high: 92}[fire as 'low' | 'mid' | 'high'] || 62;
+  const flames = [-150, -75, 0, 75, 150];
+  return (
+    <svg width={W} height={1080} style={{position: 'absolute'}}>
+      <T text={cut.label} x={900} y={150} size={fit(cut.label, 800, 96)} fill="#e23030" stroke="#fff" sw={10} />
+      <g transform="translate(640 600)">
+        {flames.map((x, i) => {
+          const h = fh + 40 + Math.sin(f / 4 + i * 1.7) * 10;
+          return <path key={i} d={`M ${x - 30} 205 Q ${x - 20} ${205 - h * 0.6} ${x} ${205 - h} Q ${x + 20} ${205 - h * 0.6} ${x + 30} 205 Z`} fill={fire === 'high' ? '#ff5a2e' : '#ffa62e'} stroke={INK} strokeWidth={5} strokeLinejoin="round" />;
+        })}
+        <rect x={-230} y={205} width={460} height={28} rx={14} fill="#6a6a74" stroke={INK} strokeWidth={6} />
+        <path d="M 300 -10 L 560 -34 Q 584 -36 584 -12 Q 584 12 560 14 L 300 26 Z" fill="#6a4a30" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+        <path d="M -300 -20 L 300 -20 Q 290 130 190 150 L -190 150 Q -290 130 -300 -20 Z" fill="#4a4a54" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
+        <ellipse cx={0} cy={-20} rx={300} ry={46} fill="#5a5a66" stroke={INK} strokeWidth={8} />
+        <ellipse cx={0} cy={-20} rx={250} ry={30} fill={cut.food || '#ffd54a'} stroke={INK} strokeWidth={6} />
+        {cut.steam !== false && [-120, 0, 120].map((x, i) => (
+          <path key={i} d={`M ${x} -60 q -24 -40 0 -80 q 24 -40 0 -80`} fill="none" stroke="#9aa7b8" strokeWidth={9} strokeLinecap="round" opacity={0.75}
+            transform={`translate(0 ${-((f * 2 + i * 40) % 70)})`} />
+        ))}
+      </g>
+      <Character who={cut.who || 'mina'} x={1620} y={900} scale={1.25} flip expr={cut.expr || 'smile'} pose={cut.pose || 'up'} talking={talk} />
+    </svg>
+  );
+};
+
+// ---- クイズ（雑学）----
+export const Quiz: React.FC<SceneProps> = ({cut, dur}) => {
+  const f = useCurrentFrame();
+  const talk = talking();
+  const choices: string[] = cut.choices;
+  const reveal = Math.floor(dur * (cut.reveal ?? 0.62));
+  const labels = ['A', 'B', 'C', 'D'];
+  return (
+    <svg width={W} height={1080} style={{position: 'absolute'}}>
+      <g transform={`translate(660 200) scale(${pop(f, 0)}) translate(-660 -200)`}>
+        <rect x={110} y={70} width={1100} height={230} rx={34} fill="#fffdf5" stroke={INK} strokeWidth={7} />
+        <rect x={110} y={70} width={150} height={230} rx={34} fill="#2d7be5" stroke={INK} strokeWidth={7} />
+        <T text="Q" x={185} y={225} size={150} fill="#fff" />
+        <T text={cut.q} x={740} y={cut.q.includes('\n') ? 160 : 200} size={fit(cut.q, 900, 70)} reveal={6} />
+      </g>
+      {choices.map((c, i) => {
+        const y = 340 + i * 130;
+        const ok = f >= reveal && i === cut.answer;
+        const ng = f >= reveal && i !== cut.answer;
+        return (
+          <g key={i} transform={`translate(660 ${y + 50}) scale(${pop(f, 10 + i * 6)}) translate(-660 ${-(y + 50)})`} opacity={ng ? 0.4 : 1}>
+            <rect x={150} y={y} width={1020} height={106} rx={30} fill={ok ? '#bff0c4' : '#fff'} stroke={INK} strokeWidth={7} />
+            <circle cx={226} cy={y + 53} r={38} fill={ok ? '#2da44e' : '#ffe14d'} stroke={INK} strokeWidth={6} />
+            <T text={labels[i]} x={226} y={y + 74} size={54} fill={ok ? '#fff' : INK} />
+            <T text={c} x={300} y={y + 72} size={fit(c, 820, 56)} anchor="start" />
+          </g>
+        );
+      })}
+      {f >= reveal && (
+        <g transform={`translate(1330 680) rotate(-10) scale(${0.8 * pop(f, reveal)})`}>
+          <rect x={-180} y={-70} width={360} height={140} rx={30} fill="#e23030" stroke={INK} strokeWidth={8} />
+          <T text="せいかい!" x={0} y={30} size={82} fill="#fff" />
+        </g>
+      )}
+      <Character who={cut.who || 'mina'} x={1620} y={900} scale={1.2} flip expr={f >= reveal ? 'smile' : (cut.expr || 'think')} pose={f >= reveal ? 'up' : 'point'} talking={talk} />
+    </svg>
+  );
+};
+
+// ---- 料理の絵（大きく見せる）----
+const Steam: React.FC<{x: number; y: number; f: number}> = ({x, y, f}) => (
+  <g>
+    {[-70, 0, 70].map((dx, i) => (
+      <path key={i} d={`M ${x + dx} ${y} q -22 -36 0 -72 q 22 -36 0 -72`} fill="none" stroke="#fff" strokeWidth={10} strokeLinecap="round" opacity={0.8}
+        transform={`translate(0 ${-((f * 2 + i * 38) % 60)})`} />
+    ))}
+  </g>
+);
+const Sparkle: React.FC<{x: number; y: number; r: number; f: number; d: number}> = ({x, y, r, f, d}) => {
+  const k = 0.55 + 0.45 * Math.sin((f + d) / 6);
+  return <path d={`M ${x} ${y - r * k} L ${x + r * 0.22 * k} ${y - r * 0.22 * k} L ${x + r * k} ${y} L ${x + r * 0.22 * k} ${y + r * 0.22 * k} L ${x} ${y + r * k} L ${x - r * 0.22 * k} ${y + r * 0.22 * k} L ${x - r * k} ${y} L ${x - r * 0.22 * k} ${y - r * 0.22 * k} Z`} fill="#fff6a8" stroke="#e8b800" strokeWidth={3} />;
+};
+const DishTamago: React.FC<{f: number}> = ({f}) => (
+  <g>
+    <ellipse cx={0} cy={228} rx={440} ry={122} fill="rgba(0,0,0,0.18)" />
+    <ellipse cx={0} cy={210} rx={430} ry={120} fill="#f7f3ea" stroke={INK} strokeWidth={7} />
+    <ellipse cx={0} cy={205} rx={340} ry={86} fill="#ece6d6" stroke="#cdc3aa" strokeWidth={4} />
+    <path d="M -310 196 Q -400 120 -250 98 Q -226 172 -310 196 Z" fill="#4ea85a" stroke={INK} strokeWidth={6} />
+    <path d="M -300 186 Q -330 140 -262 112" fill="none" stroke="#2f7d3b" strokeWidth={4} />
+    {[0, 1, 2, 3].map((i) => {
+      const x = -250 + i * 160;
+      return (
+        <g key={i} transform={`translate(${x} ${64 + (i % 2) * 10}) rotate(${(i - 1.5) * 2.5} 75 65)`}>
+          <rect x={0} y={0} width={150} height={134} rx={28} fill="#ffd34e" stroke={INK} strokeWidth={7} />
+          <path d="M 12 40 Q 75 6 138 40 L 138 28 Q 130 8 75 8 Q 20 8 12 28 Z" fill="#ffe790" />
+          <path d="M 34 74 Q 75 30 118 72 Q 80 108 46 80 Q 70 66 92 78" fill="none" stroke="#f0a52e" strokeWidth={7} strokeLinecap="round" />
+          <path d="M 8 112 Q 75 132 142 112" fill="none" stroke="#e59a28" strokeWidth={6} strokeLinecap="round" />
+        </g>
+      );
+    })}
+    <ellipse cx={330} cy={176} rx={78} ry={52} fill="#fbfbf6" stroke={INK} strokeWidth={6} />
+    <path d="M 290 160 q 30 -22 70 -4" stroke="#d9d9cf" strokeWidth={5} fill="none" strokeLinecap="round" />
+    <Steam x={-100} y={40} f={f} />
+    <Steam x={160} y={50} f={f + 20} />
+  </g>
+);
+const DishBowl: React.FC<{f: number}> = ({f}) => (
+  <g>
+    <ellipse cx={0} cy={330} rx={340} ry={50} fill="rgba(0,0,0,0.18)" />
+    <path d="M -310 120 Q -310 310 0 330 Q 310 310 310 120 Z" fill="#ffffff" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
+    <path d="M -250 240 Q 0 300 250 240" fill="none" stroke="#e8c0a0" strokeWidth={8} strokeLinecap="round" />
+    <ellipse cx={0} cy={120} rx={310} ry={64} fill="#fffefa" stroke={INK} strokeWidth={8} />
+    <ellipse cx={0} cy={126} rx={262} ry={44} fill="#ffd34e" stroke="#e8a82c" strokeWidth={5} />
+    <ellipse cx={-60} cy={118} rx={110} ry={16} fill="#ffe790" />
+    {[[-250, 40, 200, 150], [-210, 150, 270, 60]].map((c, i) => (
+      <g key={i}>
+        <line x1={c[0]} y1={c[1]} x2={c[2]} y2={c[3]} stroke={INK} strokeWidth={24} strokeLinecap="round" />
+        <line x1={c[0]} y1={c[1]} x2={c[2]} y2={c[3]} stroke="#d9a76a" strokeWidth={13} strokeLinecap="round" />
+      </g>
+    ))}
+    <path d="M 330 150 q 70 -40 130 10 q -30 46 -130 -10 Z" fill="#fff" stroke={INK} strokeWidth={6} />
+    <path d="M 360 230 q 60 -50 130 0 q -30 50 -130 0 Z" fill="#fff" stroke={INK} strokeWidth={6} />
+  </g>
+);
+export const Food: React.FC<SceneProps> = ({cut}) => {
+  const f = useCurrentFrame();
+  const talk = talking();
+  const s = pop(f, 0);
+  const dish = cut.dish || 'tamagoyaki';
+  return (
+    <svg width={W} height={1080} style={{position: 'absolute'}}>
+      <g transform={`translate(960 ${cut.label ? 330 : 290}) scale(${1.25 * s}) `}>
+        {dish === 'eggbowl' ? <DishBowl f={f} /> : <DishTamago f={f} />}
+      </g>
+      <Sparkle x={560} y={380} r={52} f={f} d={0} /><Sparkle x={1400} y={330} r={44} f={f} d={9} /><Sparkle x={1250} y={520} r={34} f={f} d={4} />
+      {cut.label && <T text={cut.label} x={960} y={190} size={fit(cut.label, 1500, 130)} fill="#ffe14d" stroke={INK} sw={22} />}
+      <Character who="mina" x={250} y={1010} scale={1.0} expr={cut.chefExpr || 'smile'} pose={cut.chefPose || 'point'} talking={talk} />
+      <Character who="taro" x={1670} y={1010} scale={1.0} flip expr={cut.kohaiExpr || 'surprised'} pose={cut.kohaiPose || 'up'} talking={talk} seed={20} />
+    </svg>
+  );
+};
+
+// ---- 会話（2人が向かい合う。吹き出しなし。話している人が少し大きくなる）----
+export const Chat: React.FC<SceneProps> = ({cut}) => {
+  const f = useCurrentFrame();
+  const talk = talking();
+  const spk = React.useContext(SpeakerCtx);
+  const grow = (who: string) => (spk === who ? 1.07 : 1.0);
+  return (
+    <svg width={W} height={1080} style={{position: 'absolute'}}>
+      {cut.prop === 'eggbowl' && <g transform="translate(960 560) scale(0.62)"><DishBowl f={f} /></g>}
+      {cut.prop === 'tamagoyaki' && <g transform="translate(960 600) scale(0.6)"><DishTamago f={f} /></g>}
+      <Character who="mina" x={520} y={1040} scale={1.15 * grow('mina')} expr={cut.chefExpr || 'smile'} pose={cut.chefPose || 'idle'} talking={talk} />
+      <Character who="taro" x={1400} y={1040} scale={1.15 * grow('taro')} flip expr={cut.kohaiExpr || 'smile'} pose={cut.kohaiPose || 'idle'} talking={talk} seed={20} />
+      {cut.mark && (
+        <g transform={`translate(${cut.markX || 960} ${(cut.markY || 330) + Math.sin(f / 7) * 8}) scale(${pop(f, 10)})`}>
+          <T text={cut.mark} x={0} y={0} size={170} fill={cut.markColor || '#e23030'} stroke={INK} sw={16} />
+        </g>
+      )}
+    </svg>
+  );
+};
+
 export const SCENES: Record<string, React.FC<SceneProps>> = {
   title: Title, talk: Talk, duo: Duo, list: List, compare: Compare, bars: Bars, news: News,
   keyword: Keyword, coins: Coins, grid: Grid, imac: Imac, outro: Outro,
+  ingredients: Ingredients, step: Step, pan: Pan, quiz: Quiz, food: Food, chat: Chat,
 };

@@ -1,0 +1,405 @@
+{
+ "style": "simple",
+ "layout": "show",
+ "banner": [
+  "失敗しない!",
+  "ふわふわ卵焼き"
+ ],
+ "points": [
+  "泡立てない",
+  "弱火のまま",
+  "砂糖ひとさじ"
+ ],
+ "cast": {
+  "mina": "chef_pro",
+  "taro": "kohai",
+  "jobs": "obaa"
+ },
+ "speakers": {
+  "シェフ": "mina",
+  "後輩": "taro"
+ },
+ "speakerColors": {
+  "シェフ": "#ffffff",
+  "後輩": "#ffe14d"
+ },
+ "cuts": [
+  {
+   "s": 0,
+   "type": "food",
+   "dish": "tamagoyaki",
+   "section": "オープニング",
+   "chefExpr": "smile",
+   "kohaiExpr": "cry"
+  },
+  {
+   "s": 2,
+   "type": "chat",
+   "chefExpr": "smile",
+   "chefPose": "up",
+   "kohaiExpr": "surprised",
+   "reaction": {
+    "text": "あるある!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   }
+  },
+  {
+   "s": 5,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "マジっすか!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 7,
+   "type": "keyword",
+   "tag": "ここが大事",
+   "kana": "",
+   "term": "コツは3つ",
+   "meaning": "知れば失敗しない",
+   "who": "mina",
+   "section": "コツは3つ"
+  },
+  {
+   "s": 8,
+   "type": "list",
+   "title": "大事なこと3つ",
+   "items": [
+    "泡立てない",
+    "弱火のまま",
+    "砂糖ひとさじ"
+   ],
+   "who": "mina",
+   "showPoints": 3,
+   "hl": -1,
+   "pose": "point"
+  },
+  {
+   "s": 11,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "reaction": {
+    "text": "え、砂糖も!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 15,
+   "type": "ingredients",
+   "title": "材料（2人分）",
+   "items": [
+    [
+     "たまご",
+     "3個"
+    ],
+    [
+     "砂糖",
+     "大さじ1"
+    ],
+    [
+     "しょうゆ",
+     "小さじ1/2"
+    ],
+    [
+     "サラダ油",
+     "少々"
+    ]
+   ],
+   "who": "mina",
+   "section": "材料"
+  },
+  {
+   "s": 17,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile",
+   "prop": "eggbowl"
+  },
+  {
+   "s": 20,
+   "type": "step",
+   "n": 1,
+   "text": "ボウルに\n卵を割る",
+   "tip": "泡立てない!",
+   "who": "mina",
+   "section": "手順①",
+   "hl": 0
+  },
+  {
+   "s": 23,
+   "type": "chat",
+   "prop": "eggbowl",
+   "chefPose": "point",
+   "kohaiExpr": "think"
+  },
+  {
+   "s": 26,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "cry",
+   "reaction": {
+    "text": "ギクッ!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 29,
+   "type": "step",
+   "n": 2,
+   "text": "砂糖としょうゆを\n入れる",
+   "tip": "三つ目のコツ",
+   "who": "mina",
+   "section": "手順②",
+   "hl": 2
+  },
+  {
+   "s": 32,
+   "type": "chat",
+   "prop": "eggbowl",
+   "chefPose": "point",
+   "kohaiExpr": "think",
+   "reaction": {
+    "text": "水を!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 34,
+   "type": "keyword",
+   "tag": "砂糖のはたらき",
+   "kana": "さとうは みずを つかまえる",
+   "term": "水をつかまえる",
+   "meaning": "固まりにくく、ふわふわに",
+   "who": "mina"
+  },
+  {
+   "s": 35,
+   "type": "chat",
+   "prop": "eggbowl",
+   "kohaiExpr": "smile",
+   "chefExpr": "smile"
+  },
+  {
+   "s": 37,
+   "type": "pan",
+   "label": "砂糖が入ると 焼き色がつきやすい",
+   "fire": "low",
+   "food": "#ffd54a",
+   "steam": false,
+   "who": "mina",
+   "hl": 1
+  },
+  {
+   "s": 38,
+   "type": "compare",
+   "left": {
+    "label": "グラニュー糖",
+    "value": "色づきにくい"
+   },
+   "right": {
+    "label": "上白糖",
+    "value": "色づきやすい",
+    "red": true
+   },
+   "vs": "VS",
+   "who": "mina",
+   "expr": "smile"
+  },
+  {
+   "s": 41,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile"
+  },
+  {
+   "s": 44,
+   "type": "step",
+   "n": 2,
+   "text": "砂糖が溶けるまで\n軽くまぜる",
+   "tip": "まぜすぎない",
+   "who": "mina"
+  },
+  {
+   "s": 46,
+   "type": "pan",
+   "label": "油をなじませて 弱火",
+   "fire": "low",
+   "food": "#f3ecd0",
+   "steam": false,
+   "who": "mina",
+   "section": "手順③",
+   "hl": 1
+  },
+  {
+   "s": 48,
+   "type": "chat",
+   "chefExpr": "angry",
+   "kohaiExpr": "think",
+   "reaction": {
+    "text": "ダメ!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   }
+  },
+  {
+   "s": 52,
+   "type": "step",
+   "n": 3,
+   "text": "卵液の1/3を\n流し入れる",
+   "time": "約3分",
+   "who": "mina",
+   "pose": "up"
+  },
+  {
+   "s": 53,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "sad",
+   "reaction": {
+    "text": "長っ!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 55,
+   "type": "step",
+   "n": 4,
+   "text": "奥から手前に\n巻く",
+   "tip": "半熟のうちに",
+   "who": "mina",
+   "section": "手順④"
+  },
+  {
+   "s": 57,
+   "type": "pan",
+   "label": "あと2回くり返す",
+   "fire": "low",
+   "food": "#ffd54a",
+   "who": "mina"
+  },
+  {
+   "s": 59,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "think",
+   "section": "雑学クイズ",
+   "reaction": {
+    "text": "クイズ!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   }
+  },
+  {
+   "s": 62,
+   "type": "quiz",
+   "q": "卵の黄身が\n固まり始める温度は?",
+   "choices": [
+    "50度",
+    "65度",
+    "90度"
+   ],
+   "answer": 1,
+   "who": "mina",
+   "reveal": 0.75,
+   "section": "雑学クイズ"
+  },
+  {
+   "s": 68,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "えっ!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 71,
+   "type": "food",
+   "dish": "tamagoyaki",
+   "label": "できあがり!",
+   "section": "完成",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised"
+  },
+  {
+   "s": 73,
+   "type": "chat",
+   "prop": "tamagoyaki",
+   "kohaiExpr": "surprised",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "ふわっふわ!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 75,
+   "type": "keyword",
+   "tag": "安全",
+   "kana": "",
+   "term": "中まで加熱",
+   "meaning": "卵はしっかり火を通して",
+   "who": "mina"
+  },
+  {
+   "s": 76,
+   "type": "chat",
+   "prop": "tamagoyaki",
+   "kohaiExpr": "smile",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "うまっ!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 78,
+   "type": "list",
+   "title": "ふわふわのコツ",
+   "items": [
+    "泡立てない",
+    "弱火のまま",
+    "砂糖ひとさじ"
+   ],
+   "total": "これだけ!",
+   "who": "mina",
+   "section": "まとめ"
+  },
+  {
+   "s": 81,
+   "type": "chat",
+   "chefExpr": "smile",
+   "chefPose": "wave",
+   "kohaiExpr": "smile",
+   "kohaiPose": "wave",
+   "cta": "チャンネル登録・高評価\nよろしくお願いします!"
+  }
+ ]
+}

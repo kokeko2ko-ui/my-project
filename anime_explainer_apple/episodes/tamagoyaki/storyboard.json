@@ -1,0 +1,213 @@
+{
+ "style": "simple",
+ "cast": {
+  "mina": "chef_mina",
+  "taro": "chef_ko",
+  "jobs": "obaa"
+ },
+ "cuts": [
+  {
+   "s": 0,
+   "type": "title",
+   "line1": "5歳でもわかる",
+   "line2": "ふわふわ卵焼き",
+   "sub": "失敗しない2つのコツ"
+  },
+  {
+   "s": 2,
+   "type": "talk",
+   "who": "mina",
+   "side": "left",
+   "bubble": "コツは\nたった2つ!",
+   "pose": "up"
+  },
+  {
+   "s": 3,
+   "type": "compare",
+   "left": {
+    "label": "コツ①",
+    "value": "泡立てない"
+   },
+   "right": {
+    "label": "コツ②",
+    "value": "弱火のまま",
+    "red": true
+   },
+   "vs": "＋",
+   "who": "taro",
+   "expr": "smile"
+  },
+  {
+   "s": 4,
+   "type": "talk",
+   "who": "mina",
+   "side": "right",
+   "bubble": "今日は\n卵焼きを作るよ",
+   "pose": "point"
+  },
+  {
+   "s": 5,
+   "type": "ingredients",
+   "title": "材料（2人分）",
+   "items": [
+    [
+     "たまご",
+     "3個"
+    ],
+    [
+     "砂糖",
+     "大さじ1"
+    ],
+    [
+     "しょうゆ",
+     "小さじ1/2"
+    ],
+    [
+     "サラダ油",
+     "少々"
+    ]
+   ],
+   "who": "mina"
+  },
+  {
+   "s": 6,
+   "type": "step",
+   "n": 1,
+   "text": "ボウルに\n卵を割る",
+   "tip": "白身を切るようにまぜる",
+   "who": "mina"
+  },
+  {
+   "s": 8,
+   "type": "talk",
+   "who": "taro",
+   "side": "left",
+   "bubble": "泡立てないのが\nコツ!",
+   "expr": "smile",
+   "pose": "up",
+   "mark": "!"
+  },
+  {
+   "s": 9,
+   "type": "step",
+   "n": 2,
+   "text": "砂糖としょうゆを\n入れる",
+   "tip": "やわらかく仕上がる",
+   "who": "mina"
+  },
+  {
+   "s": 11,
+   "type": "duo",
+   "speaker": "left",
+   "left": {
+    "who": "mina",
+    "bubble": "ここで\nひとつだけ",
+    "expr": "smile",
+    "pose": "point"
+   },
+   "right": {
+    "who": "taro",
+    "bubble": "軽くまぜる\nだけ!",
+    "expr": "smile",
+    "pose": "up"
+   }
+  },
+  {
+   "s": 13,
+   "type": "pan",
+   "label": "油をなじませて 弱火",
+   "fire": "low",
+   "food": "#f3ecd0",
+   "steam": false,
+   "who": "mina"
+  },
+  {
+   "s": 14,
+   "type": "step",
+   "n": 3,
+   "text": "卵液の1/3を\n流し入れる",
+   "time": "約3分",
+   "who": "mina",
+   "pose": "up"
+  },
+  {
+   "s": 15,
+   "type": "compare",
+   "left": {
+    "label": "強火",
+    "value": "焦げる",
+    "red": true
+   },
+   "right": {
+    "label": "弱火",
+    "value": "ふわふわ"
+   },
+   "vs": "VS",
+   "who": "taro",
+   "expr": "sad"
+  },
+  {
+   "s": 16,
+   "type": "step",
+   "n": 4,
+   "text": "奥から手前に\n巻く",
+   "tip": "半熟のうちに",
+   "who": "mina"
+  },
+  {
+   "s": 18,
+   "type": "talk",
+   "who": "mina",
+   "side": "left",
+   "bubble": "奥に戻して\nあと2回!",
+   "pose": "point"
+  },
+  {
+   "s": 19,
+   "type": "quiz",
+   "q": "卵の白身が\n固まり始める温度は?",
+   "choices": [
+    "50度",
+    "60度",
+    "90度"
+   ],
+   "answer": 1,
+   "who": "mina",
+   "reveal": 0.8
+  },
+  {
+   "s": 25,
+   "type": "keyword",
+   "tag": "ひとこと",
+   "kana": "やく ろくじゅう ど",
+   "term": "約60度",
+   "meaning": "ここから固まり始める",
+   "who": "mina"
+  },
+  {
+   "s": 27,
+   "type": "talk",
+   "who": "mina",
+   "side": "right",
+   "bubble": "卵はしっかり\n加熱してね",
+   "expr": "smile"
+  },
+  {
+   "s": 28,
+   "type": "list",
+   "title": "ふわふわのコツ",
+   "items": [
+    "泡立てない",
+    "弱火のまま"
+   ],
+   "total": "これだけ!",
+   "who": "mina"
+  },
+  {
+   "s": 31,
+   "type": "outro",
+   "text": "つくってね!",
+   "next": "とろとろオムレツ"
+  }
+ ]
+}

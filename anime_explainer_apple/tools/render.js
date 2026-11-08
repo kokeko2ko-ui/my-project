@@ -58,9 +58,10 @@ const readJson = (f, d) => (fs.existsSync(path.join(EP, f)) ? JSON.parse(fs.read
     }
   } else {
     const preview = mode === 'preview';
-    const output = path.join(out, preview ? 'preview.mp4' : 'video.mp4');
+    const range = process.env.RANGE ? process.env.RANGE.split('-').map(Number) : null; // 例: RANGE=0-900（確認用に一部だけ）
+    const output = path.join(out, range ? 'range.mp4' : preview ? 'preview.mp4' : 'video.mp4');
     await renderMedia({
-      composition: comp, serveUrl, inputProps, codec: 'h264', outputLocation: output,
+      composition: comp, serveUrl, inputProps, codec: 'h264', outputLocation: output, ...(range ? {frameRange: range} : {}),
       scale: preview ? 0.5 : 1, concurrency: 4, crf: preview ? 30 : 20,
       onProgress: ({progress}) => { if (Math.round(progress * 100) % 10 === 0) process.stdout.write(`\r${Math.round(progress * 100)}%`); },
       ...common,

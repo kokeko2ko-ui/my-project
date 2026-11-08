@@ -14,6 +14,7 @@
 - **docx/txt出力先**：`/mnt/user-data/outputs/`
 - **サムネイル**：NanoBanana2で作る（プロンプトをSTEP8で出力する）
 - **解説アニメ動画（別チャンネル用）**：`.claude/skills/anime-explainer-video.md` を参照。作業場所は `anime_explainer_apple/`（プロンプトは `prompts/`、回ごとのデータは `episodes/`）
+  - **新しいセッションは最初に `anime_explainer_apple/docs/引き継ぎ.md` を読む**（解説アニメ側の状況・ユーザーの決定事項・落とし穴・次の作業）
 
 ---
 

@@ -9,6 +9,8 @@ description: >
 
 # 解説アニメ動画 制作スキル（anime-explainer-video）
 
+> **新しいセッションは、先に `anime_explainer_apple/docs/引き継ぎ.md` を読む**（状況・ユーザーの決定事項・落とし穴・次の作業）。
+
 元ネタ：https://narouze.com/tokuten_line/77（3回の深掘りは `anime_explainer_apple/docs/narouze_tokuten77_分析.md`）
 作業場所：`anime_explainer_apple/`（以下、相対パスはここから）
 
@@ -37,7 +39,7 @@ description: >
 STEP 0 ジャンルを決める（ユーザーの言葉から。なければ聞く）→ 設定ファイルを読む（なければ _template.md から作る）
 STEP 1 テーマ決め   prompts/01_theme_prompt.md を設定ファイルで埋めて実行 → 番号つきタイトル案
 STEP 2 台本         prompts/02_script_prompt.md を埋めて実行 → episodes/<名前>/input/script.txt
-STEP 3 読み用の台本  設定ファイルの「読み方の変換表」で input/script_reading.txt を作る（文の数・順番は script.txt と同じ）
+STEP 3 読み用の台本  python3 tools/make_reading.py $EP で input/script_reading.txt を作る（変換表は tools/reading_map.json。回だけの変換は $EP/reading_extra.json。文の数・順番は script.txt と同じ。砂糖は漢字のまま）
 STEP 4 音声とタイミング  tts_chunked.py → make_timings.js → make_envelope.js
 STEP 5 絵コンテ     storyboard.json を書く → 箇条書きでユーザーに見せて OK をもらう
 STEP 6 静止画確認   render.js stills → 全カットを目で確認 → 直す

@@ -100,6 +100,10 @@ node tools/render.js final         # 本番 1920x1080（約20分／6分動画。
 - 軽い版：`ffmpeg -i out/video.mp4 -vf scale=1280:720 -c:v libx264 -preset veryfast -crf 26 -pix_fmt yuv420p -c:a aac -b:a 160k -movflags +faststart out/video_720p.mp4`
 - 渡し方：`/mnt/user-data/outputs/` に **ASCII のファイル名**でコピーして SendUserFile。（日本語名は化けることがある）
 
+## 参考動画の分析（Gemini）
+- Claude は動画を見られない。参考にする動画（YouTube）は、`python3 tools/gemini_video.py <URL> --out docs/参考動画/<id>_分析.md` で Gemini に分析させる（構成・話し方・テロップ・BGM・効果音・事実）。使い方・モデル・キーは `docs/参考動画の分析_Gemini.md`。
+- 結果は**モデルの出力**。事実・数値は確認する。台詞・口癖・見た目は真似しない。
+
 ## 作ったあとに必ず確認する（人の目と耳）
 1. **自動**：`verify.py` が FAIL なし。
 2. **目**：全カットの静止画。文字の隠れ・はみ出し・重なり・字幕にかかっていないか・絵が台本と合っているか。

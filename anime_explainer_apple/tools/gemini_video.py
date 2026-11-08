@@ -29,12 +29,18 @@ def req(method, path, body=None, headers=None, raw=False):
     if body is not None and not raw: h['Content-Type'] = 'application/json'
     if headers: h.update(headers)
     data = json.dumps(body).encode() if (body is not None and not raw) else body
-    r = urllib.request.Request(path if path.startswith('http') else BASE + path, data=data, method=method, headers=h)
-    try:
-        resp = urllib.request.urlopen(r, timeout=600)
-    except urllib.error.HTTPError as e:
-        sys.exit(f'エラー {e.code}: {e.read().decode(errors="replace")[:600]}')
-    return resp
+    url = path if path.startswith('http') else BASE + path
+    for i in range(6):   # 混んでいる（429/503など）ときは、待って再試行する
+        r = urllib.request.Request(url, data=data, method=method, headers=h)
+        try:
+            return urllib.request.urlopen(r, timeout=600)
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 500, 502, 503, 504) and i < 5:
+                wait = 8 * (i + 1); print(f'  …エラー{e.code}。{wait}秒待って再試行します（{i + 1}/5）', file=sys.stderr); time.sleep(wait); continue
+            sys.exit(f'エラー {e.code}: {e.read().decode(errors="replace")[:600]}')
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            if i < 5: time.sleep(8 * (i + 1)); continue
+            sys.exit(f'通信エラー: {e}')
 
 def list_models():
     d = json.load(req('GET', '/v1beta/models?pageSize=100'))
@@ -57,25 +63,38 @@ def upload(path):
         time.sleep(5)
     sys.exit('動画の処理が終わりません')
 
-def analyze(src, prompt, model):
+def analyze(src, prompt, model, start=None, end=None):
     if src.startswith('http'): part = {'file_data': {'file_uri': src}}
     else:
         uri, mime = upload(src); part = {'file_data': {'mime_type': mime, 'file_uri': uri}}
+    if start is not None or end is not None:   # 動画の一部だけを見せる（秒）
+        md = {}
+        if start is not None: md['startOffset'] = f'{int(start)}s'
+        if end is not None: md['endOffset'] = f'{int(end)}s'
+        part['videoMetadata'] = md
     body = {'contents': [{'parts': [part, {'text': prompt}]}], 'generationConfig': {'temperature': 0.2}}
-    d = json.load(req('POST', f'/v1beta/models/{model}:generateContent', body))
-    c = d.get('candidates', [{}])[0]
-    txt = ''.join(p.get('text', '') for p in c.get('content', {}).get('parts', []))
-    if not txt: sys.exit('結果が空でした: ' + json.dumps(d, ensure_ascii=False)[:600])
+    # 結果を少しずつ受け取る（長い処理が途中で切られないように）
+    resp = req('POST', f'/v1beta/models/{model}:streamGenerateContent?alt=sse', body)
+    txt = ''
+    for line in resp:
+        line = line.decode('utf-8', 'replace').strip()
+        if not line.startswith('data:'): continue
+        try: d = json.loads(line[5:])
+        except Exception: continue
+        c = (d.get('candidates') or [{}])[0]
+        txt += ''.join(p.get('text', '') for p in c.get('content', {}).get('parts', []))
+    if not txt: sys.exit('結果が空でした')
     return txt
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
-    ap.add_argument('source', nargs='?'); ap.add_argument('--model', default=os.environ.get('GEMINI_MODEL', 'gemini-2.5-flash'))
+    ap.add_argument('source', nargs='?'); ap.add_argument('--model', default=os.environ.get('GEMINI_MODEL', 'gemini-3.6-flash'))
     ap.add_argument('--prompt', default=DEFAULT_PROMPT); ap.add_argument('--out'); ap.add_argument('--list-models', action='store_true')
+    ap.add_argument('--start', type=int, help='見はじめる秒'); ap.add_argument('--end', type=int, help='見おわる秒')
     a = ap.parse_args()
     if a.list_models: list_models(); sys.exit(0)
     if not a.source: ap.error('動画の URL かファイルを指定してください')
-    out = analyze(a.source, a.prompt, a.model)
+    out = analyze(a.source, a.prompt, a.model, a.start, a.end)
     if a.out:
         os.makedirs(os.path.dirname(a.out) or '.', exist_ok=True)
         open(a.out, 'w', encoding='utf-8').write(f'# Gemini による動画分析\n\n- 動画：{a.source}\n- モデル：{a.model}\n- 注意：モデルの出力。事実・数値は確認すること。\n\n' + out + '\n')

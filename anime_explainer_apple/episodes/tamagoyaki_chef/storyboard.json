@@ -197,7 +197,7 @@
   {
    "s": 37,
    "type": "pan",
-   "label": "焦げやすいかも だから弱火",
+   "label": "砂糖が入ると 焼き色がつきやすい",
    "fire": "low",
    "food": "#ffd54a",
    "steam": false,
@@ -205,13 +205,29 @@
    "hl": 1
   },
   {
-   "s": 39,
+   "s": 38,
+   "type": "compare",
+   "left": {
+    "label": "グラニュー糖",
+    "value": "色づきにくい"
+   },
+   "right": {
+    "label": "上白糖",
+    "value": "色づきやすい",
+    "red": true
+   },
+   "vs": "VS",
+   "who": "mina",
+   "expr": "smile"
+  },
+  {
+   "s": 41,
    "type": "chat",
    "chefExpr": "smile",
    "kohaiExpr": "smile"
   },
   {
-   "s": 42,
+   "s": 44,
    "type": "step",
    "n": 2,
    "text": "砂糖が溶けるまで\n軽くまぜる",
@@ -219,7 +235,7 @@
    "who": "mina"
   },
   {
-   "s": 44,
+   "s": 46,
    "type": "pan",
    "label": "油をなじませて 弱火",
    "fire": "low",
@@ -230,7 +246,7 @@
    "hl": 1
   },
   {
-   "s": 46,
+   "s": 48,
    "type": "chat",
    "chefExpr": "angry",
    "kohaiExpr": "think",
@@ -242,7 +258,7 @@
    }
   },
   {
-   "s": 50,
+   "s": 52,
    "type": "step",
    "n": 3,
    "text": "卵液の1/3を\n流し入れる",
@@ -251,7 +267,7 @@
    "pose": "up"
   },
   {
-   "s": 51,
+   "s": 53,
    "type": "chat",
    "chefExpr": "smile",
    "kohaiExpr": "sad",
@@ -263,7 +279,7 @@
    }
   },
   {
-   "s": 53,
+   "s": 55,
    "type": "step",
    "n": 4,
    "text": "奥から手前に\n巻く",
@@ -272,7 +288,7 @@
    "section": "手順④"
   },
   {
-   "s": 55,
+   "s": 57,
    "type": "pan",
    "label": "あと2回くり返す",
    "fire": "low",
@@ -280,21 +296,21 @@
    "who": "mina"
   },
   {
-   "s": 57,
+   "s": 59,
    "type": "quiz",
-   "q": "卵の白身が\n固まり始める温度は?",
+   "q": "卵の黄身が\n固まり始める温度は?",
    "choices": [
     "50度",
-    "60度",
+    "65度",
     "90度"
    ],
    "answer": 1,
    "who": "mina",
-   "reveal": 0.78,
+   "reveal": 0.77,
    "section": "雑学クイズ"
   },
   {
-   "s": 64,
+   "s": 66,
    "type": "chat",
    "chefExpr": "smile",
    "kohaiExpr": "surprised",
@@ -307,7 +323,7 @@
    }
   },
   {
-   "s": 67,
+   "s": 69,
    "type": "food",
    "dish": "tamagoyaki",
    "label": "できあがり!",
@@ -316,7 +332,7 @@
    "kohaiExpr": "surprised"
   },
   {
-   "s": 69,
+   "s": 71,
    "type": "chat",
    "prop": "tamagoyaki",
    "kohaiExpr": "surprised",
@@ -329,7 +345,7 @@
    }
   },
   {
-   "s": 71,
+   "s": 73,
    "type": "keyword",
    "tag": "安全",
    "kana": "",
@@ -338,7 +354,7 @@
    "who": "mina"
   },
   {
-   "s": 72,
+   "s": 74,
    "type": "chat",
    "prop": "tamagoyaki",
    "kohaiExpr": "smile",
@@ -351,7 +367,7 @@
    }
   },
   {
-   "s": 74,
+   "s": 76,
    "type": "list",
    "title": "ふわふわのコツ",
    "items": [
@@ -364,7 +380,7 @@
    "section": "まとめ"
   },
   {
-   "s": 77,
+   "s": 79,
    "type": "chat",
    "chefExpr": "smile",
    "chefPose": "wave",

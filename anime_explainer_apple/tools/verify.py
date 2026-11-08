@@ -9,10 +9,10 @@ def add(level, msg): res.append((level, msg))
 def exists(*p): return os.path.exists(os.path.join(ep, *p))
 def load(*p): return json.load(open(os.path.join(ep, *p), encoding='utf-8'))
 
-KNOWN = {'title','talk','duo','list','compare','bars','news','keyword','coins','grid','imac','outro','ingredients','step','pan','quiz'}
+KNOWN = {'title','talk','duo','list','compare','bars','news','keyword','coins','grid','imac','outro','ingredients','step','pan','quiz','food','chat'}
 REQUIRED = {'title':['line1','line2'],'talk':['who','bubble'],'duo':['left','right'],'list':['title','items'],'compare':['left','right'],
             'bars':['values','caption'],'news':['headline'],'keyword':['term','meaning'],'coins':['src','to','note'],'grid':['cells'],'imac':[],
-            'outro':['text','next'],'ingredients':['items'],'step':['n','text'],'pan':['label'],'quiz':['q','choices','answer']}
+            'outro':['text','next'],'ingredients':['items'],'step':['n','text'],'pan':['label'],'quiz':['q','choices','answer'],'food':[],'chat':[]}
 
 # --- ファイル
 for f in ['input/script.txt', 'timings.json', 'storyboard.json', 'narration.mp3', 'envelope.json']:
@@ -37,11 +37,16 @@ def split(x):
         if ch in '。！？' and nx not in '」』）': out.append(cur.strip()); cur = ''
     if cur.strip(): out.append(cur.strip())
     return out
-disp = split(open(os.path.join(ep, 'input/script.txt'), encoding='utf-8').read().strip())
+spk_names = list(load('voices.json')['speakers']) if exists('voices.json') else []
+def strip_spk(x):
+    if not spk_names: return x
+    pat = re.compile('^(' + '|'.join(map(re.escape, spk_names)) + r')[：:]\s*')
+    return '\n'.join(pat.sub('', l.strip()) for l in x.splitlines() if l.strip())
+disp = split(strip_spk(open(os.path.join(ep, 'input/script.txt'), encoding='utf-8').read().strip()))
 if len(disp) != len(sents): add('FAIL', f'字幕用の文の数({len(disp)})と音声の文の数({len(sents)})が違います')
 else: add('PASS', f'文の数が一致（{len(sents)}文）')
 if exists('input/script_reading.txt'):
-    rd = open(os.path.join(ep, 'input/script_reading.txt'), encoding='utf-8').read()
+    rd = strip_spk(open(os.path.join(ep, 'input/script_reading.txt'), encoding='utf-8').read())
     if len(split(rd.strip())) != len(disp): add('FAIL', '読み用の台本と字幕用の台本の文の数が違います')
     bad = [rd[max(0, m.start() - 3):m.end() + 3].replace('\n', ' ') for m in re.finditer(r'[0-9０-９〇一二三四五六七八九十百千万]+', rd)]
     if bad: add('WARN', f'読み用の台本に数字・漢数字が残っています。読み間違えやすいか確認（四角・一方などは普通は大丈夫）: {bad[:10]}')
@@ -61,8 +66,8 @@ for i, c in enumerate(cuts):
     elif c['s'] <= last and i > 0: add('FAIL', f'カット{i}: 文の番号が前より小さい/同じ'); ok = False
     last = c['s']
 if ok: add('PASS', f'絵コンテの形式OK（{len(cuts)}カット）')
-if cuts and cuts[0]['type'] != 'title': add('WARN', '1カット目が title ではありません')
-if cuts and cuts[-1]['type'] != 'outro': add('WARN', '最後のカットが outro ではありません')
+if cuts and cuts[0]['type'] not in ('title', 'food'): add('WARN', '1カット目が title ではありません')
+if cuts and cuts[-1]['type'] != 'outro' and not cuts[-1].get('cta'): add('WARN', '最後のカットが outro（または cta つき）ではありません')
 for i in range(2, len(cuts)):
     if cuts[i]['type'] == cuts[i-1]['type'] == cuts[i-2]['type']: add('WARN', f'同じ型が3回続いています: カット{i-2}〜{i}（{cuts[i]["type"]}）')
 durs = []

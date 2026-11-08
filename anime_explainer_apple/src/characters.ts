@@ -7,7 +7,7 @@ export type CharCfg = {
   pants: string;
   hat?: string; scarf?: string; glasses?: boolean;
   cap?: string; headband?: string; ears?: string; whiskers?: boolean; antenna?: boolean;
-  squareHead?: boolean; beard?: string; beardFull?: boolean; tie?: string; toque?: boolean;
+  squareHead?: boolean; beard?: string; beardFull?: boolean; tie?: string; toque?: boolean; buttons?: boolean; tallToque?: boolean;
 };
 export const CHARS: Record<string, CharCfg> = {
   // 案内役：ミナ先生（黒髪おかっぱ・赤いベレー帽・黄色いマフラー・紺のセーター）
@@ -75,5 +75,9 @@ export const CAST_LIB: Record<string, CharCfg> = {
   // 料理チャンネル向け
   chef_ko: {...base, hair: '#5a3a22', hairShade: '#3a2414', style: 'short', outfit: '#ffffff', outfitShade: '#d6dce6', toque: true, scarf: '#e23d3d'},
   chef_mina: {...base, hair: '#26231f', hairShade: '#0e0d0b', style: 'bob', outfit: '#ffffff', outfitShade: '#d6dce6', toque: true, scarf: '#ffcf2e'},
+  // シェフ番組向け：男性シェフ（高いコック帽・白い調理服・口ひげ・赤いスカーフ）と、後輩（白いタオルの鉢巻き・黒いエプロン）
+  chef_pro: {...base, hair: '#2a211c', hairShade: '#120d0a', style: 'short', outfit: '#ffffff', outfitShade: '#d6dce6',
+    toque: true, tallToque: true, beard: '#3a2a22', scarf: '#d93636', buttons: true},
+  kohai: {...base, hair: '#1f1f1f', hairShade: '#000', style: 'spiky', outfit: '#2a2f3a', outfitShade: '#161a22', headband: '#ffffff'},
   obaa: {...base, skin: '#f3cba5', hair: '#e6e6e6', hairShade: '#bdbdbd', style: 'bun', outfit: '#f29aa8', outfitShade: '#c9707f', glasses: true},
 };

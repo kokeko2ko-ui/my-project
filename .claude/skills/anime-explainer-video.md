@@ -21,6 +21,7 @@ description: >
 |---|---|---|---|---|
 | ビジネス・金融史 | `business.md` | 丸めてよい | 投資の免責・不正・存命人物 | news / bars / compare / coins |
 | 料理・レシピ・料理の雑学 | `cooking.md` | **正確に**（音声・字幕・絵で一致） | 食中毒・アレルギー・火・健康の断定 | ingredients / step / pan / quiz |
+| 料理（シェフ番組ふう・掛け合い） | `cooking.md` の「形式B」 | **正確に** | 同上 | food / chat / step / pan / quiz |
 | 雑学・クイズ | `trivia.md` | 出典で確認できるものだけ | 俗説・断定・出典 | quiz / keyword / compare |
 | 新ジャンル | `_template.md` をコピー | ジャンルで決める | ジャンルで決める | ジャンルで決める |
 
@@ -66,6 +67,12 @@ node tools/make_envelope.js       # → envelope.json（音の大きさ。口パ
 - モデルや声を変える：`TTS_MODEL=eleven_v3 VOICE_ID=<id> python3 tools/tts_chunked.py`。声の候補：Yukari `80H5qqdq3bIO8OjFE6ue`、Satomi `wcs09USXSN5Bl7FXohVZ`、Shizuka `WQz3clzUdMqvBf0jswZQ`、Sakura `RBnMinrYKeccY3vaUxlZ`。
 - 502 が出たら再試行（スクリプトは自動で6回）。それでも長い文が通らなければ `MAXC` を小さくする。
 - ユーザーのクローン声（Vrew など）は、ユーザーが指定したときだけ使う。
+
+### 掛け合い（2人の声）の回
+台本を `シェフ：…` / `後輩：…` の行で書き、`episodes/<名前>/voices.json` に声を書く（例は `episodes/tamagoyaki_chef/`）。
+`tts_chunked.py` が行ごとに声を変えて生成し、速さと音量をそろえてつなぐ（`atempo` で速さ、`gap` で間）。`timings.json` の各文に `speaker` が入る。
+参考動画（実在の料理人のチャンネル）から取り出した雰囲気と、絵コンテの `layout: "show"` の書き方は `docs/参考動画の分析_シェフ番組.md`。
+「硬い」「NHKみたい」と言われたら、この形式にする。**参考にする動画は、見られる範囲（字幕・静止画）を正直に伝える。動画そのものは再生できない。**
 
 ### STEP 5：絵コンテ（`episodes/<名前>/storyboard.json`）
 ```json

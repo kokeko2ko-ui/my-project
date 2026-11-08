@@ -8,6 +8,8 @@ let uid = 0;
 export const SimpleCtx = React.createContext(false);
 export const AmpCtx = React.createContext(0);
 export const CastCtx = React.createContext<Record<string, string>>({});
+// いま話している人の役名（null のときは誰でも話せる）。話していない人の口は動かさない
+export const SpeakerCtx = React.createContext<string | null>(null);
 
 // 平塗り＋右側だけにはっきりした影＋太い黒線
 const Shaded: React.FC<{fill: string; shade: string; dx?: number; children: React.ReactElement}> = ({fill, shade, dx = 22, children}) => {
@@ -40,6 +42,7 @@ export const Character: React.FC<{
   const simple = simpleProp ?? outerSimple;
   const cast = React.useContext(CastCtx);
   const key = cast[who] ?? who;
+  const speaker = React.useContext(SpeakerCtx);
   const f = useCurrentFrame() + seed;
   const c: CharCfg = cfg || (simple ? CAST_LIB[key] || SIMPLE_CHARS[who] : CHARS[key] || CAST_LIB[key] || CHARS[who]);
   const bob = Math.sin(f / 11) * 4;
@@ -47,7 +50,8 @@ export const Character: React.FC<{
   const blink = f % 96 < 5;
   const eyeRy = blink ? 2 : 13;
   const amp = React.useContext(AmpCtx);
-  const mouthOpen = talking ? 3 + amp * 22 : 0; // 音の大きさに合わせて開く
+  const isTalking = talking && (speaker === null || speaker === who);
+  const mouthOpen = isTalking ? 3 + amp * 22 : 0; // 音の大きさに合わせて開く
   const HY = -300; // 頭の中心
   // 眉
   const browY = HY - 52;
@@ -62,8 +66,8 @@ export const Character: React.FC<{
   // 口
   const mouthY = HY + 58;
   let mouth: React.ReactNode;
-  if (talking || expr === 'surprised') {
-    const ry = talking ? mouthOpen : 20;
+  if (isTalking || expr === 'surprised') {
+    const ry = isTalking ? mouthOpen : 20;
     mouth = <ellipse cx={0} cy={mouthY} rx={expr === 'surprised' ? 16 : 22} ry={ry} fill="#8a2323" stroke={INK} strokeWidth={SW - 1} />;
   } else if (expr === 'smile') {
     mouth = <path d={`M -34 ${mouthY - 10} Q 0 ${mouthY + 34} 34 ${mouthY - 10} Z`} fill="#fff" stroke={INK} strokeWidth={SW - 1} strokeLinejoin="round" />;
@@ -74,7 +78,7 @@ export const Character: React.FC<{
   } else {
     mouth = <path d={`M -18 ${mouthY} Q 6 ${mouthY - 8} 26 ${mouthY - 2}`} fill="none" stroke={INK} strokeWidth={SW - 1} strokeLinecap="round" />;
   }
-  if (simple && !talking && expr === 'smile') {
+  if (simple && !isTalking && expr === 'smile') {
     mouth = <path d={`M -26 ${mouthY - 4} Q 0 ${mouthY + 24} 26 ${mouthY - 4}`} fill="none" stroke={INK} strokeWidth={SW - 1} strokeLinecap="round" />;
   }
   // 腕
@@ -113,6 +117,7 @@ export const Character: React.FC<{
       <Arm s={sh.l} h={hd.l} />
       {/* 体 */}
       <Shaded fill={c.outfit} shade={c.outfitShade} dx={26}><rect x={-66} y={-200} width={132} height={150} rx={46} /></Shaded>
+      {c.buttons && <g fill={INK}><circle cx={-14} cy={-150} r={6} /><circle cx={-14} cy={-118} r={6} /><circle cx={14} cy={-150} r={6} /><circle cx={14} cy={-118} r={6} /></g>}
       {c.tie && <path d="M -16 -192 L 16 -192 L 24 -142 L 0 -98 L -24 -142 Z" fill={c.tie} stroke={INK} strokeWidth={SW - 1} strokeLinejoin="round" />}
       {c.outfit === '#ffffff' && <path d="M 0 -196 L 0 -50" stroke={INK} strokeWidth={5} />}
       {c.style === 'spiky' && <path d="M -30 -130 L 30 -130" stroke="none" />}
@@ -187,7 +192,7 @@ export const Character: React.FC<{
         )}
         {c.toque && (
           <g>
-            <Shaded fill="#ffffff" shade="#d6dce6" dx={26}><path d={`M -104 ${HY - 66} C -160 ${HY - 110} -130 ${HY - 215} -56 ${HY - 195} C -26 ${HY - 262} 62 ${HY - 262} 82 ${HY - 195} C 156 ${HY - 215} 168 ${HY - 110} 108 ${HY - 66} Z`} /></Shaded>
+            <Shaded fill="#ffffff" shade="#d6dce6" dx={26}><path d={c.tallToque ? `M -96 ${HY - 66} C -150 ${HY - 130} -128 ${HY - 270} -52 ${HY - 262} C -24 ${HY - 340} 64 ${HY - 340} 84 ${HY - 262} C 150 ${HY - 270} 160 ${HY - 130} 100 ${HY - 66} Z` : `M -104 ${HY - 66} C -160 ${HY - 110} -130 ${HY - 215} -56 ${HY - 195} C -26 ${HY - 262} 62 ${HY - 262} 82 ${HY - 195} C 156 ${HY - 215} 168 ${HY - 110} 108 ${HY - 66} Z`} /></Shaded>
             <Shaded fill="#ffffff" shade="#d6dce6" dx={26}><rect x={-112} y={HY - 78} width={224} height={40} rx={14} /></Shaded>
           </g>
         )}

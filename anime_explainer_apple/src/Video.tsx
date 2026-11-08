@@ -2,11 +2,12 @@ import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, interpolate, delayRender, continueRender} from 'remotion';
 import {SCENES, TalkCtx} from './Scenes';
 import {SUB, loadFonts} from './fonts';
-import {SimpleCtx, AmpCtx, CastCtx} from './Character';
+import {SimpleCtx, AmpCtx, CastCtx, SpeakerCtx} from './Character';
+import {Kitchen, Banner, SectionTag, PointsPanel, Telop, Reaction, Cta} from './Hud';
 
 const FPS = 30;
 
-type Sent = {i: number; text: string; start: number; end: number};
+type Sent = {i: number; text: string; start: number; end: number; speaker?: string};
 const PALETTES = [
   ['#fff4c9', '#ffe39a', '#fffbe6'],
   ['#d9f0ff', '#b5defa', '#f0faff'],
@@ -71,7 +72,7 @@ const Subtitle: React.FC<{t: number; sents: Sent[]; lastEnd: number}> = ({t, sen
   );
 };
 
-export type VideoProps = {simple?: boolean; timings: {sentences: Sent[]}; storyboard: {cuts: any[]; cast?: Record<string, string>}; envelope: number[]};
+export type VideoProps = {simple?: boolean; timings: {sentences: Sent[]}; storyboard: any; envelope: number[]};
 
 export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard, envelope}) => {
   const frame = useCurrentFrame();
@@ -88,12 +89,28 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
   const t = frame / FPS;
   const amp = envelope[Math.min(frame, envelope.length - 1)] ?? 0;
   const talking = sents.some((s) => t >= s.start - 0.03 && t <= s.end - 0.08);
+  const show = storyboard.layout === 'show'; // 台所番組ふうの画面（題名の帯・工程名・コツのパネル・大きなテロップ）
+  let curS = sents[0];
+  for (const x of sents) if (x.start <= t + 0.02) curS = x;
+  const speakers: Record<string, string> = storyboard.speakers || {};
+  const speakerRole = curS.speaker && speakers[curS.speaker] ? speakers[curS.speaker] : null;
+  const colors: Record<string, string> = storyboard.speakerColors || {};
+  const spkNames = Object.keys(speakers);
+  const telopColor = (curS.speaker && colors[curS.speaker]) || (curS.speaker && spkNames.indexOf(curS.speaker) === 1 ? '#ffe14d' : '#ffffff');
+  // 工程名とコツの数は、前のカットから引き継ぐ
+  const carried = React.useMemo(() => {
+    let sec = '', shown = 0, hl = -1;
+    return cuts.map((c) => { if (c.section !== undefined) sec = c.section; if (c.showPoints !== undefined) shown = c.showPoints; hl = c.hl !== undefined ? c.hl : hl; return {sec, shown, hl}; });
+  }, [cuts]);
+  const curCut = cuts.reduce((acc, c) => (frame >= c.from ? c : acc), cuts[0]);
+  const cr = carried[curCut.idx];
   return (
     <AbsoluteFill style={{background: '#fff', overflow: 'hidden'}}>
       <Audio src={staticFile('narration.mp3')} />
       <SimpleCtx.Provider value={simple}>
       <CastCtx.Provider value={storyboard.cast || {}}>
       <AmpCtx.Provider value={amp}>
+      <SpeakerCtx.Provider value={speakerRole}>
       <TalkCtx.Provider value={talking}>
         {cuts.map((c) => {
           const Scene = SCENES[c.type];
@@ -102,18 +119,32 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
             <Sequence key={c.idx} from={c.from} durationInFrames={Math.max(1, c.dur)} layout="none">
               <AbsoluteFill style={{overflow: 'hidden'}}>
                 <Camera idx={c.idx} dur={c.dur}>
-                  <Background cut={c} />
-                  <Scene cut={c} dur={c.dur} />
+                  {show ? <Kitchen /> : <Background cut={c} />}
+                  {show
+                    ? <div style={{position: 'absolute', left: 0, top: 0, width: 1920, height: 1080, transform: 'translate(20px, 136px) scale(0.82)', transformOrigin: '0 0'}}><Scene cut={c} dur={c.dur} /></div>
+                    : <Scene cut={c} dur={c.dur} />}
                 </Camera>
+                {show && c.reaction && <Reaction {...c.reaction} />}
+                {show && c.cta && <Cta text={c.cta} />}
               </AbsoluteFill>
             </Sequence>
           );
         })}
       </TalkCtx.Provider>
+      </SpeakerCtx.Provider>
       </AmpCtx.Provider>
       </CastCtx.Provider>
       </SimpleCtx.Provider>
-      <Subtitle t={t} sents={sents} lastEnd={lastEnd} />
+      {show ? (
+        <>
+          {storyboard.banner && <Banner lines={storyboard.banner} />}
+          {cr.sec && <SectionTag text={cr.sec} />}
+          {storyboard.points && <PointsPanel points={storyboard.points} shown={cr.shown} hl={cr.hl} />}
+          {t <= lastEnd + 0.3 && <Telop text={curS.text} color={telopColor} sinceFrames={frame - Math.round(curS.start * FPS)} />}
+        </>
+      ) : (
+        <Subtitle t={t} sents={sents} lastEnd={lastEnd} />
+      )}
     </AbsoluteFill>
   );
 };

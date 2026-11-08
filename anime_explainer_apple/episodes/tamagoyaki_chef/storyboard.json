@@ -297,6 +297,19 @@
   },
   {
    "s": 59,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "think",
+   "section": "雑学クイズ",
+   "reaction": {
+    "text": "クイズ!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   }
+  },
+  {
+   "s": 62,
    "type": "quiz",
    "q": "卵の黄身が\n固まり始める温度は?",
    "choices": [
@@ -306,11 +319,11 @@
    ],
    "answer": 1,
    "who": "mina",
-   "reveal": 0.77,
+   "reveal": 0.75,
    "section": "雑学クイズ"
   },
   {
-   "s": 66,
+   "s": 68,
    "type": "chat",
    "chefExpr": "smile",
    "kohaiExpr": "surprised",
@@ -323,7 +336,7 @@
    }
   },
   {
-   "s": 69,
+   "s": 71,
    "type": "food",
    "dish": "tamagoyaki",
    "label": "できあがり!",
@@ -332,7 +345,7 @@
    "kohaiExpr": "surprised"
   },
   {
-   "s": 71,
+   "s": 73,
    "type": "chat",
    "prop": "tamagoyaki",
    "kohaiExpr": "surprised",
@@ -345,7 +358,7 @@
    }
   },
   {
-   "s": 73,
+   "s": 75,
    "type": "keyword",
    "tag": "安全",
    "kana": "",
@@ -354,7 +367,7 @@
    "who": "mina"
   },
   {
-   "s": 74,
+   "s": 76,
    "type": "chat",
    "prop": "tamagoyaki",
    "kohaiExpr": "smile",
@@ -367,7 +380,7 @@
    }
   },
   {
-   "s": 76,
+   "s": 78,
    "type": "list",
    "title": "ふわふわのコツ",
    "items": [
@@ -380,7 +393,7 @@
    "section": "まとめ"
   },
   {
-   "s": 79,
+   "s": 81,
    "type": "chat",
    "chefExpr": "smile",
    "chefPose": "wave",

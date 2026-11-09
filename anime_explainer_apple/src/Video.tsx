@@ -72,6 +72,36 @@ const Subtitle: React.FC<{t: number; sents: Sent[]; lastEnd: number}> = ({t, sen
   );
 };
 
+
+// ---- BGM と効果音 ----
+const CARD_TYPES = ['step', 'keyword', 'list', 'ingredients', 'compare', 'quiz', 'food'];
+type Cue = {f: number; file: string; v: number; dur?: number; loop?: boolean};
+const buildCues = (cuts: any[], storyboard: any): Cue[] => {
+  const out: Cue[] = [];
+  if (!storyboard.audio || storyboard.audio.se === false) return out;
+  let prevPoints = 0;
+  cuts.forEach((c) => {
+    if (c.idx === 0) out.push({f: c.from + 2, file: 'se_kira.mp3', v: 0.5});
+    else if (CARD_TYPES.includes(c.type)) out.push({f: c.from + 3, file: 'se_pop.mp3', v: 0.45});
+    if (c.reaction) out.push({f: c.from + 8, file: 'se_boing.mp3', v: 0.5});
+    if (c.showPoints !== undefined && c.showPoints > prevPoints) { out.push({f: c.from + 6, file: 'se_kira.mp3', v: 0.4}); prevPoints = c.showPoints; }
+    if (c.type === 'quiz') out.push({f: c.from + Math.floor(c.dur * (c.reveal ?? 0.62)), file: 'se_correct.mp3', v: 0.55});
+    if (c.type === 'pan') out.push({f: c.from + 4, file: 'se_sizzle.mp3', v: 0.3, dur: Math.max(10, c.dur - 4), loop: true});
+    if (c.cta) out.push({f: c.from + 6, file: 'se_kira.mp3', v: 0.5});
+  });
+  return out;
+};
+
+const Bgm: React.FC<{file: string; base: number; total: number; sents: Sent[]}> = ({file, base, total, sents}) => (
+  <Audio src={staticFile('audio/' + file)} loop volume={(f) => {
+    const t = f / FPS;
+    const fadeIn = interpolate(f, [0, 45], [0, 1], {extrapolateRight: 'clamp'});
+    const fadeOut = interpolate(f, [total - 75, total - 5], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+    const speaking = sents.some((s) => t >= s.start - 0.1 && t <= s.end + 0.1);
+    return base * fadeIn * fadeOut * (speaking ? 0.7 : 1); // 声が出ている間は少し小さく
+  }} />
+);
+
 export type VideoProps = {simple?: boolean; timings: {sentences: Sent[]}; storyboard: any; envelope: number[]};
 
 export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard, envelope}) => {
@@ -84,6 +114,7 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
     const to = idx === arr.length - 1 ? TOTAL : Math.round(sents[arr[idx + 1].s].start * FPS);
     return {...c, idx, from, dur: to - from};
   }), [storyboard, timings]);
+  const cues = React.useMemo(() => buildCues(cuts, storyboard), [cuts, storyboard]);
   const [handle] = useState(() => delayRender('fonts'));
   useEffect(() => { loadFonts(JSON.stringify({storyboard, timings})).then(() => continueRender(handle)).catch(() => continueRender(handle)); }, [handle]);
   const t = frame / FPS;
@@ -107,6 +138,12 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
   return (
     <AbsoluteFill style={{background: '#fff', overflow: 'hidden'}}>
       <Audio src={staticFile('narration.mp3')} />
+      {storyboard.audio?.bgm && <Bgm file={storyboard.audio.bgm} base={storyboard.audio.bgmVolume ?? 0.22} total={TOTAL} sents={sents} />}
+      {cues.map((q, i) => (
+        <Sequence key={'se' + i} from={q.f} durationInFrames={q.dur ?? 60} layout="none">
+          <Audio src={staticFile('audio/' + q.file)} volume={q.v} loop={q.loop} />
+        </Sequence>
+      ))}
       <SimpleCtx.Provider value={simple}>
       <CastCtx.Provider value={storyboard.cast || {}}>
       <AmpCtx.Provider value={amp}>

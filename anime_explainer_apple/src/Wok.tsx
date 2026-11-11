@@ -81,15 +81,20 @@ const PanView: React.FC<{f: number; st: PanState}> = ({f, st}) => {
         <path d="M -340 0 L 340 0 Q 320 190 200 214 L -200 214 Q -320 190 -340 0 Z" fill="#4a4a54" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
         <ellipse cx={0} cy={0} rx={350} ry={112} fill="#6a6a76" stroke={INK} strokeWidth={8} />
         <ellipse cx={0} cy={6} rx={308} ry={90} fill="#3c3c46" stroke={INK} strokeWidth={5} />
-        {/* 油 */}
-        {st.oil && !hasRice && !st.egg && (
-          <g>
-            <ellipse cx={0} cy={8} rx={286} ry={78} fill="#ffe68a" opacity={0.85} />
-            {[0, 1, 2].map((i) => (
-              <path key={i} d={`M ${-180 + i * 140 + Math.sin(f / 5 + i) * 18} -6 q 40 -14 90 0`} stroke="#fff6c8" strokeWidth={8} fill="none" strokeLinecap="round" opacity={0.8} />
-            ))}
-          </g>
-        )}
+        {/* 油（少しだけ。鍋の底にうすく広がる） */}
+        {st.oil && !hasRice && !st.egg && (() => {
+          const s = 0.7 + 0.3 * ease(f / 20);
+          return (
+            <g>
+              <ellipse cx={0} cy={14} rx={105 * s} ry={26 * s} fill="#f3d36b" opacity={0.55} stroke="#e8c04a" strokeWidth={2} />
+              <path d={`M ${-50 + Math.sin(f / 5) * 10} 8 q 30 -10 62 0`} stroke="#fff6c8" strokeWidth={5} fill="none" strokeLinecap="round" opacity={0.8} />
+              {[0, 1, 2].map((i) => {
+                const q = (f / 12 + rnd(i, 50)) % 1;
+                return <circle key={i} cx={-60 + rnd(i, 51) * 120} cy={14 + (rnd(i, 52) - 0.5) * 30} r={2 + q * 5} fill="none" stroke="#fff6c8" strokeWidth={2.5} opacity={1 - q} />;
+              })}
+            </g>
+          );
+        })()}
         {/* 卵 */}
         {st.egg && (() => {
           const s = st.egg === 'spread' ? 1 : ease((f - 14) / 40);

@@ -9,7 +9,7 @@ def add(level, msg): res.append((level, msg))
 def exists(*p): return os.path.exists(os.path.join(ep, *p))
 def load(*p): return json.load(open(os.path.join(ep, *p), encoding='utf-8'))
 
-KNOWN = {'title','talk','duo','list','compare','bars','news','keyword','coins','grid','imac','outro','ingredients','step','pan','quiz','food','chat'}
+KNOWN = {'title','talk','duo','list','compare','bars','news','keyword','coins','grid','imac','outro','ingredients','step','pan','quiz','food','chat','wok'}
 REQUIRED = {'title':['line1','line2'],'talk':['who','bubble'],'duo':['left','right'],'list':['title','items'],'compare':['left','right'],
             'bars':['values','caption'],'news':['headline'],'keyword':['term','meaning'],'coins':['src','to','note'],'grid':['cells'],'imac':[],
             'outro':['text','next'],'ingredients':['items'],'step':['n','text'],'pan':['label'],'quiz':['q','choices','answer'],'food':[],'chat':[]}
@@ -66,10 +66,10 @@ for i, c in enumerate(cuts):
     elif c['s'] <= last and i > 0: add('FAIL', f'カット{i}: 文の番号が前より小さい/同じ'); ok = False
     last = c['s']
 if ok: add('PASS', f'絵コンテの形式OK（{len(cuts)}カット）')
-if cuts and cuts[0]['type'] not in ('title', 'food'): add('WARN', '1カット目が title ではありません')
+if cuts and cuts[0]['type'] not in ('title', 'food', 'chat'): add('WARN', '1カット目が title ではありません')
 if cuts and cuts[-1]['type'] != 'outro' and not cuts[-1].get('cta'): add('WARN', '最後のカットが outro（または cta つき）ではありません')
 for i in range(2, len(cuts)):
-    if cuts[i]['type'] == cuts[i-1]['type'] == cuts[i-2]['type']: add('WARN', f'同じ型が3回続いています: カット{i-2}〜{i}（{cuts[i]["type"]}）')
+    if cuts[i]['type'] == cuts[i-1]['type'] == cuts[i-2]['type'] and cuts[i]['type'] != 'wok': add('WARN', f'同じ型が3回続いています: カット{i-2}〜{i}（{cuts[i]["type"]}）')
 durs = []
 for i, c in enumerate(cuts):
     st = 0 if i == 0 else sents[c['s']]['start']

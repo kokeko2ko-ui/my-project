@@ -23,6 +23,7 @@ type PanState = {
   season?: boolean;
   done?: boolean;
   steam?: number;    // 0..3
+  pv?: 'flat' | 'deep' | 'tilt'; // 鍋の形（flat=今の形、deep=深く丸い、tilt=deepで前に傾ける）
 };
 
 const N = 84;
@@ -59,8 +60,10 @@ const PanView: React.FC<{f: number; st: PanState}> = ({f, st}) => {
   const toss = mode === 'toss';
   const ph = (f / P) % 1;
   const jerk = toss ? Math.sin(ph * Math.PI * 2) : 0;
-  const potRot = toss ? -6 * Math.sin(ph * Math.PI * 2 + 0.6) : 0;
+  const potRot = (toss ? -6 * Math.sin(ph * Math.PI * 2 + 0.6) : 0) + (st.pv === 'tilt' ? -9 : 0);
   const potY = toss ? -22 * Math.max(0, Math.sin(ph * Math.PI)) : 0;
+  const deep = st.pv === 'deep' || st.pv === 'tilt';
+  const DY = deep ? 34 : 0;
   const hasRice = !!st.rice;
   const dropT = (i: number) => (st.rice === 'drop' ? ease((f - 4 - rnd(i, 3) * 12) / 14) : 1);
   const coat = st.coat ?? 0;
@@ -72,15 +75,27 @@ const PanView: React.FC<{f: number; st: PanState}> = ({f, st}) => {
   const hamDrop = (d: number) => (st.ham === 'drop' ? spring({frame: f - d, fps: 30, config: {damping: 9, stiffness: 120}, durationInFrames: 24}) : 1);
   return (
     <g>
-      <g transform={`translate(0 260)`}><Flames f={f} fire={st.fire} /></g>
-      <rect x={-260} y={250} width={520} height={26} rx={13} fill="#6a6a74" stroke={INK} strokeWidth={6} />
+      <g transform={`translate(0 ${260 + (deep ? 56 : 0)})`}><Flames f={f} fire={st.fire} /></g>
+      <rect x={-260} y={250 + (deep ? 56 : 0)} width={520} height={26} rx={13} fill="#6a6a74" stroke={INK} strokeWidth={6} />
       <g transform={`translate(0 ${potY}) rotate(${potRot} 330 40)`}>
         {/* 持ち手 */}
         <path d="M 300 20 L 640 -10 Q 668 -12 668 14 Q 668 40 640 40 L 300 62 Z" fill="#6a4a30" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
         {/* 鍋の胴 */}
-        <path d="M -340 0 L 340 0 Q 320 190 200 214 L -200 214 Q -320 190 -340 0 Z" fill="#4a4a54" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
-        <ellipse cx={0} cy={0} rx={350} ry={112} fill="#6a6a76" stroke={INK} strokeWidth={8} />
-        <ellipse cx={0} cy={6} rx={308} ry={90} fill="#3c3c46" stroke={INK} strokeWidth={5} />
+        {deep ? (
+          <>
+            <path d="M -345 0 L 345 0 Q 330 240 205 270 L -205 270 Q -330 240 -345 0 Z" fill="#4a4a54" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
+            <ellipse cx={0} cy={0} rx={350} ry={150} fill="#74747f" stroke={INK} strokeWidth={8} />
+            <path d="M -312 8 A 312 132 0 0 1 312 8 L 290 34 A 290 100 0 0 0 -290 34 Z" fill="#5b5b66" />
+            <ellipse cx={0} cy={34} rx={292} ry={100} fill="#3c3c46" stroke={INK} strokeWidth={5} />
+          </>
+        ) : (
+          <>
+            <path d="M -340 0 L 340 0 Q 320 190 200 214 L -200 214 Q -320 190 -340 0 Z" fill="#4a4a54" stroke={INK} strokeWidth={8} strokeLinejoin="round" />
+            <ellipse cx={0} cy={0} rx={350} ry={112} fill="#6a6a76" stroke={INK} strokeWidth={8} />
+            <ellipse cx={0} cy={6} rx={308} ry={90} fill="#3c3c46" stroke={INK} strokeWidth={5} />
+          </>
+        )}
+        <g transform={`translate(0 ${DY})`}>
         {/* 油（少しだけ。鍋の底にうすく広がる） */}
         {st.oil && !hasRice && !st.egg && (() => {
           const s = 0.7 + 0.3 * ease(f / 20);
@@ -159,6 +174,7 @@ const PanView: React.FC<{f: number; st: PanState}> = ({f, st}) => {
         {st.egg === 'pour' && f < 34 && (
           <path d={`M -10 ${-420 + ease(f / 14) * 420} L -10 ${-420 + ease((f - 10) / 20) * 400}`} stroke="#ffe14d" strokeWidth={34} strokeLinecap="round" />
         )}
+        </g>
       </g>
       {/* 油のはね */}
       {st.fire === 'high' && (st.oil || hasRice) && [0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
@@ -197,7 +213,7 @@ export const Wok: React.FC<{cut: any; dur: number}> = ({cut}) => {
   const z = 1 + 0.16 * (1 - ease(f / 9)); // 寄りの動き（カット頭で寄って落ち着く）
   const split = cut.split as undefined | {left: any; right: any};
   const fire = cut.fire || 'high';
-  const base: PanState = {fire, oil: cut.oil, egg: cut.egg, rice: cut.rice, coat: cut.coat, ham: cut.ham, mode: cut.mode, season: cut.season, done: cut.done, steam: cut.steam ?? (fire === 'low' ? 1 : 2)};
+  const base: PanState = {fire, oil: cut.oil, egg: cut.egg, rice: cut.rice, coat: cut.coat, ham: cut.ham, mode: cut.mode, season: cut.season, done: cut.done, steam: cut.steam ?? (fire === 'low' ? 1 : 2), pv: cut.pv};
   const toss = base.mode === 'toss';
   const pose = toss && Math.floor(f / 15) % 2 ? 'up' : 'point';
   return (

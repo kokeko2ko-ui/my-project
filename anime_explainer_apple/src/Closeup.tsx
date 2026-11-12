@@ -1,6 +1,7 @@
 import React from 'react';
 import {useCurrentFrame, spring, Easing} from 'remotion';
 import {HAND} from './fonts';
+import {RichCtx, RichDefs} from './Rich';
 
 // 手元・お皿のアップ（引きのカットと交互に使う）
 const INK = '#1b1b1b';
@@ -18,25 +19,42 @@ const Chip: React.FC<{text: string; x: number; y: number; f: number}> = ({text, 
     </g>
   );
 };
-const Steam: React.FC<{f: number; xs: number[]; y: number; op?: number}> = ({f, xs, y, op = 0.85}) => (
+const Steam: React.FC<{f: number; xs: number[]; y: number; op?: number}> = ({f, xs, y, op = 0.85}) => {
+  const rich = React.useContext(RichCtx);
+  if (rich) return (
+    <g filter="url(#b14)">{xs.flatMap((x, i) => [0, 1, 2].map((k) => {
+      const q = ((f * 1.3 + i * 41 + k * 38) % 114) / 114;
+      return <circle key={i + '_' + k} cx={x + Math.sin(f / 16 + i + k) * 24} cy={y - q * 230} r={34 + q * 50} fill="#fff" opacity={op * 0.6 * Math.sin(Math.PI * q)} />;
+    }))}</g>
+  );
+  return (
   <g>{xs.map((x, i) => (
     <path key={i} d={`M ${x} ${y} q -30 -50 0 -100 q 30 -50 0 -100`} fill="none" stroke="#fff" strokeWidth={14} strokeLinecap="round" opacity={op}
       transform={`translate(0 ${-((f * 2.4 + i * 50) % 90)})`} />
   ))}</g>
-);
-const Grain: React.FC<{x: number; y: number; r: number; c: string}> = ({x, y, r, c}) => (
-  <ellipse cx={x} cy={y} rx={17} ry={10} transform={`rotate(${r} ${x} ${y})`} fill={c} stroke={c === '#fffdf0' ? '#cfc59c' : '#d9a62a'} strokeWidth={3} />
-);
-const Plate: React.FC = () => (
+  );
+};
+const GRAD: Record<string, string> = {'#fffdf0': 'url(#rice)', '#ffe27a': 'url(#riceY)', '#ff9aa8': 'url(#ham)', '#7ed06a': 'url(#negi)'};
+const Grain: React.FC<{x: number; y: number; r: number; c: string}> = ({x, y, r, c}) => {
+  const rich = React.useContext(RichCtx);
+  return <ellipse cx={x} cy={y} rx={17} ry={10} transform={`rotate(${r} ${x} ${y})`} fill={rich ? GRAD[c] || c : c} stroke={rich ? 'rgba(110,80,20,0.4)' : (c === '#fffdf0' ? '#cfc59c' : '#d9a62a')} strokeWidth={rich ? 1.5 : 3} />;
+};
+const Plate: React.FC = () => {
+  const rich = React.useContext(RichCtx);
+  return (
   <g>
+    {rich && <ellipse cx={900} cy={830} rx={680} ry={60} fill="#000" opacity={0.35} filter="url(#b14)" />}
     <ellipse cx={900} cy={790} rx={640} ry={190} fill="rgba(0,0,0,0.18)" />
-    <ellipse cx={900} cy={760} rx={620} ry={190} fill="#f7f3ea" stroke={INK} strokeWidth={8} />
-    <ellipse cx={900} cy={770} rx={470} ry={130} fill="#ece6d6" stroke="#cdc3aa" strokeWidth={4} />
+    <ellipse cx={900} cy={760} rx={620} ry={190} fill={rich ? 'url(#plateG)' : '#f7f3ea'} stroke={rich ? '#9d9684' : INK} strokeWidth={rich ? 3 : 8} />
+    <ellipse cx={900} cy={772} rx={470} ry={130} fill={rich ? '#e9e2d0' : '#ece6d6'} stroke="#cdc3aa" strokeWidth={rich ? 2 : 4} />
+    {rich && <path d="M 340 720 A 600 170 0 0 1 700 600" stroke="#fff" strokeWidth={8} fill="none" opacity={0.7} strokeLinecap="round" filter="url(#b2)" />}
   </g>
-);
+  );
+};
 
 export const Closeup: React.FC<{cut: any; dur: number}> = ({cut, dur}) => {
   const f = useCurrentFrame();
+  const rich = React.useContext(RichCtx);
   const kind = cut.kind as 'spread' | 'chop' | 'plate';
   const push = 1 + 0.06 * Math.min(1, f / 90);
   let body: React.ReactNode = null;
@@ -66,18 +84,19 @@ export const Closeup: React.FC<{cut: any; dur: number}> = ({cut, dur}) => {
     const xc = 560 + count * 42;
     body = (
       <g>
-        <rect x={200} y={470} width={1400} height={420} rx={30} fill="#e0aa66" stroke={INK} strokeWidth={8} />
+        <rect x={200} y={470} width={1400} height={420} rx={30} fill={rich ? 'url(#wood)' : '#e0aa66'} stroke={rich ? '#3a2112' : INK} strokeWidth={rich ? 3 : 8} />
+        {rich && <rect x={206} y={474} width={1388} height={14} rx={7} fill="#f0c796" opacity={0.6} />}
         {[0, 1, 2, 3].map((i) => <path key={i} d={`M 240 ${520 + i * 95} q 300 -26 600 0 t 700 0`} stroke="#c88c48" strokeWidth={5} fill="none" />)}
         {/* 切ったねぎ */}
         {Array.from({length: count}).map((_, i) => {
           const hop = i === count - 1 ? -Math.sin(ph * Math.PI) * 14 : 0;
-          return <ellipse key={i} cx={520 + i * 42} cy={720 + hop} rx={14} ry={30} fill="#7ed06a" stroke="#2f7d3b" strokeWidth={5} />;
+          return <ellipse key={i} cx={520 + i * 42} cy={720 + hop} rx={14} ry={30} fill={rich ? 'url(#negi)' : '#7ed06a'} stroke={rich ? 'rgba(30,90,30,0.5)' : '#2f7d3b'} strokeWidth={rich ? 2 : 5} />;
         })}
         {/* ねぎ（これから切る） */}
-        <rect x={xc} y={690} width={Math.max(10, 1400 - xc)} height={60} rx={28} fill="#7ed06a" stroke="#2f7d3b" strokeWidth={6} />
+        <rect x={xc} y={690} width={Math.max(10, 1400 - xc)} height={60} rx={28} fill={rich ? 'url(#negi)' : '#7ed06a'} stroke={rich ? 'rgba(30,90,30,0.5)' : '#2f7d3b'} strokeWidth={rich ? 2 : 6} />
         <rect x={xc} y={690} width={Math.max(10, 1400 - xc)} height={16} rx={8} fill="#b9ee9d" />
         {/* ハム（小さく切ったもの） */}
-        {Array.from({length: 7}).map((_, i) => <rect key={i} x={560 + (i % 4) * 56} y={540 + Math.floor(i / 4) * 52} width={44} height={36} rx={6} fill="#ff9aa8" stroke="#c9566a" strokeWidth={4} />)}
+        {Array.from({length: 7}).map((_, i) => <rect key={i} x={560 + (i % 4) * 56} y={540 + Math.floor(i / 4) * 52} width={44} height={36} rx={6} fill={rich ? 'url(#ham)' : '#ff9aa8'} stroke={rich ? 'rgba(120,30,50,0.45)' : '#c9566a'} strokeWidth={rich ? 2 : 4} />)}
         {/* 包丁 */}
         <g transform={`translate(${xc + 20} 620) rotate(${ang / 3} 0 120)`}>
           <path d="M -20 0 L 560 0 Q 600 0 600 40 L -20 130 Z" transform="rotate(90 0 0) translate(0 -20) scale(0.5 1)" fill="none" />
@@ -112,6 +131,7 @@ export const Closeup: React.FC<{cut: any; dur: number}> = ({cut, dur}) => {
   }
   return (
     <svg width={W} height={1080} style={{position: 'absolute'}}>
+      {rich && <RichDefs />}
       <g transform={`translate(900 640) scale(${push}) translate(-900 -640)`}>{body}</g>
       {cut.label && <text x={1080} y={170} textAnchor="middle" fontFamily={HAND} fontSize={96} fill={cut.labelColor || '#e23030'} stroke={cut.labelColor === '#ffe14d' ? INK : '#fff'} strokeWidth={cut.labelColor === '#ffe14d' ? 16 : 12} paintOrder="stroke" strokeLinejoin="round">{cut.label}</text>}
       {cut.chip && <Chip text={cut.chip} x={cut.chipX ?? 620} y={cut.chipY ?? 300} f={f} />}

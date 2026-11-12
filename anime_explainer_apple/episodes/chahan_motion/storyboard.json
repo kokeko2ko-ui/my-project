@@ -242,12 +242,10 @@
   },
   {
    "s": 30,
-   "type": "keyword",
-   "tag": "炊きたてなら",
-   "kana": "",
-   "term": "広げて冷ます",
-   "meaning": "少し冷ましてから炒める",
-   "who": "mina"
+   "type": "zoom",
+   "kind": "spread",
+   "label": "広げて冷ます",
+   "labelColor": "#2d7be5"
   },
   {
    "s": 31,
@@ -394,12 +392,9 @@
   },
   {
    "s": 45,
-   "type": "keyword",
-   "tag": "コツ③",
-   "kana": "",
-   "term": "具は小さく入れすぎない",
-   "meaning": "混ざりやすく、蒸されにくい",
-   "who": "mina",
+   "type": "zoom",
+   "kind": "chop",
+   "chip": "コツ③ 具は小さく入れすぎない",
    "hl": 2,
    "section": "手順③ 具"
   },
@@ -505,17 +500,11 @@
   },
   {
    "s": 56,
-   "type": "wok",
-   "section": "完成",
-   "fire": "mid",
-   "rice": "on",
-   "coat": 1,
-   "ham": "on",
-   "mode": "still",
-   "done": true,
+   "type": "zoom",
+   "kind": "plate",
    "label": "できあがり!",
    "labelColor": "#ffe14d",
-   "steam": 3
+   "section": "完成"
   },
   {
    "s": 57,

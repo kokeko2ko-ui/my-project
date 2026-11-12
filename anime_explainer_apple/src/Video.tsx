@@ -86,6 +86,11 @@ const buildCues = (cuts: any[], storyboard: any): Cue[] => {
     if (c.reaction) out.push({f: c.from + 8, file: 'se_boing.mp3', v: 0.5});
     if (c.showPoints !== undefined && c.showPoints > prevPoints) { out.push({f: c.from + 6, file: 'se_kira.mp3', v: 0.4}); prevPoints = c.showPoints; }
     if (c.type === 'quiz') out.push({f: c.from + Math.floor(c.dur * (c.reveal ?? 0.62)), file: 'se_correct.mp3', v: 0.55});
+    if (c.type === 'zoom') {
+      if (c.kind === 'chop') for (let k = 8; k < c.dur - 4; k += 16) out.push({f: c.from + k, file: 'se_pop.mp3', v: 0.35, dur: 12});
+      if (c.kind === 'spread') for (let k = 4; k < c.dur - 10; k += 28) out.push({f: c.from + k, file: 'se_whoosh.mp3', v: 0.22, dur: 20});
+      if (c.kind === 'plate') out.push({f: c.from + 4, file: 'se_kira.mp3', v: 0.5, dur: 40});
+    }
     if (c.type === 'wok') {
       const hi = c.fire === 'low' ? 0.18 : 0.34;
       out.push({f: c.from + 3, file: 'se_sizzle.mp3', v: c.split ? 0.2 : hi, dur: Math.max(10, c.dur - 3), loop: true});

@@ -641,8 +641,9 @@ export const Chat: React.FC<SceneProps> = ({cut}) => {
 };
 
 import {Wok} from './Wok';
+import {Closeup} from './Closeup';
 export const SCENES: Record<string, React.FC<SceneProps>> = {
-  wok: Wok,
+  wok: Wok, zoom: Closeup,
   title: Title, talk: Talk, duo: Duo, list: List, compare: Compare, bars: Bars, news: News,
   keyword: Keyword, coins: Coins, grid: Grid, imac: Imac, outro: Outro,
   ingredients: Ingredients, step: Step, pan: Pan, quiz: Quiz, food: Food, chat: Chat,

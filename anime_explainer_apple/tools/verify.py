@@ -9,7 +9,7 @@ def add(level, msg): res.append((level, msg))
 def exists(*p): return os.path.exists(os.path.join(ep, *p))
 def load(*p): return json.load(open(os.path.join(ep, *p), encoding='utf-8'))
 
-KNOWN = {'title','talk','duo','list','compare','bars','news','keyword','coins','grid','imac','outro','ingredients','step','pan','quiz','food','chat','wok'}
+KNOWN = {'title','talk','duo','list','compare','bars','news','keyword','coins','grid','imac','outro','ingredients','step','pan','quiz','food','chat','wok','zoom'}
 REQUIRED = {'title':['line1','line2'],'talk':['who','bubble'],'duo':['left','right'],'list':['title','items'],'compare':['left','right'],
             'bars':['values','caption'],'news':['headline'],'keyword':['term','meaning'],'coins':['src','to','note'],'grid':['cells'],'imac':[],
             'outro':['text','next'],'ingredients':['items'],'step':['n','text'],'pan':['label'],'quiz':['q','choices','answer'],'food':[],'chat':[]}

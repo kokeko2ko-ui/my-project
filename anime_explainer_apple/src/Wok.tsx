@@ -233,7 +233,7 @@ export const Wok: React.FC<{cut: any; dur: number}> = ({cut}) => {
             <text x={850} y={620} textAnchor="middle" fontFamily={HAND} fontSize={90} fill="#fff" stroke={INK} strokeWidth={14} paintOrder="stroke">VS</text>
           </>
         ) : (
-          <g transform={`translate(${cut.x ?? 800} 640) scale(${cut.scale ?? 1.12})`}>
+          <g transform={cut.close ? `translate(900 600) scale(${cut.close * (1 + 0.07 * Math.min(1, f / 90))}) translate(0 -20)` : `translate(${cut.x ?? 800} 640) scale(${cut.scale ?? 1.12})`}>
             <PanView f={f} st={base} />
           </g>
         )}
@@ -243,7 +243,7 @@ export const Wok: React.FC<{cut: any; dur: number}> = ({cut}) => {
           return <path key={i} d={`M ${x} ${y - r * k} L ${x + r * 0.22 * k} ${y - r * 0.22 * k} L ${x + r * k} ${y} L ${x + r * 0.22 * k} ${y + r * 0.22 * k} L ${x} ${y + r * k} L ${x - r * 0.22 * k} ${y + r * 0.22 * k} L ${x - r * k} ${y} L ${x - r * 0.22 * k} ${y - r * 0.22 * k} Z`} fill="#fff6a8" stroke="#e8b800" strokeWidth={3} />;
         })}
       </g>
-      <Character who={cut.who || 'mina'} x={split ? 1750 : 1670} y={940} scale={split ? 1.0 : 1.15} flip expr={cut.expr || 'smile'} pose={cut.pose || pose} talking={talk} />
+      {!cut.close && <Character who={cut.who || 'mina'} x={split ? 1750 : 1670} y={940} scale={split ? 1.0 : 1.15} flip expr={cut.expr || 'smile'} pose={cut.pose || pose} talking={talk} />}
     </svg>
   );
 };

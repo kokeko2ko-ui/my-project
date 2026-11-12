@@ -1,0 +1,588 @@
+{
+ "style": "simple",
+ "layout": "show",
+ "banner": [
+  "失敗しない!",
+  "パラパラチャーハン"
+ ],
+ "points": [
+  "冷めたご飯",
+  "強火で手早く",
+  "具は小さく"
+ ],
+ "cast": {
+  "mina": "chef_pro",
+  "taro": "kohai",
+  "jobs": "obaa"
+ },
+ "speakers": {
+  "シェフ": "mina",
+  "後輩": "taro"
+ },
+ "speakerColors": {
+  "シェフ": "#ffffff",
+  "後輩": "#ffe14d"
+ },
+ "cuts": [
+  {
+   "s": 0,
+   "type": "wok",
+   "section": "オープニング",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "ham": "on",
+   "mode": "toss",
+   "steam": 3,
+   "label": "こんなふうに!",
+   "labelColor": "#ffe14d",
+   "reaction": {
+    "text": "おいしそう!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 3,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "cry",
+   "section": "悩み"
+  },
+  {
+   "s": 5,
+   "type": "chat",
+   "chefExpr": "smile",
+   "chefPose": "up",
+   "kohaiExpr": "surprised",
+   "reaction": {
+    "text": "あるある!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   }
+  },
+  {
+   "s": 6,
+   "type": "wok",
+   "section": "今日のゴール",
+   "fire": "high",
+   "mode": "toss",
+   "split": {
+    "left": {
+     "label": "べちゃべちゃ",
+     "mode": "clump",
+     "fire": "low"
+    },
+    "right": {
+     "label": "パラパラ",
+     "mode": "toss",
+     "fire": "high"
+    }
+   },
+   "label": "こうなりたい!",
+   "labelColor": "#e23030"
+  },
+  {
+   "s": 8,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "マジっすか!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 10,
+   "type": "list",
+   "title": "コツは3つ",
+   "items": [
+    "冷めたご飯",
+    "強火で手早く",
+    "具は小さく"
+   ],
+   "who": "mina",
+   "showPoints": 3,
+   "hl": -1,
+   "pose": "point",
+   "section": "コツは3つ"
+  },
+  {
+   "s": 13,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "reaction": {
+    "text": "それだけ!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 16,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile"
+  },
+  {
+   "s": 17,
+   "type": "ingredients",
+   "title": "材料（2人分）",
+   "items": [
+    [
+     "ご飯",
+     "茶碗2杯分"
+    ],
+    [
+     "卵",
+     "2個"
+    ],
+    [
+     "ハム",
+     "3枚"
+    ],
+    [
+     "長ねぎ",
+     "1/3本"
+    ]
+   ],
+   "who": "mina",
+   "section": "材料"
+  },
+  {
+   "s": 19,
+   "type": "ingredients",
+   "title": "味つけ",
+   "items": [
+    [
+     "塩",
+     "小さじ1/3"
+    ],
+    [
+     "しょうゆ",
+     "小さじ1"
+    ],
+    [
+     "こしょう",
+     "少々"
+    ],
+    [
+     "サラダ油",
+     "大さじ1"
+    ]
+   ],
+   "who": "mina"
+  },
+  {
+   "s": 21,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile"
+  },
+  {
+   "s": 23,
+   "type": "step",
+   "n": 1,
+   "text": "冷めたご飯を使う",
+   "tip": "コツ① 冷めたご飯",
+   "who": "mina",
+   "section": "手順① ご飯",
+   "hl": 0
+  },
+  {
+   "s": 25,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "think",
+   "reaction": {
+    "text": "炊きたてが…?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 26,
+   "type": "wok",
+   "fire": "mid",
+   "mode": "clump",
+   "split": {
+    "left": {
+     "label": "炊きたて",
+     "mode": "clump",
+     "fire": "low"
+    },
+    "right": {
+     "label": "冷めたご飯",
+     "mode": "loose",
+     "fire": "mid"
+    }
+   },
+   "label": "でんぷんが硬くなる?",
+   "labelColor": "#2d7be5",
+   "steam": 1
+  },
+  {
+   "s": 28,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "reaction": {
+    "text": "なるほど!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 30,
+   "type": "zoom",
+   "kind": "spread",
+   "label": "広げて冷ます",
+   "labelColor": "#2d7be5"
+  },
+  {
+   "s": 31,
+   "type": "wok",
+   "section": "手順② 炒める",
+   "fire": "high",
+   "oil": false,
+   "label": "強火!",
+   "chip": "コツ② 強火で手早く",
+   "hl": 1
+  },
+  {
+   "s": 33,
+   "type": "wok",
+   "fire": "high",
+   "oil": true,
+   "steam": 2,
+   "chip": "コツ② 強火で手早く"
+  },
+  {
+   "s": 34,
+   "type": "wok",
+   "fire": "high",
+   "oil": true,
+   "steam": 3,
+   "reaction": {
+    "text": "ジュー!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   },
+   "chip": "コツ② 強火で手早く",
+   "close": 1.8
+  },
+  {
+   "s": 35,
+   "type": "wok",
+   "fire": "high",
+   "oil": true,
+   "egg": "pour",
+   "chip": "溶き卵を流し入れる",
+   "close": 1.75
+  },
+  {
+   "s": 36,
+   "type": "wok",
+   "fire": "high",
+   "egg": "spread",
+   "steam": 2,
+   "reaction": {
+    "text": "広がった!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   }
+  },
+  {
+   "s": 37,
+   "type": "wok",
+   "fire": "high",
+   "egg": "spread",
+   "rice": "drop",
+   "coat": 0.2,
+   "chip": "卵が半熟のうちにご飯",
+   "close": 1.75
+  },
+  {
+   "s": 38,
+   "type": "wok",
+   "fire": "high",
+   "egg": "spread",
+   "rice": "on",
+   "coat": 0.6,
+   "mode": "still",
+   "chip": "卵とからめる"
+  },
+  {
+   "s": 39,
+   "type": "wok",
+   "fire": "high",
+   "rice": "on",
+   "coat": 0.9,
+   "mode": "toss",
+   "chip": "切るように混ぜる"
+  },
+  {
+   "s": 40,
+   "type": "wok",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "mode": "toss",
+   "reaction": {
+    "text": "パラパラ!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   },
+   "steam": 2,
+   "close": 1.6
+  },
+  {
+   "s": 41,
+   "type": "wok",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "mode": "toss",
+   "label": "水分が飛びやすい",
+   "labelColor": "#e23030",
+   "steam": 3,
+   "close": 1.6
+  },
+  {
+   "s": 42,
+   "type": "wok",
+   "split": {
+    "left": {
+     "label": "弱火でぐずぐず",
+     "mode": "clump",
+     "fire": "low"
+    },
+    "right": {
+     "label": "強火で手早く",
+     "mode": "toss",
+     "fire": "high"
+    }
+   },
+   "fire": "high",
+   "label": "ぐずぐずは…",
+   "labelColor": "#e23030"
+  },
+  {
+   "s": 43,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "cry",
+   "reaction": {
+    "text": "弱火だった…",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 45,
+   "type": "zoom",
+   "kind": "chop",
+   "chip": "コツ③ 具は小さく入れすぎない",
+   "hl": 2,
+   "section": "手順③ 具"
+  },
+  {
+   "s": 47,
+   "type": "wok",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "ham": "drop",
+   "mode": "toss",
+   "chip": "ハムとねぎをポン!",
+   "close": 1.75
+  },
+  {
+   "s": 48,
+   "type": "wok",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "ham": "on",
+   "mode": "toss",
+   "reaction": {
+    "text": "ポンッ!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 49,
+   "type": "wok",
+   "fire": "mid",
+   "mode": "clump",
+   "split": {
+    "left": {
+     "label": "入れすぎ",
+     "mode": "crowd",
+     "fire": "mid"
+    },
+    "right": {
+     "label": "ちょうどいい",
+     "mode": "toss",
+     "fire": "high",
+     "ham": "on"
+    }
+   },
+   "label": "ぎゅうぎゅうだと…",
+   "labelColor": "#e23030",
+   "steam": 2
+  },
+  {
+   "s": 50,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "sad",
+   "reaction": {
+    "text": "動かせない!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 51,
+   "type": "wok",
+   "section": "手順④ 味つけ",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "ham": "on",
+   "mode": "toss",
+   "season": true,
+   "chip": "塩・こしょう・鍋肌からしょうゆ",
+   "close": 1.75
+  },
+  {
+   "s": 53,
+   "type": "wok",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "ham": "on",
+   "mode": "toss",
+   "reaction": {
+    "text": "いい匂い!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   },
+   "steam": 3
+  },
+  {
+   "s": 54,
+   "type": "wok",
+   "fire": "high",
+   "rice": "on",
+   "coat": 1,
+   "ham": "on",
+   "mode": "toss",
+   "chip": "熱々まで・卵も中まで火を通す",
+   "steam": 3
+  },
+  {
+   "s": 56,
+   "type": "zoom",
+   "kind": "plate",
+   "label": "できあがり!",
+   "labelColor": "#ffe14d",
+   "section": "完成"
+  },
+  {
+   "s": 57,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "パラパラ!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 59,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "うまっ!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 60,
+   "type": "list",
+   "title": "パラパラのコツ",
+   "items": [
+    "冷めたご飯",
+    "強火で手早く",
+    "具は小さく"
+   ],
+   "total": "これだけ!",
+   "who": "mina",
+   "section": "まとめ"
+  },
+  {
+   "s": 62,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile"
+  },
+  {
+   "s": 63,
+   "type": "keyword",
+   "tag": "安全",
+   "kana": "",
+   "term": "油はねに注意",
+   "meaning": "火のそばを離れない",
+   "who": "mina"
+  },
+  {
+   "s": 64,
+   "type": "keyword",
+   "tag": "アレルギー",
+   "kana": "",
+   "term": "卵を使います",
+   "meaning": "アレルギーの人は注意",
+   "who": "mina"
+  },
+  {
+   "s": 65,
+   "type": "chat",
+   "chefExpr": "smile",
+   "chefPose": "wave",
+   "kohaiExpr": "smile",
+   "kohaiPose": "wave",
+   "cta": "チャンネル登録・高評価\nよろしくお願いします!"
+  }
+ ],
+ "audio": {
+  "bgm": "bgm_cooking.mp3",
+  "bgmVolume": 0.17,
+  "se": true
+ },
+ "look": "rich"
+}

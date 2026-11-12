@@ -1,0 +1,9 @@
+{
+  "model": "eleven_v4",
+  "atempo": 1.2,
+  "gap": 0.15,
+  "speakers": {
+    "シェフ": {"voice_id": "qiDSZKWPD8GcI15QYpQw", "role": "mina", "name": "Frank"},
+    "後輩":   {"voice_id": "ujUcDW4TqX87xpsTzJZd", "role": "taro", "name": "Sun-taro"}
+  }
+}

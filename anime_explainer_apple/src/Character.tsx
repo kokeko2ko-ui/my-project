@@ -1,6 +1,8 @@
 import React from 'react';
 import {useCurrentFrame} from 'remotion';
 import {CHARS, SIMPLE_CHARS, CAST_LIB, CharCfg} from './characters';
+import {RichCtx} from './Rich';
+import {RichCharacter} from './RichChar';
 
 const INK = '#1b1b1b';
 const SW = 7;
@@ -39,6 +41,7 @@ export const Character: React.FC<{
   expr?: Expr; pose?: Pose; talking?: boolean; seed?: number; cfg?: CharCfg; simple?: boolean;
 }> = ({who, x, y, scale = 1, flip = false, expr = 'smile', pose = 'idle', talking = false, seed = 0, cfg, simple: simpleProp}) => {
   const outerSimple = React.useContext(SimpleCtx);
+  const richMode = React.useContext(RichCtx);
   const simple = simpleProp ?? outerSimple;
   const cast = React.useContext(CastCtx);
   const key = cast[who] ?? who;
@@ -52,6 +55,9 @@ export const Character: React.FC<{
   const amp = React.useContext(AmpCtx);
   const isTalking = talking && (speaker === null || speaker === who);
   const mouthOpen = isTalking ? 3 + amp * 22 : 0; // 音の大きさに合わせて開く
+  if (richMode && (key === 'chef_pro' || key === 'kohai')) {
+    return <RichCharacter kind={key === 'chef_pro' ? 'chef' : 'kohai'} x={x} y={y} scale={scale} flip={flip} expr={expr} pose={pose} talking={isTalking} amp={amp} seed={seed} />;
+  }
   const HY = -300; // 頭の中心
   // 眉
   const browY = HY - 52;

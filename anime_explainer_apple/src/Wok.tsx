@@ -213,7 +213,7 @@ export const Wok: React.FC<{cut: any; dur: number}> = ({cut}) => {
   const z = 1 + 0.16 * (1 - ease(f / 9)); // 寄りの動き（カット頭で寄って落ち着く）
   const split = cut.split as undefined | {left: any; right: any};
   const fire = cut.fire || 'high';
-  const base: PanState = {fire, oil: cut.oil, egg: cut.egg, rice: cut.rice, coat: cut.coat, ham: cut.ham, mode: cut.mode, season: cut.season, done: cut.done, steam: cut.steam ?? (fire === 'low' ? 1 : 2), pv: cut.pv};
+  const base: PanState = {fire, oil: cut.oil, egg: cut.egg, rice: cut.rice, coat: cut.coat, ham: cut.ham, mode: cut.mode, season: cut.season, done: cut.done, steam: cut.steam ?? (fire === 'low' ? 1 : 2), pv: cut.pv ?? 'deep'};
   const toss = base.mode === 'toss';
   const pose = toss && Math.floor(f / 15) % 2 ? 'up' : 'point';
   return (

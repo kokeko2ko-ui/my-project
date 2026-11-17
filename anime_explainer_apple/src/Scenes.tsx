@@ -248,14 +248,16 @@ export const News: React.FC<SceneProps> = ({cut}) => {
   const line = trend === 'down' ? '#e23030' : '#1d9d57';
   return (
     <svg width={W} height={1080} style={{position: 'absolute'}}>
+      <g transform={`translate(0 ${cut.dy || 0})`}>
       <rect x={90} y={70} width={1240} height={110} rx={14} fill="#1b1b1b" />
       <T text={cut.headline} x={710} y={150} size={fit(cut.headline, 1140, 76)} fill="#fff" />
       <rect x={90} y={210} width={1240} height={620} rx={22} fill="#fffdf5" stroke={INK} strokeWidth={7} />
       {[0, 1, 2, 3].map((i) => <line key={i} x1={130} x2={1290} y1={290 + i * 130} y2={290 + i * 130} stroke="#d8d4c4" strokeWidth={3} />)}
       <path d={d} fill="none" stroke={line} strokeWidth={14} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={len} strokeDashoffset={draw} />
       {cut.caption && <T text={cut.caption} x={710} y={790} size={fit(cut.caption, 1100, 54)} fill="#444" reveal={30} />}
-      <path d={wave} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />
-      <path d={wave.replace(/150/g, '190')} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" transform="translate(0 40)" />
+      {!cut.dy && <path d={wave} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />}
+      {!cut.dy && <path d={wave.replace(/150/g, '190')} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" transform="translate(0 40)" />}
+      </g>
       <Character who={cut.who || 'mina'} x={1600} y={870} scale={1.2} flip expr={cut.expr || (trend === 'down' ? 'sad' : 'smile')} pose={cut.pose || 'point'} talking={talk} />
     </svg>
   );

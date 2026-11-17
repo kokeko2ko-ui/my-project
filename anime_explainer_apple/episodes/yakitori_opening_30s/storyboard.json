@@ -1,0 +1,144 @@
+{
+ "style": "simple",
+ "layout": "show",
+ "banner": [
+  "知れば旨くなる",
+  "焼き鳥の歴史"
+ ],
+ "points": [],
+ "cast": {
+  "mina": "chef_pro",
+  "taro": "kohai",
+  "jobs": "obaa"
+ },
+ "speakers": {
+  "語り": "mina"
+ },
+ "speakerColors": {
+  "語り": "#ffffff"
+ },
+ "audio": {
+  "bgm": "bgm_cooking.mp3",
+  "bgmVolume": 0.22,
+  "se": true
+ },
+ "cuts": [
+  {
+   "s": 0,
+   "type": "food",
+   "dish": "yakitori",
+   "solo": true,
+   "section": "オープニング",
+   "chefExpr": "smile",
+   "chefPose": "point"
+  },
+  {
+   "s": 2,
+   "type": "keyword",
+   "tag": "675年 天武天皇の詔",
+   "kana": "",
+   "term": "鶏を食べてはならない",
+   "meaning": "4月から9月のあいだ",
+   "who": "mina",
+   "section": "焼き鳥の歴史"
+  },
+  {
+   "s": 3,
+   "type": "list",
+   "title": "江戸の焼き鳥",
+   "items": [
+    "スズメ",
+    "ウズラ",
+    "キジ"
+   ],
+   "total": "すべて野鳥",
+   "who": "mina",
+   "pose": "point"
+  },
+  {
+   "s": 4,
+   "type": "keyword",
+   "tag": "元禄2年（1689年）の料理書",
+   "kana": "",
+   "term": "塩 → 酒じょうゆに二度づけ",
+   "meaning": "塩もタレも、江戸にはもうあった",
+   "who": "mina"
+  },
+  {
+   "s": 6,
+   "type": "compare",
+   "left": {
+    "label": "鶏料理屋",
+    "value": "正肉",
+    "note": "高級品"
+   },
+   "right": {
+    "label": "明治の屋台",
+    "value": "臓物",
+    "note": "一串 数厘",
+    "red": true
+   },
+   "vs": "VS",
+   "who": "mina",
+   "expr": "smile"
+  },
+  {
+   "s": 7,
+   "type": "news",
+   "headline": "1960年代 ブロイラーの登場",
+   "trend": "up",
+   "caption": "出荷羽数　1965年 約1億羽 → 1974年 約4億羽",
+   "who": "mina",
+   "dy": 70
+  },
+  {
+   "s": 9,
+   "type": "keyword",
+   "tag": "2009年",
+   "kana": "",
+   "term": "焼き鳥店にミシュランの星",
+   "meaning": "屋台の味が、ここまで来た",
+   "who": "mina"
+  },
+  {
+   "s": 11,
+   "type": "keyword",
+   "tag": "この番組 その1",
+   "kana": "",
+   "term": "歴史編",
+   "meaning": "675年から、いまの一本まで",
+   "who": "mina",
+   "section": "番組の紹介"
+  },
+  {
+   "s": 12,
+   "type": "list",
+   "title": "その2 部位編",
+   "items": [
+    "ねぎまの「ま」の正体",
+    "ぼんじり",
+    "せせり"
+   ],
+   "total": "一本ずつ掘り下げる",
+   "who": "mina",
+   "pose": "point"
+  },
+  {
+   "s": 14,
+   "type": "food",
+   "dish": "yakitori",
+   "solo": true,
+   "chefExpr": "smile",
+   "chefPose": "up"
+  },
+  {
+   "s": 16,
+   "type": "food",
+   "dish": "yakitori",
+   "solo": true,
+   "chefExpr": "smile",
+   "chefPose": "wave",
+   "cta": "チャンネル登録・高評価\nよろしくお願いします"
+  }
+ ]
+}

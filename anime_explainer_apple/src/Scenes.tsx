@@ -659,7 +659,7 @@ export const Food: React.FC<SceneProps> = ({cut}) => {
       <Sparkle x={560} y={380} r={52} f={f} d={0} /><Sparkle x={1400} y={330} r={44} f={f} d={9} /><Sparkle x={1250} y={520} r={34} f={f} d={4} />
       {cut.label && <T text={cut.label} x={960} y={190} size={fit(cut.label, 1500, 130)} fill="#ffe14d" stroke={INK} sw={22} />}
       <Character who="mina" x={250} y={1010} scale={1.0} expr={cut.chefExpr || 'smile'} pose={cut.chefPose || 'point'} talking={talk} />
-      <Character who="taro" x={1670} y={1010} scale={1.0} flip expr={cut.kohaiExpr || 'surprised'} pose={cut.kohaiPose || 'up'} talking={talk} seed={20} />
+      {!cut.solo && <Character who="taro" x={1670} y={1010} scale={1.0} flip expr={cut.kohaiExpr || 'surprised'} pose={cut.kohaiPose || 'up'} talking={talk} seed={20} />}
     </svg>
   );
 };

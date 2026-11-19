@@ -3,6 +3,7 @@ import {AbsoluteFill, Audio, Sequence, staticFile, useCurrentFrame, interpolate,
 import {SCENES, TalkCtx} from './Scenes';
 import {SUB, loadFonts} from './fonts';
 import {SimpleCtx, AmpCtx, CastCtx, SpeakerCtx} from './Character';
+import {RichCtx, KitchenRich, Grade, ChapterCard} from './Rich';
 import {Kitchen, Banner, SectionTag, PointsPanel, Telop, Reaction, Cta} from './Hud';
 
 const FPS = 30;
@@ -78,6 +79,7 @@ const CARD_TYPES = ['step', 'keyword', 'list', 'ingredients', 'compare', 'quiz',
 type Cue = {f: number; file: string; v: number; dur?: number; loop?: boolean};
 const buildCues = (cuts: any[], storyboard: any): Cue[] => {
   const out: Cue[] = [];
+  const rich = storyboard.look === 'rich';
   if (!storyboard.audio || storyboard.audio.se === false) return out;
   let prevPoints = 0;
   cuts.forEach((c) => {
@@ -86,7 +88,33 @@ const buildCues = (cuts: any[], storyboard: any): Cue[] => {
     if (c.reaction) out.push({f: c.from + 8, file: 'se_boing.mp3', v: 0.5});
     if (c.showPoints !== undefined && c.showPoints > prevPoints) { out.push({f: c.from + 6, file: 'se_kira.mp3', v: 0.4}); prevPoints = c.showPoints; }
     if (c.type === 'quiz') out.push({f: c.from + Math.floor(c.dur * (c.reveal ?? 0.62)), file: 'se_correct.mp3', v: 0.55});
+    if (rich && c.type === 'zoom') {
+      if (c.kind === 'chop') out.push({f: c.from + 6, file: 'se_chop.mp3', v: 0.75, dur: Math.max(10, c.dur - 6), loop: true});
+      if (c.kind === 'spread') out.push({f: c.from + 4, file: 'se_toss.mp3', v: 0.4, dur: Math.max(10, c.dur - 4), loop: true});
+      if (c.kind === 'plate') { out.push({f: c.from + 3, file: 'se_kira.mp3', v: 0.45, dur: 40}); out.push({f: c.from + 20, file: 'se_plate.mp3', v: 0.7, dur: 30}); }
+    } else if (rich && c.type === 'wok') {
+      out.push({f: c.from + 3, file: 'se_sizzle_hi.mp3', v: c.split ? 0.25 : (c.fire === 'low' ? 0.3 : 0.5), dur: Math.max(10, c.dur - 3), loop: true});
+      if (c.mode === 'toss') for (let k = 6; k < c.dur - 10; k += 30) out.push({f: c.from + k, file: 'se_toss.mp3', v: 0.55, dur: 36});
+      if (c.ham === 'drop') for (let k = 0; k < 4; k++) out.push({f: c.from + 10 + k * 9, file: 'se_pop.mp3', v: 0.3, dur: 20});
+      if (c.egg === 'pour') out.push({f: c.from + 6, file: 'se_egg_pour.mp3', v: 0.7, dur: 60});
+      if (c.rice === 'drop') out.push({f: c.from + 4, file: 'se_toss.mp3', v: 0.6, dur: 36});
+      if (c.oil && !c.egg) out.push({f: c.from + 2, file: 'se_oil.mp3', v: 0.7, dur: 54});
+      if (c.season) out.push({f: c.from + 38, file: 'se_soy.mp3', v: 0.7, dur: 45});
+    } else if (c.type === 'zoom') {
+      if (c.kind === 'chop') for (let k = 8; k < c.dur - 4; k += 16) out.push({f: c.from + k, file: 'se_pop.mp3', v: 0.35, dur: 12});
+      if (c.kind === 'spread') for (let k = 4; k < c.dur - 10; k += 28) out.push({f: c.from + k, file: 'se_whoosh.mp3', v: 0.22, dur: 20});
+      if (c.kind === 'plate') out.push({f: c.from + 4, file: 'se_kira.mp3', v: 0.5, dur: 40});
+    }
+    if (!rich && c.type === 'wok') {
+      const hi = c.fire === 'low' ? 0.18 : 0.34;
+      out.push({f: c.from + 3, file: 'se_sizzle.mp3', v: c.split ? 0.2 : hi, dur: Math.max(10, c.dur - 3), loop: true});
+      if (c.mode === 'toss') for (let k = 6; k < c.dur - 10; k += 30) out.push({f: c.from + k, file: 'se_whoosh.mp3', v: 0.3, dur: 20});
+      if (c.ham === 'drop') for (let k = 0; k < 4; k++) out.push({f: c.from + 10 + k * 9, file: 'se_pop.mp3', v: 0.4, dur: 20});
+      if (c.egg === 'pour') out.push({f: c.from + 8, file: 'se_pop.mp3', v: 0.4, dur: 20});
+      if (c.rice === 'drop') out.push({f: c.from + 6, file: 'se_boing.mp3', v: 0.3, dur: 25});
+    }
     if (c.type === 'pan') out.push({f: c.from + 4, file: 'se_sizzle.mp3', v: 0.3, dur: Math.max(10, c.dur - 4), loop: true});
+    if (rich && c.idx > 0 && c.chapter) out.push({f: c.from, file: 'se_whoosh.mp3', v: 0.4, dur: 24});
     if (c.cta) out.push({f: c.from + 6, file: 'se_kira.mp3', v: 0.5});
   });
   return out;
@@ -113,6 +141,11 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
     const from = idx === 0 ? 0 : Math.round(sents[c.s].start * FPS);
     const to = idx === arr.length - 1 ? TOTAL : Math.round(sents[arr[idx + 1].s].start * FPS);
     return {...c, idx, from, dur: to - from};
+  }).map((c: any, i: number, arr: any[]) => {
+    // 章の切り替え（rich のとき）：「材料・手順・完成・まとめ」が始まるカット
+    const prev = arr.slice(0, i).reverse().find((x: any) => x.section !== undefined);
+    const chapter = storyboard.look === 'rich' && i > 0 && c.section !== undefined && c.section !== (prev && prev.section) && /^(材料|手順|完成|まとめ)/.test(c.section);
+    return {...c, chapter};
   }), [storyboard, timings]);
   const cues = React.useMemo(() => buildCues(cuts, storyboard), [cuts, storyboard]);
   const [handle] = useState(() => delayRender('fonts'));
@@ -144,6 +177,7 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
           <Audio src={staticFile('audio/' + q.file)} volume={q.v} loop={q.loop} />
         </Sequence>
       ))}
+      <RichCtx.Provider value={storyboard.look === 'rich'}>
       <SimpleCtx.Provider value={simple}>
       <CastCtx.Provider value={storyboard.cast || {}}>
       <AmpCtx.Provider value={amp}>
@@ -156,12 +190,14 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
             <Sequence key={c.idx} from={c.from} durationInFrames={Math.max(1, c.dur)} layout="none">
               <AbsoluteFill style={{overflow: 'hidden'}}>
                 <Camera idx={c.idx} dur={c.dur}>
-                  {show ? <Kitchen /> : <Background cut={c} />}
+                  {show ? (storyboard.look === 'rich' ? <KitchenRich /> : <Kitchen />) : <Background cut={c} />}
                   {show
                     ? <div style={{position: 'absolute', left: 0, top: 0, width: 1920, height: 1080, transform: 'translate(20px, 136px) scale(0.82)', transformOrigin: '0 0'}}><Scene cut={c} dur={c.dur} /></div>
                     : <Scene cut={c} dur={c.dur} />}
                 </Camera>
+                {storyboard.look === 'rich' && <Grade />}
                 {show && c.reaction && <Reaction {...c.reaction} />}
+                {c.chapter && <Sequence from={0} durationInFrames={21} layout="none"><ChapterCard text={String(c.section).replace(/^手順[①②③④⑤]\s*/, '手順 ')} /></Sequence>}
                 {show && c.cta && <Cta text={c.cta} />}
               </AbsoluteFill>
             </Sequence>
@@ -172,6 +208,7 @@ export const Video: React.FC<VideoProps> = ({simple = true, timings, storyboard,
       </AmpCtx.Provider>
       </CastCtx.Provider>
       </SimpleCtx.Provider>
+      </RichCtx.Provider>
       {show ? (
         <>
           {storyboard.banner && <Banner lines={storyboard.banner} />}

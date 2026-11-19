@@ -1,0 +1,211 @@
+{
+ "style": "simple",
+ "layout": "show",
+ "banner": [
+  "知るとおいしい!",
+  "焼き鳥の話"
+ ],
+ "points": [],
+ "cast": {
+  "mina": "chef_pro",
+  "taro": "kohai",
+  "jobs": "obaa"
+ },
+ "speakers": {
+  "シェフ": "mina",
+  "後輩": "taro"
+ },
+ "speakerColors": {
+  "シェフ": "#ffffff",
+  "後輩": "#ffe14d"
+ },
+ "audio": {
+  "bgm": "bgm_cooking.mp3",
+  "bgmVolume": 0.26,
+  "se": true
+ },
+ "cuts": [
+  {
+   "s": 0,
+   "type": "food",
+   "dish": "yakitori",
+   "section": "オープニング",
+   "chefExpr": "smile",
+   "kohaiExpr": "think",
+   "kohaiPose": "up"
+  },
+  {
+   "s": 1,
+   "type": "chat",
+   "chefExpr": "smile",
+   "chefPose": "up",
+   "kohaiExpr": "smile",
+   "reaction": {
+    "text": "いい質問!",
+    "x": 700,
+    "y": 300,
+    "rot": -8
+   }
+  },
+  {
+   "s": 2,
+   "type": "keyword",
+   "tag": "江戸時代",
+   "kana": "えどの やきとり",
+   "term": "ニワトリじゃない",
+   "meaning": "焼いていたのは 別の鳥",
+   "who": "mina",
+   "section": "焼き鳥の歴史"
+  },
+  {
+   "s": 3,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "じゃあ何を!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 4,
+   "type": "list",
+   "title": "江戸の焼き鳥",
+   "items": [
+    "スズメ",
+    "ウズラ"
+   ],
+   "who": "mina",
+   "pose": "point",
+   "total": "どちらも 野鳥"
+  },
+  {
+   "s": 6,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "reaction": {
+    "text": "マジっすか!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 7,
+   "type": "keyword",
+   "tag": "明治の屋台",
+   "kana": "めいじの やたい",
+   "term": "切れはしと内臓",
+   "meaning": "タレで焼いていた",
+   "who": "mina"
+  },
+  {
+   "s": 8,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "think"
+  },
+  {
+   "s": 9,
+   "type": "keyword",
+   "tag": "いまの焼き鳥",
+   "kana": "ひろまったのは",
+   "term": "1960年代",
+   "meaning": "意外と新しい",
+   "who": "mina"
+  },
+  {
+   "s": 11,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile",
+   "reaction": {
+    "text": "へえ〜!",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 12,
+   "type": "compare",
+   "left": {
+    "label": "ふつうは",
+    "value": "とり"
+   },
+   "right": {
+    "label": "ある町では",
+    "value": "ぶた",
+    "red": true
+   },
+   "vs": "?",
+   "who": "mina",
+   "expr": "smile"
+  },
+  {
+   "s": 13,
+   "type": "chat",
+   "chefExpr": "smile",
+   "kohaiExpr": "surprised",
+   "kohaiPose": "up",
+   "reaction": {
+    "text": "豚なのに!?",
+    "x": 1250,
+    "y": 300,
+    "rot": 8
+   }
+  },
+  {
+   "s": 14,
+   "type": "keyword",
+   "tag": "この番組 その1",
+   "kana": "れきしへん",
+   "term": "歴史編",
+   "meaning": "弥生時代から いまの焼き鳥まで",
+   "who": "mina",
+   "section": "番組の紹介"
+  },
+  {
+   "s": 16,
+   "type": "list",
+   "title": "その2 部位編（一本ずつ）",
+   "items": [
+    "ねぎま",
+    "皮",
+    "つくね",
+    "レバー"
+   ],
+   "who": "mina",
+   "pose": "point"
+  },
+  {
+   "s": 19,
+   "type": "food",
+   "dish": "yakitori",
+   "chefExpr": "smile",
+   "kohaiExpr": "smile",
+   "kohaiPose": "up"
+  },
+  {
+   "s": 20,
+   "type": "chat",
+   "prop": "yakitori",
+   "chefExpr": "smile",
+   "chefPose": "point",
+   "kohaiExpr": "smile"
+  },
+  {
+   "s": 22,
+   "type": "chat",
+   "chefExpr": "smile",
+   "chefPose": "wave",
+   "kohaiExpr": "smile",
+   "kohaiPose": "wave",
+   "cta": "チャンネル登録・高評価\nよろしくお願いします!"
+  }
+ ]
+}

@@ -15,6 +15,7 @@
 - **サムネイル**：NanoBanana2で作る（プロンプトをSTEP8で出力する）
 - **解説アニメ動画（別チャンネル用）**：`.claude/skills/anime-explainer-video.md` を参照。作業場所は `anime_explainer_apple/`（プロンプトは `prompts/`、回ごとのデータは `episodes/`）
   - **新しいセッションは最初に `anime_explainer_apple/docs/引き継ぎ.md` を読む**（解説アニメ側の状況・ユーザーの決定事項・落とし穴・次の作業）
+- **科学・宇宙ミステリー動画（別チャンネル用）**：`.claude/skills/science-mystery-video.md` を参照。作業場所は `science_mystery/`（最初に `science_mystery/docs/引き継ぎ.md` を読む）
 
 ---
 

@@ -1,0 +1,140 @@
+{
+ "audio": {
+  "bgm": "bgm_space.mp3",
+  "bgmVolume": 0.32,
+  "se": true
+ },
+ "cuts": [
+  {
+   "s": 0,
+   "type": "title",
+   "img": "PIA19048.jpg",
+   "move": "in",
+   "focus": [
+    0.6,
+    0.6
+   ],
+   "text": "氷の下の海に、\n生命はいるのか",
+   "accent": "生命",
+   "credit": "画像: NASA/JPL-Caltech/SETI Institute"
+  },
+  {
+   "s": 2,
+   "type": "image",
+   "img": "PIA17737.jpg",
+   "move": "right",
+   "zoom": 1.5,
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "credit": "画像: NASA/JPL-Caltech"
+  },
+  {
+   "s": 3,
+   "type": "image",
+   "img": "PIA26438.jpg",
+   "move": "in",
+   "zoom": 1.0,
+   "focus": [
+    0.5,
+    0.55
+   ],
+   "credit": "画像: NASA/JPL-Caltech（想像図）"
+  },
+  {
+   "s": 4,
+   "type": "question",
+   "img": "PIA23873.jpg",
+   "label": "問い 1",
+   "text": "なぜ、見えない海が\nあると言えるのか？",
+   "accent": "見えない海"
+  },
+  {
+   "s": 5,
+   "type": "image",
+   "img": "PIA21922.jpg",
+   "move": "in",
+   "focus": [
+    0.45,
+    0.42
+   ],
+   "credit": "画像: NASA/JPL-Caltech/Univ. of Michigan（想像図）"
+  },
+  {
+   "s": 6,
+   "type": "image",
+   "img": "PIA26434.jpg",
+   "move": "in",
+   "zoom": 1.0,
+   "focus": [
+    0.4,
+    0.45
+   ],
+   "credit": "画像: NASA/JPL-Caltech（想像図）"
+  },
+  {
+   "s": 8,
+   "type": "question",
+   "img": "PIA23873.jpg",
+   "label": "問い 2",
+   "text": "その暗い海に、\n生き物はいるのか？",
+   "accent": "生き物"
+  },
+  {
+   "s": 9,
+   "type": "image",
+   "img": "PIA26438.jpg",
+   "move": "up",
+   "zoom": 1.7,
+   "focus": [
+    0.35,
+    0.8
+   ],
+   "credit": "画像: NASA/JPL-Caltech（想像図）"
+  },
+  {
+   "s": 11,
+   "type": "image",
+   "img": "PIA26332.jpg",
+   "move": "left",
+   "zoom": 1.45,
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "credit": "画像: NASA/JPL-Caltech/SwRI"
+  },
+  {
+   "s": 12,
+   "type": "image",
+   "img": "KSC-20241014-SPX02_0004.jpg",
+   "move": "up",
+   "zoom": 1.08,
+   "focus": [
+    0.55,
+    0.4
+   ],
+   "credit": "画像: NASA"
+  },
+  {
+   "s": 13,
+   "type": "image",
+   "img": "PIA26068.jpg",
+   "move": "left",
+   "zoom": 1.05,
+   "focus": [
+    0.5,
+    0.5
+   ],
+   "credit": "画像: NASA/JPL-Caltech（想像図）"
+  },
+  {
+   "s": 14,
+   "type": "question",
+   "img": "PIA19048.jpg",
+   "text": "見えない海に、\n私たちは何を見つけるのか",
+   "accent": "何を見つける"
+  }
+ ]
+}

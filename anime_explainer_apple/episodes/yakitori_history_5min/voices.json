@@ -1,0 +1,12 @@
+{
+ "model": "eleven_v4",
+ "atempo": 1.12,
+ "gap": 0.3,
+ "speakers": {
+  "語り": {
+   "voice_id": "qiDSZKWPD8GcI15QYpQw",
+   "role": "mina",
+   "name": "Frank"
+  }
+ }
+}

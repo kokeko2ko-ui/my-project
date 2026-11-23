@@ -1,0 +1,144 @@
+{
+ "style": "simple",
+ "layout": "show",
+ "banner": [
+  "知るとおいしい!",
+  "焼き鳥の話"
+ ],
+ "points": [],
+ "cast": {
+  "mina": "chef_pro",
+  "taro": "kohai",
+  "jobs": "obaa"
+ },
+ "speakers": {
+  "語り": "mina"
+ },
+ "speakerColors": {
+  "語り": "#ffffff"
+ },
+ "audio": {
+  "bgm": "bgm_cooking.mp3",
+  "bgmVolume": 0.24,
+  "se": true
+ },
+ "cuts": [
+  {
+   "s": 0,
+   "type": "food",
+   "dish": "yakitori",
+   "solo": true,
+   "section": "オープニング",
+   "chefExpr": "smile",
+   "chefPose": "point"
+  },
+  {
+   "s": 1,
+   "type": "keyword",
+   "tag": "江戸時代",
+   "kana": "えどの やきとり",
+   "term": "ニワトリじゃない",
+   "meaning": "焼いていたのは 別の鳥",
+   "who": "mina",
+   "section": "焼き鳥の歴史"
+  },
+  {
+   "s": 2,
+   "type": "list",
+   "title": "江戸の焼き鳥",
+   "items": [
+    "スズメ",
+    "ウズラ"
+   ],
+   "total": "どちらも 野鳥",
+   "who": "mina",
+   "pose": "point"
+  },
+  {
+   "s": 4,
+   "type": "keyword",
+   "tag": "江戸時代の料理の本",
+   "kana": "つくりかた",
+   "term": "塩 → しょうゆ",
+   "meaning": "作り方が もう書かれている",
+   "who": "mina"
+  },
+  {
+   "s": 5,
+   "type": "list",
+   "title": "明治の屋台",
+   "items": [
+    "お店が使わない 切れはし",
+    "内臓"
+   ],
+   "total": "タレで焼いた",
+   "who": "mina",
+   "pose": "point"
+  },
+  {
+   "s": 7,
+   "type": "keyword",
+   "tag": "ニワトリの焼き鳥",
+   "kana": "ひろまったのは",
+   "term": "1960年代",
+   "meaning": "意外と新しい",
+   "who": "mina"
+  },
+  {
+   "s": 9,
+   "type": "compare",
+   "left": {
+    "label": "ふつうは",
+    "value": "とり"
+   },
+   "right": {
+    "label": "ある町では",
+    "value": "ぶた",
+    "red": true
+   },
+   "vs": "?",
+   "who": "mina",
+   "expr": "smile"
+  },
+  {
+   "s": 10,
+   "type": "keyword",
+   "tag": "この番組 その1",
+   "kana": "れきしへん",
+   "term": "歴史編",
+   "meaning": "弥生時代から いまの焼き鳥まで",
+   "who": "mina",
+   "section": "番組の紹介"
+  },
+  {
+   "s": 12,
+   "type": "list",
+   "title": "その2 部位編（一本ずつ）",
+   "items": [
+    "ねぎま",
+    "皮",
+    "つくね",
+    "レバー"
+   ],
+   "who": "mina",
+   "pose": "point"
+  },
+  {
+   "s": 15,
+   "type": "food",
+   "dish": "yakitori",
+   "solo": true,
+   "chefExpr": "smile",
+   "chefPose": "up"
+  },
+  {
+   "s": 17,
+   "type": "food",
+   "dish": "yakitori",
+   "solo": true,
+   "chefExpr": "smile",
+   "chefPose": "wave",
+   "cta": "チャンネル登録・高評価\nよろしくお願いします!"
+  }
+ ]
+}

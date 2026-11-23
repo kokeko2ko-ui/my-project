@@ -248,14 +248,16 @@ export const News: React.FC<SceneProps> = ({cut}) => {
   const line = trend === 'down' ? '#e23030' : '#1d9d57';
   return (
     <svg width={W} height={1080} style={{position: 'absolute'}}>
+      <g transform={`translate(0 ${cut.dy || 0})`}>
       <rect x={90} y={70} width={1240} height={110} rx={14} fill="#1b1b1b" />
       <T text={cut.headline} x={710} y={150} size={fit(cut.headline, 1140, 76)} fill="#fff" />
       <rect x={90} y={210} width={1240} height={620} rx={22} fill="#fffdf5" stroke={INK} strokeWidth={7} />
       {[0, 1, 2, 3].map((i) => <line key={i} x1={130} x2={1290} y1={290 + i * 130} y2={290 + i * 130} stroke="#d8d4c4" strokeWidth={3} />)}
       <path d={d} fill="none" stroke={line} strokeWidth={14} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={len} strokeDashoffset={draw} />
       {cut.caption && <T text={cut.caption} x={710} y={790} size={fit(cut.caption, 1100, 54)} fill="#444" reveal={30} />}
-      <path d={wave} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />
-      <path d={wave.replace(/150/g, '190')} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" transform="translate(0 40)" />
+      {!cut.dy && <path d={wave} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" />}
+      {!cut.dy && <path d={wave.replace(/150/g, '190')} fill="none" stroke={INK} strokeWidth={6} strokeLinecap="round" transform="translate(0 40)" />}
+      </g>
       <Character who={cut.who || 'mina'} x={1600} y={870} scale={1.2} flip expr={cut.expr || (trend === 'down' ? 'sad' : 'smile')} pose={cut.pose || 'point'} talking={talk} />
     </svg>
   );
@@ -601,6 +603,51 @@ const DishBowl: React.FC<{f: number}> = ({f}) => (
     <path d="M 360 230 q 60 -50 130 0 q -30 50 -130 0 Z" fill="#fff" stroke={INK} strokeWidth={6} />
   </g>
 );
+// 焼き鳥の盛り合わせ（ねぎま・つくね・皮）
+const DishYakitori: React.FC<{f: number}> = ({f}) => {
+  const stick = (y: number) => (
+    <g>
+      <line x1={-390} y1={y} x2={330} y2={y} stroke={INK} strokeWidth={16} strokeLinecap="round" />
+      <line x1={-390} y1={y} x2={330} y2={y} stroke="#e2c08a" strokeWidth={8} strokeLinecap="round" />
+    </g>
+  );
+  const meat = (x: number, y: number, w: number, fill: string, hi: string) => (
+    <g>
+      <rect x={x} y={y - 34} width={w} height={68} rx={24} fill={fill} stroke={INK} strokeWidth={7} />
+      <path d={`M ${x + 14} ${y - 16} q ${w / 2 - 14} -14 ${w - 28} 0`} fill="none" stroke={hi} strokeWidth={7} strokeLinecap="round" />
+    </g>
+  );
+  return (
+    <g>
+      <ellipse cx={0} cy={228} rx={470} ry={128} fill="rgba(0,0,0,0.18)" />
+      <ellipse cx={0} cy={205} rx={460} ry={130} fill="#2f3a44" stroke={INK} strokeWidth={7} />
+      <ellipse cx={0} cy={198} rx={380} ry={98} fill="#3c4a56" stroke="#22292f" strokeWidth={4} />
+      {/* ねぎま */}
+      {stick(128)}
+      {[0, 1, 2, 3, 4].map((i) => i % 2 === 0
+        ? <g key={i}>{meat(-240 + i * 100, 128, 92, '#b9682a', '#e9a35c')}</g>
+        : <g key={i}><rect x={-240 + i * 100 + 8} y={98} width={76} height={60} rx={16} fill="#eef5d8" stroke={INK} strokeWidth={7} /><rect x={-240 + i * 100 + 8} y={98} width={30} height={60} rx={14} fill="#7fc25a" stroke={INK} strokeWidth={7} /></g>)}
+      {/* つくね */}
+      {stick(208)}
+      {[0, 1, 2].map((i) => (
+        <g key={i}>
+          <circle cx={-170 + i * 130} cy={208} r={54} fill="#a8581f" stroke={INK} strokeWidth={7} />
+          <path d={`M ${-200 + i * 130} ${190} q 30 -24 60 0`} fill="none" stroke="#e9a35c" strokeWidth={7} strokeLinecap="round" />
+        </g>
+      ))}
+      {/* 皮 */}
+      {stick(290)}
+      {[0, 1, 2, 3].map((i) => (
+        <g key={i}>
+          <path d={`M ${-250 + i * 110} 262 q 24 -18 48 0 q 24 18 48 0 l 0 56 q -24 18 -48 0 q -24 -18 -48 0 Z`} fill="#f0b64a" stroke={INK} strokeWidth={7} strokeLinejoin="round" />
+          <path d={`M ${-236 + i * 110} 282 q 18 -10 34 0`} fill="none" stroke="#ffe39a" strokeWidth={6} strokeLinecap="round" />
+        </g>
+      ))}
+      <Steam x={-120} y={60} f={f} />
+      <Steam x={150} y={70} f={f + 20} />
+    </g>
+  );
+};
 export const Food: React.FC<SceneProps> = ({cut}) => {
   const f = useCurrentFrame();
   const talk = talking();
@@ -609,12 +656,12 @@ export const Food: React.FC<SceneProps> = ({cut}) => {
   return (
     <svg width={W} height={1080} style={{position: 'absolute'}}>
       <g transform={`translate(960 ${cut.label ? 330 : 290}) scale(${1.25 * s}) `}>
-        {dish === 'eggbowl' ? <DishBowl f={f} /> : <DishTamago f={f} />}
+        {dish === 'eggbowl' ? <DishBowl f={f} /> : dish === 'yakitori' ? <DishYakitori f={f} /> : <DishTamago f={f} />}
       </g>
       <Sparkle x={560} y={380} r={52} f={f} d={0} /><Sparkle x={1400} y={330} r={44} f={f} d={9} /><Sparkle x={1250} y={520} r={34} f={f} d={4} />
       {cut.label && <T text={cut.label} x={960} y={190} size={fit(cut.label, 1500, 130)} fill="#ffe14d" stroke={INK} sw={22} />}
       <Character who="mina" x={250} y={1010} scale={1.0} expr={cut.chefExpr || 'smile'} pose={cut.chefPose || 'point'} talking={talk} />
-      <Character who="taro" x={1670} y={1010} scale={1.0} flip expr={cut.kohaiExpr || 'surprised'} pose={cut.kohaiPose || 'up'} talking={talk} seed={20} />
+      {!cut.solo && <Character who="taro" x={1670} y={1010} scale={1.0} flip expr={cut.kohaiExpr || 'surprised'} pose={cut.kohaiPose || 'up'} talking={talk} seed={20} />}
     </svg>
   );
 };
@@ -628,6 +675,7 @@ export const Chat: React.FC<SceneProps> = ({cut}) => {
   return (
     <svg width={W} height={1080} style={{position: 'absolute'}}>
       {cut.prop === 'eggbowl' && <g transform="translate(960 560) scale(0.62)"><DishBowl f={f} /></g>}
+      {cut.prop === 'yakitori' && <g transform="translate(960 600) scale(0.6)"><DishYakitori f={f} /></g>}
       {cut.prop === 'tamagoyaki' && <g transform="translate(960 600) scale(0.6)"><DishTamago f={f} /></g>}
       <Character who="mina" x={520} y={1040} scale={1.15 * grow('mina')} expr={cut.chefExpr || 'smile'} pose={cut.chefPose || 'idle'} talking={talk} />
       <Character who="taro" x={1400} y={1040} scale={1.15 * grow('taro')} flip expr={cut.kohaiExpr || 'smile'} pose={cut.kohaiPose || 'idle'} talking={talk} seed={20} />

@@ -4,7 +4,7 @@
 <filter id="b20" filterUnits="userSpaceOnUse" x="-300" y="-300" width="2520" height="1680"><feGaussianBlur stdDeviation="20"/></filter>
 <filter id="b40" filterUnits="userSpaceOnUse" x="-300" y="-300" width="2520" height="1680"><feGaussianBlur stdDeviation="40"/></filter>
 <filter id="b80" filterUnits="userSpaceOnUse" x="-300" y="-300" width="2520" height="1680"><feGaussianBlur stdDeviation="80"/></filter>
-<filter id="paint" filterUnits="userSpaceOnUse" x="-300" y="-300" width="2520" height="1680"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="7"/></filter>
+<filter id="paint" filterUnits="userSpaceOnUse" x="-300" y="-300" width="2520" height="1680"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="3" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="18" result="w"/><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="8" result="n2"/><feDisplacementMap in="w" in2="n2" scale="5"/></filter>
 <filter id="grain" filterUnits="userSpaceOnUse" x="-300" y="-300" width="2520" height="1680"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="3"/><feColorMatrix values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .07 0"/></filter>
 <filter id="paper" filterUnits="userSpaceOnUse" x="-300" y="-300" width="2520" height="1680"><feTurbulence type="fractalNoise" baseFrequency=".004 .02" numOctaves="4" seed="11"/><feColorMatrix values="0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .18  0 0 0 .10 0"/></filter>
 <radialGradient id="vig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient>

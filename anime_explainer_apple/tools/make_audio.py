@@ -18,6 +18,14 @@ SE = {  # ファイル名: (英語プロンプト, 秒)
     'se_boing':   ('cute cartoon boing surprise reaction sound, short springy bounce, comedic', 0.9),
     'se_whoosh':  ('soft quick whoosh swipe transition, subtle, clean', 0.6),
     'se_sizzle':  ('frying pan sizzling, oil sizzle while cooking egg on low heat, close microphone, steady', 4.0),
+    # ↓ 本物らしい調理音（ASMRふう・動画の「rich」版で使う）
+    'se_sizzle_hi':  ('loud crackling sizzle of fried rice in a hot wok on high heat, close microphone, realistic kitchen ASMR, steady', 5.0),
+    'se_chop':       ('kitchen knife chopping green onion on a wooden cutting board, three quick rhythmic chops, crisp, close microphone', 2.0),
+    'se_toss':       ('wok toss, rice grains sliding and tumbling in a metal pan, quick whoosh and sizzle burst, realistic', 1.2),
+    'se_oil':        ('cooking oil poured into a hot frying pan, quick sizzle burst, realistic close microphone', 1.8),
+    'se_egg_pour':   ('beaten egg poured into a hot oiled pan, soft sizzle and bubbling, realistic close microphone', 2.0),
+    'se_soy':        ('soy sauce splashing on the edge of a hot pan, sharp sizzle burst, realistic close microphone', 1.5),
+    'se_plate':      ('metal spoon clinking softly on a ceramic plate, single gentle clink, realistic', 1.0),
 }
 BGM = {
     'bgm_cooking': ('light cheerful acoustic jazz, fingerstyle acoustic guitar with soft upright bass and brushed drums, '

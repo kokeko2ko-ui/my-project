@@ -11,6 +11,7 @@
 - **基準ブランチ**：`claude/quirky-wright-udpMD`（GitHubの初期表示ブランチ。最新の台本・仕組みはすべてここにある）
 - **新しいセッション**：最初に `docs/引き継ぎ.md` を読む。作業はそのセッションの作業ブランチで行い、終わったらプルリクエストで基準ブランチに取り込む
 - **スキルファイル**：`.claude/skills/kandou-master.md`（必ずこれを参照する）
+- **動画の分析（Gemini）**：Claude は動画を見られない・聞けない。参考動画の研究・自分の動画の音と見た目の確認は `.claude/skills/gemini-video-analysis/SKILL.md`（YouTube の URL を渡すだけ。登録者が少なく再生数が多い動画の探し方もある）
 - **docx/txt出力先**：`/mnt/user-data/outputs/`
 - **サムネイル**：NanoBanana2で作る（プロンプトをSTEP8で出力する）
 - **解説アニメ動画（別チャンネル用）**：`.claude/skills/anime-explainer-video.md` を参照。作業場所は `anime_explainer_apple/`（プロンプトは `prompts/`、回ごとのデータは `episodes/`）

@@ -105,7 +105,7 @@ node tools/render.js final         # 本番 1920x1080（約20分／6分動画。
 - 一部だけ書き出して確認：`RANGE=0-1500 node tools/render.js final`。音のバランスは Gemini に聞ける。**利用条件（ElevenLabs の規約）は未確認。公開前にユーザーに確認してもらう。**
 
 ## 参考動画の分析（Gemini）
-- Claude は動画を見られない。参考にする動画（YouTube）は、`python3 tools/gemini_video.py <URL> --out docs/参考動画/<id>_分析.md` で Gemini に分析させる（構成・話し方・テロップ・BGM・効果音・事実）。使い方・モデル・キーは `docs/参考動画の分析_Gemini.md`。
+- Claude は動画を見られない。参考にする動画（YouTube）は、`python3 .claude/skills/gemini-video-analysis/gemini_video.py <URL> --out docs/参考動画/<id>_分析.md` で Gemini に分析させる（構成・話し方・テロップ・BGM・効果音・事実）。**使い方・聞き方・探し方・落とし穴は、スキル `.claude/skills/gemini-video-analysis/SKILL.md`（どのセッションでも使える）。**
 - 結果は**モデルの出力**。事実・数値は確認する。台詞・口癖・見た目は真似しない。
 
 ## 作ったあとに必ず確認する（人の目と耳）

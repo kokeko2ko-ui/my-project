@@ -25,6 +25,8 @@ Claude は動画を見られない・聞けないので、**Gemini API に YouTu
 実在の店名・人名、決め台詞（「やらんでいい」「イエイ！」）、見た目（髪型・服）、楽屋落ち、危険な昔話（傷口を接着剤で固めた話）。
 
 ## Gemini の使い方
+> **最新の使い方・落とし穴は、スキル `.claude/skills/gemini-video-analysis/SKILL.md` にまとめた（スクリプトもそこに移した。`tools/gemini_video.py` は入口だけ残してある）。以下は、最初に調べたときの記録。**
+
 ```bash
 python3 tools/gemini_video.py "https://www.youtube.com/watch?v=<id>" --out docs/参考動画/<id>_分析.md
 python3 tools/gemini_video.py <動画ファイル> --prompt "聞きたいこと"      # 自分で撮った動画や、アップロードされた動画も見られる
